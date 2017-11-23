@@ -1,0 +1,56 @@
+@import "px2rem";
+
+html, body, #app, .page {
+  height: 100%;
+}
+
+html, body, #app, .page, pre {
+  margin: 0;
+}
+
+#app {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #FFFFFF;
+  overflow: hidden;
+}
+
+pre {
+  white-space: pre-line;
+  word-wrap: break-word;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  transition: all .45s cubic-bezier(.23, 1, .32, 1);
+}
+
+.shadow {
+  box-shadow: 0 1px 6px rgba(0, 0, 0, .117647), 0 1px 4px rgba(0, 0, 0, .117647);
+}
+
+.horizontal-view {
+  display: flex;
+  flex-direction: row;
+}
+
+.vertical-view {
+  display: flex;
+  flex-direction: column;
+}
+
+a {
+  color: $mainColor;
+}
+
+//---------------------------------------------------------------------------------
+
+.mu-list {
+  padding: 0;
+}
+
+.mu-item {
+  padding: px2rem(6) px2rem(16);
+}
