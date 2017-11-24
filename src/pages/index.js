@@ -6,5 +6,6 @@ page[Constants.PageName.main] = resolve => require(['./main.vue'], resolve);
 page[Constants.PageName.qaIndex] = resolve => require(['./qaIndex.vue'], resolve);
 page[Constants.PageName.qaDetail] = resolve => require(['./qaDetail.vue'], resolve);
 page[Constants.PageName.qaAsk] = resolve => require(['./qaAsk.vue'], resolve);
+page[Constants.PageName.qaUser] = resolve => require(['./qaUser.vue'], resolve);
 
 export default page;

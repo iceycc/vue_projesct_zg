@@ -47,6 +47,14 @@ a {
 
 //---------------------------------------------------------------------------------
 
+.mu-buttom-item {
+  min-width: 70px;
+}
+
+.mu-bottom-item-active .mu-bottom-item-text {
+  color: #333;
+}
+
 .mu-list {
   padding: 0;
 }

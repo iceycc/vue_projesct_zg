@@ -16,6 +16,9 @@ class Request {
         if (!param) {
             param = {};
         }
+
+        param.uid = 25416;
+
         //param.cityid = localStorage.getItem('cityid') : ''
         return param;
         /*        param.app_env = process.env.NODE_ENV;
@@ -61,8 +64,8 @@ class Request {
             finish && finish();
         }).catch((error) => {
             console.log('request_error:', error);
-            if (error && 'msg' in error) { //接口错误
-                console.error('接口异常', error.msg);
+            if (error && 'data' in error) { //接口错误
+                console.error('接口异常', error.data);
             } else {
                 console.error('请求异常', error);
             }

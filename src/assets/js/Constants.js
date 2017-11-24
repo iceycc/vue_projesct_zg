@@ -10,6 +10,7 @@ export const Method = {
     get_hot_words: BASE_URL + "f=question_list&v=get_hot_words",
     get_homepage: BASE_URL + "f=question_list&v=get_homepage",
     get_question_list: BASE_URL + "f=question_list&v=get_question_list",
+    ask_question: BASE_URL + "f=question_list&v=ask_question",
 };
 
 //用于管理router中页面名称
@@ -18,6 +19,7 @@ export const PageName = {
     template: 'template',
     main: 'main',
     qaIndex: 'qaindex',
+    qaUser: 'qauser',
     qaDetail: 'qadetail',
     qaAsk: 'qaask',
 };

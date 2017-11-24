@@ -2,22 +2,24 @@
     <div class="content">
         <app-bar :title="title"></app-bar>
         <div class="form">
-            <mu-text-field fullWidth :underlineShow="false" hintText="请输入标题"/>
+            <mu-text-field fullWidth :underlineShow="false" v-model="qa.title" hintText="请输入标题"/>
 
             <div class="line"></div>
 
-            <mu-text-field fullWidth :underlineShow="false" hintText="请描述您的问题（非必填）" fullWidth multiLine :rows="6"/>
+            <mu-text-field fullWidth :underlineShow="false" v-model="qa.content" hintText="请描述您的问题（非必填）" fullWidth
+                           multiLine :rows="6"/>
 
         </div>
 
-        <div class="btn-submit">{{(type === 1 ? '支付¥' + parseFloat(money).toFixed(2) : '') + '进行提问'}}</div>
+        <div class="btn-submit" @click="submit">{{(type === 1 ? '支付¥' + parseFloat(qa.reward).toFixed(2) : '') + '进行提问'}}
+        </div>
 
         <div class="mask" v-if="showMask">
-            <div class="tip1">您已选择 <span class="money">{{money}}</span>元问题赏金 </div>
+            <div class="tip1">您已选择 <span class="money">{{qa.reward}}</span>元问题赏金 </div>
 
             <div class="slider" v-if="slider">
                 <vue-slider-component
-                        v-model="money"
+                        v-model="qa.reward"
                         :direction="slider.direction"
                         :height="slider.height"
                         :min="slider.min"
@@ -63,7 +65,11 @@
         data() {
             return {
                 type: 0,//1付费
-                money: 5,
+                qa: {
+                    title: '',
+                    content: '',
+                    reward: 5,
+                },
                 showMask: false
             };
         },
@@ -86,7 +92,7 @@
                         "width": size + "px",
                         "height": size + "px",
                         "top": (height - size) / 2 + "px",
-                        "left": -size / 2 + "px",
+                        "left": 0 + "px",
                     },
                     processStyle: {
                         "backgroundImage": "linear-gradient(to top, #11cdcd, #12ddca)",
@@ -117,6 +123,18 @@
                 this.showMask = !this.showMask;
             },
             submit() {
+                let data = {
+                    title: this.qa.title,
+                    content: this.qa.content
+                };
+
+                if (this.type === 0) {
+                    data.reward = 0;
+                }
+
+                this.doRequest(Constants.Method.ask_question, data, (result) => {
+                    console.log(result);
+                });
             }
         }
     };
@@ -148,7 +166,7 @@
     .btn-submit {
         text-align: center;
         color: white;
-        background-image: linear-gradient(to top, #11cdcd, #12ddca);
+        background-image: $bgImage;
         border-radius: px2rem(3);
         //background-color: #11cdcd;
         margin: px2rem(40) px2rem(20) 0 px2rem(20);

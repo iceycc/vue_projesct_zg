@@ -7,11 +7,21 @@
             <router-view v-if="!$route.meta.keepAlive"></router-view>
         </div>
         <mu-bottom-nav :value="bottomNav" @change="handleChange" ref="bottom">
-            <mu-bottom-nav-item value="0" title="问答" icon="restore"/>
-            <mu-bottom-nav-item value="1" title="课堂" icon="favorite"/>
-            <mu-bottom-nav-item value="2" title="提问" icon="location_on"/>
-            <mu-bottom-nav-item value="3" title="通知" icon="location_on"/>
-            <mu-bottom-nav-item value="4" title="我的" icon="location_on"/>
+            <mu-bottom-nav-item value="0" title="问答">
+                <img-wrapper :src="bottomNav == 0 ? tab0[1] : tab0[0]" class="tabicon"></img-wrapper>
+            </mu-bottom-nav-item>
+            <mu-bottom-nav-item value="1" title="课堂">
+                <img-wrapper :src="bottomNav == 1 ? tab1[1] : tab1[0]" class="tabicon"></img-wrapper>
+            </mu-bottom-nav-item>
+            <mu-bottom-nav-item value="2" title="提问">
+                <img-wrapper :src="bottomNav == 2 ? tab2[1] : tab2[0]" class="tabicon"></img-wrapper>
+            </mu-bottom-nav-item>
+            <mu-bottom-nav-item value="3" title="通知">
+                <img-wrapper :src="bottomNav == 3 ? tab3[1] : tab3[0]" class="tabicon"></img-wrapper>
+            </mu-bottom-nav-item>
+            <mu-bottom-nav-item value="4" title="我的">
+                <img-wrapper :src="bottomNav == 4 ? tab4[1] : tab4[0]" class="tabicon"></img-wrapper>
+            </mu-bottom-nav-item>
         </mu-bottom-nav>
         <div class="mask" v-if="showAsk">
             <div class="btn-view">
@@ -20,7 +30,7 @@
                         <div>更快更多更优质回答</div>
                         <div>查看更多<a href="">专属权利</a></div>
                     </div>
-                    <img-wrapper :src="icon1" classStyle="icon" ></img-wrapper>
+                    <img-wrapper :src="icon1" classStyle="icon"></img-wrapper>
                     <div class="name">免费提问</div>
                 </div>
                 <div class="icon-view" @click="gotoAsk(1)">
@@ -28,11 +38,14 @@
                         <div>更快更多更优质回答</div>
                         <div>查看更多<a href="" @click.self="webpage">专属权利</a></div>
                     </div>
-                    <img-wrapper :src="icon2" classStyle="icon" ></img-wrapper>
+                    <img-wrapper :src="icon2" classStyle="icon"></img-wrapper>
                     <div class="name">悬赏提问</div>
                 </div>
             </div>
             <div class="close" @click="toggleAsk">X</div>
+        </div>
+        <div class="btn_ask" @click="handleChange(2)">
+            <img-wrapper :src="tab2[1]" class="askicon"></img-wrapper>
         </div>
     </div>
 </template>
@@ -50,6 +63,11 @@
                 bottomNav: '1',
                 icon1: require('../assets/img/icon_ask_free.png'),
                 icon2: require('../assets/img/icon_ask.png'),
+                tab0: [require('../assets/img/icon_tab_index.svg'), require('../assets/img/icon_tab_index_ed.svg')],
+                tab1: [require('../assets/img/icon_tab_school.svg'), require('../assets/img/icon_tab_school_ed.svg')],
+                tab2: [require('../assets/img/icon_tab_ask.svg'), require('../assets/img/icon_tab_ask.svg')],
+                tab3: [require('../assets/img/icon_tab_notifi.svg'), require('../assets/img/icon_tab_notifi_ed.svg')],
+                tab4: [require('../assets/img/icon_tab_user.svg'), require('../assets/img/icon_tab_user_ed.svg')],
                 showAsk: false,
                 style: {}
             };
@@ -78,7 +96,25 @@
                 if (value == 2) {
                     this.toggleAsk();
                 } else {
+                    let name = '';
+                    switch (parseInt(value)) {
+                        case 0:
+                            name = Constants.PageName.qaIndex;
+                            break;
+                        case 1:
+                            name = Constants.PageName.qaIndex;
+                            break;
+                        case 3:
+                            break;
+                        case 4:
+                            name = Constants.PageName.qaUser;
+                            break;
+                    }
+
                     this.bottomNav = value;
+                    this.pushPage({
+                        name: name
+                    });
                 }
             }
         }
@@ -93,6 +129,25 @@
         flex-grow: 1;
     }
 
+    .tabicon {
+        width: 25px;
+        height: 25px;
+    }
+
+    .btn_ask {
+        position: fixed;
+        width: 50px;
+        bottom: 15px;
+        left: 0;
+        right: 0;
+        margin-left: auto;
+        margin-right: auto;
+        .askicon {
+            width: 50px;
+            height: 50px;
+        }
+    }
+
     .mask {
         width: 100%;
         height: 100%;
@@ -102,6 +157,7 @@
         flex-direction: row;
         justify-content: center;
         align-items: center;
+        z-index: 2;
         .btn-view {
             display: flex;
             flex-direction: row;
@@ -136,4 +192,7 @@
             border-top: px2rem(1) solid $fontcolor_gray;
         }
     }
+</style>
+<style>
+
 </style>

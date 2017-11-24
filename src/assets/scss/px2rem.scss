@@ -1,10 +1,11 @@
 $designWidth: 375;
 
 $mainColor: rgb(27, 212, 187);
-$fontcolor_gray : #ACACAC;
+$fontcolor_gray: #ACACAC;
 
+$bgImage: linear-gradient(to top, #11cdcd, #0edda2);
 
-$divider : rgb(242, 242, 242);
+$divider: rgb(242, 242, 242);
 
 @function px2rem($px) {
   @return $px*320/$designWidth/20 + rem;

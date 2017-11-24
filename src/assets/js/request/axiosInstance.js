@@ -19,7 +19,7 @@ _axios.interceptors.response.use((response) => {
         } else {
             return Promise.reject({
                 msg: '接口返回错误',
-                data: result.msg
+                data: result.message
             });
         }
     } else {

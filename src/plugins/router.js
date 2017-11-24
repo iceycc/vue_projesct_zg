@@ -22,7 +22,14 @@ let routes = [{
     children: [
         {
             path: Constants.PageName.qaIndex,
+            name: Constants.PageName.qaIndex,
             component: Pages[Constants.PageName.qaIndex]
+        },
+        {
+            path: Constants.PageName.qaUser,
+            name: Constants.PageName.qaUser,
+            component: Pages[Constants.PageName.qaUser],
+            meta:{title: '我的'}
         }
     ]
 }];
@@ -30,6 +37,7 @@ let routes = [{
 addRouter(Constants.PageName.template, {title: '测试页面'});
 addRouter(Constants.PageName.qaDetail, {title: '问答详情'});
 addRouter(Constants.PageName.qaAsk, {title: '提问'});
+// addRouter(Constants.PageName.qaUser, {title: '我的'});
 //addRouter(Constants.PageName.qaIndex, {title: '问答'});
 
 let router = new Router({
