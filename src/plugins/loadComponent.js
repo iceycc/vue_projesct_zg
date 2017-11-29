@@ -5,9 +5,11 @@ import Vue from 'vue'
  */
 import template from "../components/template.vue";
 import AutoListView from "../components/AutoListView.vue";
+import uzLable from "../components/uzLable.vue";
 
 Vue.component(template.name, template);
 Vue.component(AutoListView.name, AutoListView);
+Vue.component(uzLable.name, uzLable);
 
 import MuseUI from 'muse-ui'
 import 'muse-ui/dist/muse-ui.css'

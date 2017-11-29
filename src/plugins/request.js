@@ -17,7 +17,7 @@ class Request {
             param = {};
         }
 
-        param.uid = 25416;
+        param.uid = localStorage.getItem('uid');
 
         //param.cityid = localStorage.getItem('cityid') : ''
         return param;

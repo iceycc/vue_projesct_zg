@@ -6,13 +6,14 @@
                 <img-wrapper :src="question.avatar" classStyle="avatar"></img-wrapper>
                 <div class="username">{{question.uname}}</div>
                 <span class="reward shadow"
-                > ¥{{question.q_reward}}</span>
+                      v-if="parseFloat(question.q_reward) > 0"> ¥{{question.q_reward}}</span>
             </div>
             <div class="card-title">{{question.title}}</div>
             <div class="card-content">{{question.content}}</div>
             <div class="view2">
                 <div>{{question.pv}}浏览</div>
                 <div>{{question.answer_num}}回答</div>
+                <div @click="collect">收藏</div>
                 <div>{{question.qtime}}</div>
             </div>
             <div class="card-tags">
@@ -30,15 +31,21 @@
                             <div class="view1 horizontal-view">
                                 <img-wrapper classStyle="avatar"></img-wrapper>
                                 <div class="vertical-view">
-                                    <div class="name">{{item.aname}} <span class="role">{{item.role}}</span></div>
+                                    <div class="name">{{item.aname}} <uz-lable :role="item.role"></uz-lable>
+                                    </div>
                                     <div class="date">{{item.atime}}</div>
                                 </div>
-                                <div class="accept">采纳</div>
+                                <div class="accept" v-if="isOwner" @click.stop="accept(index)">采纳</div>
                             </div>
-                            <div>{{item.content}}</div>
+                            <div class="context">{{item.content}}</div>
                             <div>re</div>
                             <div class="view2 horizontal-view">
-                                <div v-if="item.like_num != 0" class="like">{{item.like_num}}</div>
+                                <div class="like" v-bind:class="item.liked == 1 ? 'liked' : ''"
+                                     @click.stop="like(index)">
+                                    <img-wrapper :src="item.liked == 1 ? icon4 : icon3 "
+                                                 classStyle="icon"></img-wrapper>
+                                    {{item.like_num}}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -47,11 +54,16 @@
         </div>
 
         <div class="footer horizontal-view">
-            <div>去回答</div>
-            <div>去提问</div>
+            <div @click="gotoResponse">
+                <img-wrapper :src="icon1" classStyle="icon"></img-wrapper>
+                去回答
+            </div>
+            <div @click="gotoAsk">
+                <img-wrapper :src="icon2" classStyle="icon"></img-wrapper>
+                去提问
+            </div>
         </div>
     </div>
-
 </template>
 
 <script>
@@ -73,6 +85,11 @@
         name: Constants.PageName.qaDetail,
         data() {
             return {
+                icon1: require('../assets/img/icon_detail_response.svg'),
+                icon2: require('../assets/img/icon_detail_ask.svg'),
+                icon3: require('../assets/img/icon_detail_like.svg'),
+                icon4: require('../assets/img/icon_detail_liked.svg'),
+                uid: 0,
                 question: {},
                 flag: null,
                 version: process.env.APP_VERSION,
@@ -81,17 +98,74 @@
         },
         computed: {},
         created() {
-            let data = {
-                q_id: this.$route.query.id,
-                uid: 1300
-            };
-
-            this.doRequest(Constants.Method.get_question_list, data, (result) => {
-                this.question = result.question;
-                this.answer_list = result.answer_list;
-            });
+        },
+        activated() {
+            this.getData();
         },
         methods: {
+            getData() {
+                let data = {
+                    q_id: this.$route.query.id,
+                    uid: 1300
+                };
+
+                this.doRequest(Constants.Method.get_question_list, data, (result) => {
+                    this.question = result.question;
+                    this.answer_list = result.answer_list;
+
+                    this.isOwner = (this.question.uid === this.$ls.get(Constants.LocalStorage.uid));
+                });
+            },
+            gotoResponse() {
+                this.pushPage({
+                    name: Constants.PageName.qaResponse,
+                    query: {
+                        id: this.question.id
+                    }
+                });
+            },
+            gotoAsk() {
+                this.pushPage({
+                    name: Constants.PageName.qaAsk,
+                    qarams: {
+                        type: 1
+                    }
+                });
+            },
+            like(index) {
+                let data = {
+                    q_id: this.$route.query.id,
+                    a_id: this.answer_list[index].id,
+                    c_id: 0
+                };
+                this.doRequest(Constants.Method.like, data, (result) => {
+                    this.getData();
+                });
+            },
+            collect() {
+                console.log(collect);
+            },
+            accept(index) {
+                let data = {
+                    q_id: this.$route.query.id,
+                    a_id: this.answer_list[index].id,
+                };
+
+                this.doRequest(Constants.Method.adoption, data, (result) => {
+                    this.getData();
+                });
+            },
+            onItemClick(index) {
+                let data = {
+                    q_id: this.$route.query.id,
+                    a_id: this.answer_list[index].id
+                };
+
+                this.pushPage({
+                    name: Constants.PageName.qaComment,
+                    query: data
+                });
+            }
         }
     };
 </script>
@@ -125,6 +199,7 @@
                 font-size: px2rem(16);
                 color: #333;
                 flex-grow: 1;
+                margin-left: px2rem(10);
             }
             .reward {
                 font-size: px2rem(12);
@@ -137,14 +212,14 @@
         }
 
         &-title {
-            font-size: px2rem(16);
+            font-size: px2rem(14);
             color: #333;
             padding: px2rem(10) 0;
         }
 
         &-content {
-            color: RGB(150, 150, 150);
-            font-size: px2rem(16);
+            color: $fontcolor;
+            font-size: px2rem(14);
         }
 
         .view2 {
@@ -154,11 +229,16 @@
             align-items: center;
             padding: px2rem(10) 0;
             border-bottom: px2rem(1) solid $divider;
+            font-size: px2rem(12);
             div:nth-child(1):after {
                 content: '•';
                 padding: 0 px2rem(5);
             }
-            div:nth-child(2) {
+            div:nth-child(2):after {
+                content: '•';
+                padding: 0 px2rem(5);
+            }
+            div:nth-child(3) {
                 flex-grow: 1;
             }
         }
@@ -168,10 +248,11 @@
             flex-direction: row;
             align-items: center;
             margin-top: px2rem(10);
+            font-size: px2rem(12);
             .tag {
                 color: $fontcolor_gray;
                 border: px2rem(1) solid $fontcolor_gray;
-                padding: px2rem(5);
+                padding: px2rem(2) px2rem(5);
                 font-size: px2rem(12);
                 margin-right: px2rem(10);
             }
@@ -200,12 +281,6 @@
             .name {
                 color: #333;
             }
-            .role {
-                font-size: px2rem(12);
-                padding: px2rem(2) px2rem(5);
-                border-radius: px2rem(10);
-                border: px2rem(1) solid #333;
-            }
             .date {
                 font-size: px2rem(12);
             }
@@ -217,22 +292,48 @@
             }
         }
         .view2 {
+            color: $fontcolor_gray;
+            font-size: px2rem(12);
             justify-content: flex-end;
+            .like {
+                display: flex;
+                flex-direction: row;
+                .icon {
+                    width: px2rem(16);
+                    height: px2rem(16);
+                    margin-right: px2rem(5);
+                }
+            }
+            .liked {
+                color: $fontcolor_red;
+            }
         }
     }
 
     .footer {
         width: 100%;
         padding: px2rem(15) 0;
+        font-size: px2rem(12);
+        color: #333333;
         background-color: white;
         display: -webkit-box;
         border-top: px2rem(1) solid $fontcolor_gray;
         div {
             flex-grow: 1;
             text-align: center;
+            vertical-align: middle;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
         }
         > div:nth-child(1) {
             border-right: px2rem(1) solid $fontcolor_gray;
+        }
+        .icon {
+            width: px2rem(15);
+            height: px2rem(15);
+            margin-right: px2rem(10);
         }
     }
 </style>

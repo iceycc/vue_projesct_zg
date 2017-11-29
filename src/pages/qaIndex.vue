@@ -7,7 +7,6 @@
                     {{item.name}}
                 </div>
             </div>
-
         </div>
         <auto-list-view :url="url" :flag="flag" :isNeedDivider="false" @onItemClick="onItemClick">
             <template slot="item" slot-scope="props">
@@ -52,6 +51,10 @@
         },
         computed: {},
         created() {
+            this.doRequest(Constants.Method.get_banner_list, null, (result) => {
+                console.log(result);
+            });
+
             this.doRequest(Constants.Method.get_hot_words, null, (result) => {
                 this.hot_words = this.hot_words.concat(result);
                 this.getList();

@@ -116,13 +116,20 @@
                 this.title = '悬赏问题';
                 this.showMask = true;
             }
-
         },
         methods: {
             toggleMask() {
                 this.showMask = !this.showMask;
             },
             submit() {
+                if (!this.qa.title) {
+                    EventBus.$emit(Constants.EventBus.showToast, {
+                        message: '标题不能为空'
+                    });
+                    return;
+                }
+
+
                 let data = {
                     title: this.qa.title,
                     content: this.qa.content
@@ -133,7 +140,12 @@
                 }
 
                 this.doRequest(Constants.Method.ask_question, data, (result) => {
-                    console.log(result);
+                    EventBus.$emit(Constants.EventBus.showToast, {
+                        message: '发布成功'
+                    });
+                    setTimeout(() => {
+                        this.$router.go(-1);
+                    }, 2000);
                 });
             }
         }

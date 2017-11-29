@@ -45,6 +45,12 @@ a {
   color: $mainColor;
 }
 
+.context {
+  color: $fontcolor;
+  font-size: px2rem(14);
+  padding: px2rem(5) 0;
+}
+
 //---------------------------------------------------------------------------------
 
 .mu-buttom-item {
@@ -61,4 +67,8 @@ a {
 
 .mu-item {
   padding: px2rem(6) px2rem(16);
+}
+
+.mu-text-field-content {
+  padding: px2rem(4) 0 !important;
 }

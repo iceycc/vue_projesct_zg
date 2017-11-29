@@ -55,11 +55,18 @@
     import ImgWrapper from "../components/ImgWrapper.vue";
 
     export default {
-        components: {ImgWrapper},
+        components: {
+            ImgWrapper
+        },
         mixins: [mixins.base],
         name: 'main',
         data() {
             return {
+                toast: {
+                    show: false,
+                    message: '',
+                    Timer: null
+                },
                 bottomNav: '1',
                 icon1: require('../assets/img/icon_ask_free.png'),
                 icon2: require('../assets/img/icon_ask.png'),
@@ -74,6 +81,7 @@
         },
         computed: {},
         created() {
+            this.handleChange(0);
         },
         mounted() {
             this.style = {
