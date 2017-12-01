@@ -31,14 +31,21 @@
                             <div class="view1 horizontal-view">
                                 <img-wrapper classStyle="avatar"></img-wrapper>
                                 <div class="vertical-view">
-                                    <div class="name">{{item.aname}} <uz-lable :role="item.role"></uz-lable>
+                                    <div class="name">{{item.aname}}
+                                        <uz-lable :role="item.role"></uz-lable>
                                     </div>
                                     <div class="date">{{item.atime}}</div>
                                 </div>
                                 <div class="accept" v-if="isOwner" @click.stop="accept(index)">采纳</div>
                             </div>
                             <div class="context">{{item.content}}</div>
-                            <div>re</div>
+                            <div v-if="item.hot_comment" class="hotcomment">
+                                <div class="title">{{item.hot_comment.username}}-{{item.hot_comment.role}}
+                                    <uz-lable :role="item.hot_comment.role"></uz-lable>
+                                    :{{item.hot_comment.content}}
+                                </div>
+                                <div class="count">查看全部{{item.hot_comment.comment_total_num}}条回复</div>
+                            </div>
                             <div class="view2 horizontal-view">
                                 <div class="like" v-bind:class="item.liked == 1 ? 'liked' : ''"
                                      @click.stop="like(index)">
@@ -74,9 +81,11 @@
     import MuAppbar from "../../node_modules/muse-ui/src/appBar/appBar.vue";
     import AppBar from "../components/AppBar.vue";
     import ImgWrapper from "../components/ImgWrapper.vue";
+    import UzLable from "../components/uzLable.vue";
 
     export default {
         components: {
+            UzLable,
             ImgWrapper,
             AppBar,
             AutoListView
@@ -91,6 +100,7 @@
                 icon4: require('../assets/img/icon_detail_liked.svg'),
                 uid: 0,
                 question: {},
+                answer_list: [],
                 flag: null,
                 version: process.env.APP_VERSION,
                 localValue: this.$ls.get(Constants.LocalStorage.test, '-1')
@@ -299,13 +309,26 @@
                 display: flex;
                 flex-direction: row;
                 .icon {
-                    width: px2rem(16);
-                    height: px2rem(16);
+                    width: px2rem(15);
+                    height: px2rem(15);
                     margin-right: px2rem(5);
                 }
             }
             .liked {
                 color: $fontcolor_red;
+            }
+        }
+        .hotcomment {
+            background-color: #F6F6F6;
+            padding: px2rem(10) px2rem(5);
+            font-size: px2rem(12);
+            margin-bottom: px2rem(10);
+            .title {
+
+            }
+            .count {
+                margin-top: px2rem(5);
+                color: $fontcolor_blue;
             }
         }
     }

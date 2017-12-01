@@ -42,6 +42,7 @@
         name: Constants.PageName.qaIndex,
         data() {
             return {
+                url: '',
                 hot_words: [],
                 hot_words_index: 2,
                 flag: null,
