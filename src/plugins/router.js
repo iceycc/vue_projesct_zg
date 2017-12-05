@@ -39,6 +39,7 @@ addRouter(Constants.PageName.qaDetail, {title: '问答详情'});
 addRouter(Constants.PageName.qaAsk, {title: '提问'});
 addRouter(Constants.PageName.qaResponse, {title: '回复'});
 addRouter(Constants.PageName.qaComment, {title: '评论'});
+addRouter(Constants.PageName.qaSearch, {title: '搜索'});
 // addRouter(Constants.PageName.qaUser, {title: '我的'});
 //addRouter(Constants.PageName.qaIndex, {title: '问答'});
 

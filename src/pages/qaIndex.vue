@@ -1,11 +1,16 @@
 <template>
     <div class="content">
         <div class="hot_word_view">
-            <div v-for="item,index in hot_words">
-                <div class="hot_word" v-bind:class="{'hot_word_select' :hot_words_index === index}"
-                     @click="selectHotWord(index)">
-                    {{item.name}}
-                </div>
+            <div class="tags">
+                <template v-for="item,index in hot_words">
+                    <div class="hot_word" v-bind:class="{'hot_word_select' :hot_words_index === index}"
+                         @click="selectHotWord(index)">
+                        {{item.name}}
+                    </div>
+                </template>
+            </div>
+            <div @click="gotoSearch">
+                <img-wrapper :src="icon_search" ></img-wrapper>
             </div>
         </div>
         <auto-list-view :url="url" :flag="flag" :isNeedDivider="false" @onItemClick="onItemClick">
@@ -18,7 +23,9 @@
                     </div>
                     <div class="card-content">{{props.item.a_content}}</div>
                     <div class="footer-view">
-                        <div class="avatar">[用户回答头像]</div>
+                        <div class="avatar">
+                            <img-wrapper v-for="avatar in props.item.avatar" :src="avatar" classStyle="icon"></img-wrapper>
+                        </div>
                         <div class="pv">{{props.item.pv}}浏览</div>
                     </div>
                 </div>
@@ -33,9 +40,11 @@
 
     import ComponentTemplate from "../components/template";
     import AutoListView from "../components/AutoListView";
+    import ImgWrapper from "../components/ImgWrapper";
 
     export default {
         components: {
+            ImgWrapper,
             AutoListView
         },
         mixins: [mixins.base, mixins.request],
@@ -45,6 +54,7 @@
                 url: '',
                 hot_words: [],
                 hot_words_index: 2,
+                icon_search: require('../assets/img/icon_user_qu.svg'),
                 flag: null,
                 version: process.env.APP_VERSION,
                 localValue: this.$ls.get(Constants.LocalStorage.test, '-1')
@@ -77,6 +87,11 @@
             selectHotWord(index) {
                 this.hot_words_index = index;
                 this.getList();
+            },
+            gotoSearch() {
+                this.pushPage({
+                    name: Constants.PageName.qaSearch
+                });
             }
         }
     };
@@ -94,9 +109,17 @@
     .hot_word_view {
         display: flex;
         flex-direction: row;
+        align-items: center;
         overflow-y: auto;
         padding-right: px2rem(15);
         background-color: white;
+
+        .tags {
+            display: flex;
+            flex-direction: row;
+            flex-grow: 1;
+        }
+
         .hot_word {
             color: #333;
             padding: px2rem(15) 0;

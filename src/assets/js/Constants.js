@@ -40,6 +40,7 @@ export const PageName = {
     qaUser: 'qauser',
     qaDetail: 'qadetail',
     qaComment: 'qacomment',
+    qaSearch: 'qasearch',
     qaAsk: 'qaask',
     qaResponse: 'qaresponse',
 };
@@ -48,6 +49,7 @@ export const PageName = {
 export const LocalStorage = {
     test: 'test',
     uid: 'uid',
+    searchHistory: 'searchHistory',
 };
 
 

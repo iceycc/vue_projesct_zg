@@ -9,5 +9,6 @@ page[Constants.PageName.qaAsk] = resolve => require(['./qaAsk.vue'], resolve);
 page[Constants.PageName.qaUser] = resolve => require(['./qaUser.vue'], resolve);
 page[Constants.PageName.qaResponse] = resolve => require(['./qaResponse.vue'], resolve);
 page[Constants.PageName.qaComment] = resolve => require(['./qaComment.vue'], resolve);
+page[Constants.PageName.qaSearch] = resolve => require(['./qaSearch.vue'], resolve);
 
 export default page;

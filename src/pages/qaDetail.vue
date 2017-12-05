@@ -29,7 +29,7 @@
                     <div class="item" @click="onItemClick(index)">
                         <div class="card-re">
                             <div class="view1 horizontal-view">
-                                <img-wrapper classStyle="avatar"></img-wrapper>
+                                <img-wrapper :src="item.a_avatar" classStyle="avatar"></img-wrapper>
                                 <div class="vertical-view">
                                     <div class="name">{{item.aname}}
                                         <uz-lable :role="item.role"></uz-lable>

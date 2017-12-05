@@ -72,3 +72,12 @@ a {
 .mu-text-field-content {
   padding: px2rem(4) 0 !important;
 }
+
+.mu-text-field {
+  margin-bottom: 0;
+  min-height: 0;
+}
+
+.mu-flat-button {
+  min-width: px2rem(60);
+}

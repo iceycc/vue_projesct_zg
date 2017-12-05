@@ -11,11 +11,12 @@
 
         </div>
 
-        <div class="btn-submit" @click="submit">{{(type === 1 ? '支付¥' + parseFloat(qa.reward).toFixed(2) : '') + '进行提问'}}
+        <div class="btn-submit" @click="submit">{{(type === 1 ? '支付¥' + parseFloat(qa.reward).toFixed(2) : '') +
+            '进行提问'}}
         </div>
 
         <div class="mask" v-if="showMask">
-            <div class="tip1">您已选择 <span class="money">{{qa.reward}}</span>元问题赏金 </div>
+            <div class="tip1">您已选择 <span class="money">{{qa.reward}}</span>元问题赏金</div>
 
             <div class="slider" v-if="slider">
                 <vue-slider-component
@@ -140,6 +141,10 @@
                 }
 
                 this.doRequest(Constants.Method.ask_question, data, (result) => {
+                    this.qa.title = '';
+                    this.qa.content = '';
+                    this.qa.reward = 5;
+
                     EventBus.$emit(Constants.EventBus.showToast, {
                         message: '发布成功'
                     });

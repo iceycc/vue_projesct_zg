@@ -1,5 +1,5 @@
 <template>
-    <img :src="src" :class="classStyle" @click="click"/>
+    <img :src="src" :class="classStyle" class="default" @click="click"/>
 </template>
 
 <script>
@@ -39,4 +39,9 @@
 </script>
 
 <style lang="scss" scoped>
+    @import "../assets/scss/px2rem";
+    .default {
+        width: px2rem(25);
+        height: px2rem(25);
+    }
 </style>

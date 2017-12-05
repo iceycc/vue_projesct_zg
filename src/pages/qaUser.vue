@@ -27,7 +27,7 @@
                     <img-wrapper :src="icon_wallet" classStyle="icon"></img-wrapper>
                     <div class="name">我的钱包</div>
                     <div class="num">12</div>
-                    <div class="arrow"></div>
+                    <div class="arrow" style="visibility: hidden"></div>
                 </div>
             </div>
 
