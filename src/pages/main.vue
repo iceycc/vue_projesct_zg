@@ -144,15 +144,15 @@
 
     .btn_ask {
         position: fixed;
-        width: 50px;
+        width: 40px;
         bottom: 15px;
         left: 0;
         right: 0;
         margin-left: auto;
         margin-right: auto;
         .askicon {
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
         }
     }
 

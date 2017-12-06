@@ -49,9 +49,6 @@
             this.words.push('test1');
             this.words.push('test1');
             this.words.push('test1');
-            this.words.push('test1');
-            this.words.push('test1');
-            this.words.push('test1');
 
             let temp = this.$ls.get(Constants.LocalStorage.searchHistory);
             if (temp) {

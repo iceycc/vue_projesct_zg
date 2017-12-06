@@ -13,7 +13,7 @@
             <div class="view2">
                 <div>{{question.pv}}浏览</div>
                 <div>{{question.answer_num}}回答</div>
-                <div @click="collect">收藏</div>
+                <div @click="collect">{{question.is_collect ? '已' : ''}}收藏</div>
                 <div>{{question.qtime}}</div>
             </div>
             <div class="card-tags">
@@ -153,7 +153,16 @@
                 });
             },
             collect() {
-                console.log(collect);
+                if(question.is_collect){
+                   //提示已收藏
+                }else{
+                    let data = {
+                        q_id: this.$route.query.id,
+                    };
+                    this.doRequest(Constants.Method.favourites, data, (result) => {
+                        this.getData();
+                    });
+                }
             },
             accept(index) {
                 let data = {

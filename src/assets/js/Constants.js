@@ -29,6 +29,9 @@ export const Method = {
     like: BASE_URL + "f=question_list&v=like",
     //评论回答
     comment: BASE_URL + "f=question_list&v=comment",
+    //收藏问题
+    favourites: BASE_URL + "f=question_list&v=favourites",
+    profile: BASE_URL + "f=question_list&v=profile",
 };
 
 //用于管理router中页面名称

@@ -1,5 +1,5 @@
 <template>
-    <img :src="src" :class="classStyle" class="default" @click="click"/>
+    <img :src="src" :class="classStyle" class="default" @click="onClick"/>
 </template>
 
 <script>
@@ -31,8 +31,8 @@
             }
         },
         methods: {
-            click() {
-                this.$emit('click');
+            onClick() {
+                this.$emit('onClick');
             }
         }
     };

@@ -10,9 +10,15 @@
                 </template>
             </div>
             <div @click="gotoSearch">
-                <img-wrapper :src="icon_search" ></img-wrapper>
+                <img-wrapper :src="icon_search"></img-wrapper>
             </div>
         </div>
+        <swiper :options="swiperOption" ref="mySwiper" class="banner" v-if="hot_words_index === 0">
+            <swiper-slide v-for="item,index in banners" :key="index">
+                <img-wrapper :src="item.img_name" @onClick="openWeb(item.activity_url)"
+                             classStyle="banner_img"></img-wrapper>
+            </swiper-slide>
+        </swiper>
         <auto-list-view :url="url" :flag="flag" :isNeedDivider="false" @onItemClick="onItemClick">
             <template slot="item" slot-scope="props">
                 <div class="card">
@@ -24,7 +30,8 @@
                     <div class="card-content">{{props.item.a_content}}</div>
                     <div class="footer-view">
                         <div class="avatar">
-                            <img-wrapper v-for="avatar in props.item.avatar" :src="avatar" classStyle="icon"></img-wrapper>
+                            <img-wrapper v-for="avatar,index in props.item.avatar" :src="avatar" :key="index"
+                                         classStyle="icon"></img-wrapper>
                         </div>
                         <div class="pv">{{props.item.pv}}浏览</div>
                     </div>
@@ -51,9 +58,11 @@
         name: Constants.PageName.qaIndex,
         data() {
             return {
+                swiperOption: {},
                 url: '',
+                banners: [],
                 hot_words: [],
-                hot_words_index: 2,
+                hot_words_index: 0,
                 icon_search: require('../assets/img/icon_user_qu.svg'),
                 flag: null,
                 version: process.env.APP_VERSION,
@@ -63,7 +72,7 @@
         computed: {},
         created() {
             this.doRequest(Constants.Method.get_banner_list, null, (result) => {
-                console.log(result);
+                this.banners = result;
             });
 
             this.doRequest(Constants.Method.get_hot_words, null, (result) => {
@@ -92,6 +101,9 @@
                 this.pushPage({
                     name: Constants.PageName.qaSearch
                 });
+            },
+            openWeb(url) {
+                window.location.href = url;
             }
         }
     };
@@ -104,6 +116,15 @@
     .content {
         background-color: $divider;
         height: 100%;
+    }
+
+    .banner {
+        height: px2rem(100);
+        background-color: white;
+        .banner_img {
+            height: 100%;
+            width: 100%;
+        }
     }
 
     .hot_word_view {
@@ -183,4 +204,5 @@
             }
         }
     }
+
 </style>

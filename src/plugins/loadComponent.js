@@ -1,4 +1,4 @@
-import Vue from 'vue'
+import Vue from 'vue';
 
 /**
  *  通用组件引用,以免懒加载重复打包.
@@ -13,11 +13,17 @@ Vue.component(AutoListView.name, AutoListView);
 Vue.component(uzLable.name, uzLable);
 Vue.component(ImgWrapper.name, ImgWrapper);
 
-import MuseUI from 'muse-ui'
-import 'muse-ui/dist/muse-ui.css'
-import 'muse-ui/dist/theme-light.css'
-import 'material-design-icons/iconfont/material-icons.css'
+import MuseUI from 'muse-ui';
+import 'muse-ui/dist/muse-ui.css';
+import 'muse-ui/dist/theme-light.css';
+import 'material-design-icons/iconfont/material-icons.css';
+
 Vue.use(MuseUI);
+
+import VueAwesomeSwiper from 'vue-awesome-swiper';
+import 'swiper/dist/css/swiper.css';
+
+Vue.use(VueAwesomeSwiper);
 
 /**
  * 按需加载,引用的UI组件

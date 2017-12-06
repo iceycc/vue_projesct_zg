@@ -12,22 +12,22 @@
                 <div class="item">
                     <img-wrapper :src="icon_fav" classStyle="icon"></img-wrapper>
                     <div class="name">我的收藏</div>
-                    <div class="num">12</div>
+                    <div class="num">{{data.collect_num}}</div>
                     <div class="arrow"></div>
                 </div>
                 <div class="divider"></div>
                 <div class="item">
                     <img-wrapper :src="icon_qu" classStyle="icon"></img-wrapper>
                     <div class="name">我的问题</div>
-                    <div class="num">12</div>
+                    <div class="num">{{data.my_question_num}}</div>
                     <div class="arrow"></div>
                 </div>
                 <div class="divider"></div>
                 <div class="item">
                     <img-wrapper :src="icon_wallet" classStyle="icon"></img-wrapper>
-                    <div class="name">我的钱包</div>
-                    <div class="num">12</div>
-                    <div class="arrow" style="visibility: hidden"></div>
+                    <div class="name">我的钱包 <span class="desc">赏金都在这里哦~</span> </div>
+                    <div class="num" style="visibility: hidden"></div>
+                    <div class="arrow" ></div>
                 </div>
             </div>
 
@@ -56,10 +56,14 @@
             return {
                 icon_wallet: require('../assets/img/icon_user_wallet.svg'),
                 icon_qu: require('../assets/img/icon_user_qu.svg'),
-                icon_fav: require('../assets/img/icon_user_fav.svg')
+                icon_fav: require('../assets/img/icon_user_fav.svg'),
+                data: {}
             };
         },
         created() {
+            this.doRequest(Constants.Method.profile, null, (result) => {
+                this.data = result;
+            });
         },
         activated() {
         },
@@ -121,6 +125,11 @@
             .name {
                 font-size: px2rem(14);
                 flex-grow: 1;
+            }
+            .desc {
+                font-size: px2rem(12);
+                color: #ACACAC;
+                margin-left: px2rem(10);
             }
             .num {
                 font-weight: bold;
