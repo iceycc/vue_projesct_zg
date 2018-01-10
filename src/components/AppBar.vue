@@ -2,7 +2,7 @@
     <mu-appbar :title="title" v-if="showAppBar">
         <mu-icon-button :icon="icon" slot="left" @click="goBack"></mu-icon-button>
         <template slot="right" v-if="this.mode !== 'test'">
-            <mu-icon-button v-if="showSearch" icon="search" slot="right" @click="goSearch"></mu-icon-button>
+            <!--<mu-icon-button v-if="showSearch" icon="search" slot="right" @click="goSearch"></mu-icon-button>-->
             <slot name="right"></slot>
         </template>
     </mu-appbar>

@@ -16,6 +16,12 @@ export default {
         },
         doRequestGet(url, param, success, error, finish) {
             request.get(url, param, success, error, finish);
+        },
+        initWX(){
+            let params = {
+                url : 'url'
+            }
+            this.doRequest('initwx',)
         }
     }
 };

@@ -81,7 +81,7 @@
         },
         computed: {},
         created() {
-            this.handleChange(0);
+            //this.handleChange(0);
         },
         mounted() {
             this.style = {

@@ -46,16 +46,17 @@
             };
         },
         created() {
-            this.words.push('test1');
-            this.words.push('test1');
-            this.words.push('test1');
-
             let temp = this.$ls.get(Constants.LocalStorage.searchHistory);
             if (temp) {
                 this.searchwords = temp.split(',');
             } else {
                 this.searchwords = [];
             }
+
+            this.doRequest(Constants.Method.hot_search, null, (result) => {
+                this.words = result;
+            });
+
         },
         activated() {
         },

@@ -40,6 +40,8 @@ addRouter(Constants.PageName.qaAsk, {title: '提问'});
 addRouter(Constants.PageName.qaResponse, {title: '回复'});
 addRouter(Constants.PageName.qaComment, {title: '评论'});
 addRouter(Constants.PageName.qaSearch, {title: '搜索'});
+addRouter(Constants.PageName.qaList, {keepAlive: false, title: '列表'});
+addRouter(Constants.PageName.qaWalletDetail, {keepAlive: false, title: '钱包明细'});
 // addRouter(Constants.PageName.qaUser, {title: '我的'});
 //addRouter(Constants.PageName.qaIndex, {title: '问答'});
 
