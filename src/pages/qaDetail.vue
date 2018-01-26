@@ -153,9 +153,9 @@
                 });
             },
             collect() {
-                if(question.is_collect){
-                   //提示已收藏
-                }else{
+                if (question.is_collect) {
+                    //提示已收藏
+                } else {
                     let data = {
                         q_id: this.$route.query.id,
                     };

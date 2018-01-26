@@ -23,13 +23,14 @@ let routes = [{
         {
             path: Constants.PageName.qaIndex,
             name: Constants.PageName.qaIndex,
-            component: Pages[Constants.PageName.qaIndex]
+            component: Pages[Constants.PageName.qaIndex],
+            meta: {keepAlive: true, title: '问答'},
         },
         {
             path: Constants.PageName.qaUser,
             name: Constants.PageName.qaUser,
             component: Pages[Constants.PageName.qaUser],
-            meta: {title: '我的'}
+            meta: {keepAlive: true, title: '问答'},
         }
     ]
 }];
@@ -42,10 +43,12 @@ addRouter(Constants.PageName.qaComment, {title: '评论'});
 addRouter(Constants.PageName.qaSearch, {title: '搜索'});
 addRouter(Constants.PageName.qaList, {keepAlive: false, title: '列表'});
 addRouter(Constants.PageName.qaWalletDetail, {keepAlive: false, title: '钱包明细'});
+addRouter(Constants.PageName.qaLogin, {keepAlive: false, title: '登录'});
 // addRouter(Constants.PageName.qaUser, {title: '我的'});
 //addRouter(Constants.PageName.qaIndex, {title: '问答'});
 
 let router = new Router({
+    //mode: 'history',
     routes
 });
 

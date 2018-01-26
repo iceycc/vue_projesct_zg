@@ -48,7 +48,6 @@
         computed: {},
         created() {
             let type = this.$route.query.type;
-            console.log(type);
             switch (parseInt(type)) {
                 case 1:
                     this.title = '我的收藏';
@@ -62,7 +61,6 @@
         },
         methods: {
             getList(type) {
-                console.log(type);
                 this.url = Constants.Method.get_homepage + '&type=' + type;
                 this.flag = this.url;
             },
@@ -85,6 +83,8 @@
     .content {
         background-color: $divider;
         height: 100%;
+        display: flex;
+        flex-direction: column;
     }
 
     .card {

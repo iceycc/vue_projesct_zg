@@ -12,5 +12,6 @@ page[Constants.PageName.qaComment] = resolve => require(['./qaComment.vue'], res
 page[Constants.PageName.qaSearch] = resolve => require(['./qaSearch.vue'], resolve);
 page[Constants.PageName.qaList] = resolve => require(['./qaList.vue'], resolve);
 page[Constants.PageName.qaWalletDetail] = resolve => require(['./qaWalletDetail.vue'], resolve);
+page[Constants.PageName.qaLogin] = resolve => require(['./qaLogin.vue'], resolve);
 
 export default page;

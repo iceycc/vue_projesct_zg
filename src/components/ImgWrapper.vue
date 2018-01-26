@@ -1,18 +1,16 @@
 <template>
-    <img :src="src" :class="classStyle" class="default" @click="onClick"/>
+    <img :src="src ? src : defaultImg" :class="classStyle" class="default" @click="onClick" @error="error"/>
 </template>
 
 <script>
-    const img_loading = require('../assets/img/logo.png');
+    import defaultImg from '../assets/img/icon_slider.png';
+    import error from '../assets/img/icon_user_qu.svg';
 
     export default {
         name: 'ImgWrapper',
         data() {
             return {
-                imgObj: {
-                    src: this.src,
-                    loading: img_loading
-                },
+                defaultImg: defaultImg
             };
         },
         props: {
@@ -26,13 +24,13 @@
             },
         },
         created() {
-            if (!this.src) {
-                this.src = 'empty';
-            }
         },
         methods: {
             onClick() {
                 this.$emit('onClick');
+            },
+            error() {
+                this.src = error;
             }
         }
     };
@@ -40,6 +38,7 @@
 
 <style lang="scss" scoped>
     @import "../assets/scss/px2rem";
+
     .default {
         width: px2rem(25);
         height: px2rem(25);

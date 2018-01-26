@@ -50,6 +50,8 @@ class Request {
         //处理基础请求参数
         param = Request.handleParam(param);
         let request;
+        this.getOption().params = null ;
+        this.getOption().data = null ;
         switch (this.getOption().method) {
             case 'get':
                 this.getOption().params = param;
@@ -63,7 +65,6 @@ class Request {
             success && success(response.data, response);
             finish && finish();
         }).catch((error) => {
-            console.log('request_error:', error);
             if (error && 'data' in error) { //接口错误
                 console.error('接口异常', error.data);
             } else {

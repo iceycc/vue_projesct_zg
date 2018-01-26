@@ -67,7 +67,7 @@
                     message: '',
                     Timer: null
                 },
-                bottomNav: '1',
+                bottomNav: -1,
                 icon1: require('../assets/img/icon_ask_free.png'),
                 icon2: require('../assets/img/icon_ask.png'),
                 tab0: [require('../assets/img/icon_tab_index.svg'), require('../assets/img/icon_tab_index_ed.svg')],
@@ -81,7 +81,10 @@
         },
         computed: {},
         created() {
-            //this.handleChange(0);
+            console.log(this.bottomNav);
+            if (this.bottomNav === -1) {
+                this.handleChange(0);
+            }
         },
         mounted() {
             this.style = {

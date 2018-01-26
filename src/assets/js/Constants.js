@@ -2,7 +2,7 @@
  * Created by zhangweiwei on 16/9/7.
  */
 
-const BASE_URL = 'http://mtest.uz.com/index.php?m=wenda&';
+const BASE_URL = 'http://m.uzhuang.com/index.php?m=wenda&';
 
 
 //用于管理项目请求地址
@@ -34,11 +34,14 @@ export const Method = {
     profile: BASE_URL + "f=question_list&v=profile",
     //热门搜索
     hot_search: BASE_URL + "f=question_list&v=hot_search",
-    //钱包金额
+    //我的钱包
     wallet: BASE_URL + "f=question_list&v=wallet",
     //钱包明细
     wallet_detail: BASE_URL + "f=question_list&v=wallet_detail",
-
+    wxpay: 'http://m.uzhuang.com/wxpay/pay/Weixin/H5/wxpay.php',
+    //wxpay: 'http://m.uzhuang.com/wxpay/pay/Weixin/h5_wx/example/jsapi.php',
+    //wx_jssdk 配置信息
+    get_wx_config_info: BASE_URL + "f=question_list&v=get_wx_config_info",
 };
 
 //用于管理router中页面名称
@@ -48,6 +51,7 @@ export const PageName = {
     main: 'main',
     qaIndex: 'qaindex',
     qaList: 'qalist',
+    qaLogin: 'qalogin',
     qaWalletDetail: 'qawalletdetail',
     qaUser: 'qauser',
     qaDetail: 'qadetail',
