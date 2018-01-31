@@ -10,12 +10,12 @@
                 </template>
             </div>
             <div @click="gotoSearch">
-                <img-wrapper :src="icon_search"></img-wrapper>
+                <img-wrapper :url="icon_search"></img-wrapper>
             </div>
         </div>
         <swiper :options="swiperOption" ref="mySwiper" class="banner" v-if="hot_words_index === 0">
             <swiper-slide v-for="item,index in banners" :key="index">
-                <img-wrapper :src="item.img_name" @onClick="openWeb(item.activity_url)"
+                <img-wrapper :url="item.img_name" @onClick="openWeb(item.activity_url)"
                              classStyle="banner_img"></img-wrapper>
             </swiper-slide>
         </swiper>
@@ -30,7 +30,7 @@
                     <div class="card-content">{{props.item.a_content}}</div>
                     <div class="footer-view">
                         <div class="avatar">
-                            <img-wrapper v-for="avatar,index in props.item.avatar" :src="avatar" :key="index"
+                            <img-wrapper v-for="avatar,index in props.item.avatar" :url="avatar" :key="index"
                                          classStyle="icon"></img-wrapper>
                         </div>
                         <div class="pv">{{props.item.pv}}浏览</div>

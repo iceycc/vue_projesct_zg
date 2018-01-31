@@ -4,6 +4,7 @@
  */
 
 import axios from '../assets/js/request/axiosInstance';
+import {Constants, EventBus} from '../assets/js/index';
 
 class Request {
 
@@ -38,7 +39,7 @@ class Request {
         return this._request(url, 'post', param, success, fail, finish);
     }
 
-    get (url, param, success, fail, finish) {
+    get(url, param, success, fail, finish) {
         return this._request(url, 'get', param, success, fail, finish);
     }
 
@@ -50,8 +51,8 @@ class Request {
         //处理基础请求参数
         param = Request.handleParam(param);
         let request;
-        this.getOption().params = null ;
-        this.getOption().data = null ;
+        this.getOption().params = null;
+        this.getOption().data = null;
         switch (this.getOption().method) {
             case 'get':
                 this.getOption().params = param;
@@ -65,6 +66,9 @@ class Request {
             success && success(response.data, response);
             finish && finish();
         }).catch((error) => {
+            EventBus.$emit(Constants.EventBus.showToast, {
+                message: error.data
+            });
             if (error && 'data' in error) { //接口错误
                 console.error('接口异常', error.data);
             } else {

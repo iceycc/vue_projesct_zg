@@ -1,6 +1,10 @@
 <template>
     <div class="page">
-        <div class="btn-submit" @click="submit">微信登录</div>
+        <div class="btn-view">
+            <div class="btn-submit" @click="submit"><img src="../assets/img/icon_login_wechat.svg" alt=""> <span>微信登录</span></div>
+            <div class="btn-desc">同意诸葛装修<a href="">用户协议</a></div>
+        </div>
+
     </div>
 </template>
 
@@ -18,12 +22,7 @@
         mixins: [mixins.base, mixins.request],
         name: Constants.PageName.qaLogin,
         data() {
-            return {
-                url: Constants.Method.test,
-                title: '关于',
-                version: process.env.APP_VERSION,
-                localValue: this.$ls.get(Constants.LocalStorage.test, '-1')
-            };
+            return {};
         },
         computed: {},
         created() {
@@ -32,7 +31,7 @@
             submit() {
                 let url = 'https://open.weixin.qq.com/connect/oauth2/authorize?';
                 let appid = 'appid=wx7a6e11836803bbbb';
-                let redirect_uri = '&redirect_uri=http%3A%2F%2Fm.uzhuang.com%2Fwxpay%2Fpay%2FWeixin%2Fh5_wx%2Fexample%2Findex.html%23%2Fqauser';
+                let redirect_uri = '&redirect_uri=http%3A%2F%2Fm.uzhuang.com%2Fwxpay%2Fwx_login%2Fwd_wx_login.php';
                 let response_type = '&response_type=code';
                 let scope = '&scope=snsapi_userinfo';
                 let wechat_redirect = '#wechat_redirect';
@@ -49,14 +48,40 @@
 <style lang="scss" scoped>
     @import "../assets/scss/px2rem";
 
-    .btn-submit {
+    .page {
+        background-color: #1bd4bb;
+    }
+
+    .btn-view {
+        margin-top: px2rem(500);
         text-align: center;
-        color: white;
-        background-image: $bgImage;
+    }
+
+    .btn-submit {
+        color: #1aad19;
+        background-color: white;
+        border: px2rem(1) #1aad19 solid;
         border-radius: px2rem(3);
-        margin: px2rem(40) px2rem(20) 0 px2rem(20);
+        margin: 0 px2rem(50) 0 px2rem(50);
         padding: px2rem(10);
         font-size: px2rem(16);
         font-weight: bold;
+        display: flex;
+        justify-content: center;
+        & img {
+            width: px2rem(20);
+            height: px2rem(20);
+            margin-right: px2rem(20);
+
+        }
+    }
+
+    .btn-desc {
+        padding: px2rem(10);
+        color: white;
+        & a {
+            color: white;
+            text-decoration: underline;
+        }
     }
 </style>

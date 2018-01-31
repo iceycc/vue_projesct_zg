@@ -1,5 +1,5 @@
 <template>
-    <img :src="src ? src : defaultImg" :class="classStyle" class="default" @click="onClick" @error="error"/>
+    <img :src="url ? url : defaultImg" :class="classStyle" class="default" @click="onClick" @error="error"/>
 </template>
 
 <script>
@@ -14,7 +14,7 @@
             };
         },
         props: {
-            src: {
+            url: {
                 type: String,
                 default: ''
             },

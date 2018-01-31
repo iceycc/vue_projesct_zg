@@ -4,27 +4,27 @@
 
         <div>
             <div class="user-view">
-                <img-wrapper src="https://wx1.sinaimg.cn/mw1024/712706afgy1fk4cvufqwsj20nx0zw47h.jpg"
+                <img-wrapper url="https://wx1.sinaimg.cn/mw1024/712706afgy1fk4cvufqwsj20nx0zw47h.jpg"
                              classStyle="avatar"></img-wrapper>
                 <div class="username">asdasda</div>
             </div>
             <div class="menu">
                 <div class="item" @click="gotoList(1)">
-                    <img-wrapper :src="icon_fav" classStyle="icon"></img-wrapper>
+                    <img-wrapper :url="icon_fav" classStyle="icon"></img-wrapper>
                     <div class="name">我的收藏</div>
                     <div class="num">{{data.collect_num}}</div>
                     <div class="arrow"></div>
                 </div>
                 <div class="divider"></div>
                 <div class="item" @click="gotoList(2)">
-                    <img-wrapper :src="icon_qu" classStyle="icon"></img-wrapper>
+                    <img-wrapper :url="icon_qu" classStyle="icon"></img-wrapper>
                     <div class="name">我的问题</div>
                     <div class="num">{{data.my_question_num}}</div>
                     <div class="arrow"></div>
                 </div>
                 <div class="divider"></div>
                 <div class="item" @click="gotoWallet">
-                    <img-wrapper :src="icon_wallet" classStyle="icon"></img-wrapper>
+                    <img-wrapper :url="icon_wallet" classStyle="icon"></img-wrapper>
                     <div class="name">我的钱包 <span class="desc">赏金都在这里哦~</span></div>
                     <div class="num" style="visibility: hidden"></div>
                     <div class="arrow"></div>

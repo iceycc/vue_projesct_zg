@@ -72,6 +72,7 @@ export const LocalStorage = {
 //用于管理EventBus中的事件key
 export const EventBus = {
     showToast: 'showToast',
+    login: 'login',
     toggleDrawer: 'toggleDrawer',
     toggleMusic: 'toggleMusic',
     userLogin: 'userLogin',

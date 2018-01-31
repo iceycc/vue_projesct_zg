@@ -12,7 +12,7 @@
                     <div class="card-content">{{props.item.a_content}}</div>
                     <div class="footer-view">
                         <div class="avatar">
-                            <img-wrapper v-for="avatar,index in props.item.avatar" :src="avatar" :key="index"
+                            <img-wrapper v-for="avatar,index in props.item.avatar" :url="avatar" :key="index"
                                          classStyle="icon"></img-wrapper>
                         </div>
                         <div class="pv">{{props.item.pv}}浏览</div>
@@ -47,6 +47,13 @@
         },
         computed: {},
         created() {
+            let key_word = this.$route.query.key_word;
+            if (key_word) {
+                this.url = Constants.Method.get_homepage + '&key_word=' + key_word;
+                this.flag = this.url;
+                return;
+            }
+
             let type = this.$route.query.type;
             switch (parseInt(type)) {
                 case 1:

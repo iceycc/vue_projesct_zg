@@ -64,7 +64,7 @@ let webpackConfig = {
     }
 };
 
-if (config.dll.enable && fs.existsSync(resolve('static/dll/core-mainfest.json'))) {
+/*if (config.dll.enable && fs.existsSync(resolve('static/dll/core-mainfest.json'))) {
     console.log('build with DllReferencePlugin');
     webpackConfig.plugins = [];
     webpackConfig.plugins.push(new webpack.DllReferencePlugin({
@@ -73,6 +73,6 @@ if (config.dll.enable && fs.existsSync(resolve('static/dll/core-mainfest.json'))
     }));
 } else {
     console.log('build without DllReferencePlugin');
-}
+}*/
 
 module.exports = webpackConfig;

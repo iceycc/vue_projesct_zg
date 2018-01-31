@@ -10,7 +10,7 @@
         <div class="search-hotword">
             <div class="title">热门搜索</div>
             <div class="words">
-                <div v-for="item in words">{{item}}</div>
+                <div v-for="item in words" @click="searchWord(item,true)">{{item}}</div>
             </div>
         </div>
 
@@ -18,7 +18,7 @@
             <div class="title">搜索历史</div>
             <div class="list">
                 <div v-for="item,index in searchwords">
-                    <div class="name">{{item}}</div>
+                    <div class="name" @click="searchWord(item,false)">{{item}}</div>
                     <div @click="remove(index)">X</div>
                 </div>
             </div>
@@ -61,42 +61,38 @@
         activated() {
         },
         methods: {
+            searchWord(word, issave) {
+                if (issave) {
+                    if (this.searchwords.indexOf(word) !== -1) {
+                        this.searchwords.splice(this.searchwords.indexOf(word), 1);
+                    }
+                    this.searchwords.unshift(word);
+                    this.$ls.set(Constants.LocalStorage.searchHistory, this.searchwords);
+                }
+
+                this.pushPage({
+                    name: Constants.PageName.qaList,
+                    query: {
+                        key_word: word
+                    }
+                });
+            },
             doSearch() {
                 this.searchwords.unshift(this.search);
                 this.$ls.set(Constants.LocalStorage.searchHistory, this.searchwords);
 
+                this.pushPage({
+                    name: Constants.PageName.qaList,
+                    query: {
+                        key_word: this.search
+                    }
+                });
                 this.search = '';
             },
             remove(index) {
                 this.searchwords.splice(index, 1);
                 this.$ls.set(Constants.LocalStorage.searchHistory, this.searchwords);
             },
-            toggleMask() {
-                this.showMask = !this.showMask;
-            },
-            submit() {
-                if (!this.qa.content) {
-                    EventBus.$emit(Constants.EventBus.showToast, {
-                        message: '内容不能为空'
-                    });
-                    return;
-                }
-
-                let data = {
-                    q_id: this.$route.query.id,
-                    content: this.qa.content
-                };
-
-                this.doRequest(Constants.Method.answer, data, (result) => {
-                    this.qa.content = '';
-                    EventBus.$emit(Constants.EventBus.showToast, {
-                        message: '发布成功'
-                    });
-                    setTimeout(() => {
-                        this.$router.go(-1);
-                    }, 2000);
-                });
-            }
         }
     };
 </script>

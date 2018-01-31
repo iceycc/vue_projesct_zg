@@ -8,19 +8,19 @@
         </div>
         <mu-bottom-nav :value="bottomNav" @change="handleChange" ref="bottom">
             <mu-bottom-nav-item value="0" title="问答">
-                <img-wrapper :src="bottomNav == 0 ? tab0[1] : tab0[0]" class="tabicon"></img-wrapper>
+                <img-wrapper :url="bottomNav == 0 ? tab0[1] : tab0[0]" class="tabicon"></img-wrapper>
             </mu-bottom-nav-item>
             <mu-bottom-nav-item value="1" title="课堂">
-                <img-wrapper :src="bottomNav == 1 ? tab1[1] : tab1[0]" class="tabicon"></img-wrapper>
+                <img-wrapper :url="bottomNav == 1 ? tab1[1] : tab1[0]" class="tabicon"></img-wrapper>
             </mu-bottom-nav-item>
             <mu-bottom-nav-item value="2" title="提问">
-                <img-wrapper :src="bottomNav == 2 ? tab2[1] : tab2[0]" class="tabicon"></img-wrapper>
+                <img-wrapper :url="bottomNav == 2 ? tab2[1] : tab2[0]" class="tabicon"></img-wrapper>
             </mu-bottom-nav-item>
             <mu-bottom-nav-item value="3" title="通知">
-                <img-wrapper :src="bottomNav == 3 ? tab3[1] : tab3[0]" class="tabicon"></img-wrapper>
+                <img-wrapper :url="bottomNav == 3 ? tab3[1] : tab3[0]" class="tabicon"></img-wrapper>
             </mu-bottom-nav-item>
             <mu-bottom-nav-item value="4" title="我的">
-                <img-wrapper :src="bottomNav == 4 ? tab4[1] : tab4[0]" class="tabicon"></img-wrapper>
+                <img-wrapper :url="bottomNav == 4 ? tab4[1] : tab4[0]" class="tabicon"></img-wrapper>
             </mu-bottom-nav-item>
         </mu-bottom-nav>
         <div class="mask" v-if="showAsk">
@@ -30,7 +30,7 @@
                         <div>更快更多更优质回答</div>
                         <div>查看更多<a href="">专属权利</a></div>
                     </div>
-                    <img-wrapper :src="icon1" classStyle="icon"></img-wrapper>
+                    <img-wrapper :url="icon1" classStyle="icon"></img-wrapper>
                     <div class="name">免费提问</div>
                 </div>
                 <div class="icon-view" @click="gotoAsk(1)">
@@ -38,14 +38,14 @@
                         <div>更快更多更优质回答</div>
                         <div>查看更多<a href="" @click.self="webpage">专属权利</a></div>
                     </div>
-                    <img-wrapper :src="icon2" classStyle="icon"></img-wrapper>
+                    <img-wrapper :url="icon2" classStyle="icon"></img-wrapper>
                     <div class="name">悬赏提问</div>
                 </div>
             </div>
             <div class="close" @click="toggleAsk">X</div>
         </div>
         <div class="btn_ask" @click="handleChange(2)">
-            <img-wrapper :src="tab2[1]" class="askicon"></img-wrapper>
+            <img-wrapper :url="tab2[1]" class="askicon"></img-wrapper>
         </div>
     </div>
 </template>
@@ -81,7 +81,6 @@
         },
         computed: {},
         created() {
-            console.log(this.bottomNav);
             if (this.bottomNav === -1) {
                 this.handleChange(0);
             }

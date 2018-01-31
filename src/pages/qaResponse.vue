@@ -4,6 +4,7 @@
         <div class="form">
             <mu-text-field fullWidth :underlineShow="false" v-model="qa.content" hintText="回答问题将获得积分奖励" fullWidth
                            multiLine :rows="6"/>
+            <upload-view @upload="chooseImage" @remove="remove" :localIds="localIds"></upload-view>
         </div>
 
         <div class="btn-submit" @click="submit">发布
@@ -15,11 +16,13 @@
 <script>
     import {Constants, EventBus, mixins} from '../assets/js/index';
 
+    import UploadView from "../components/UploadView";
     import AppBar from "../components/AppBar.vue";
 
     export default {
         components: {
             AppBar,
+            UploadView
         },
         mixins: [mixins.base, mixins.request],
         name: Constants.PageName.qaIndex,
@@ -28,10 +31,15 @@
                 qa: {
                     content: '',
                 },
+                localIds: [],
+                localIdIndex: 0,
+                serverIds: [],
             };
         },
         created() {
-
+            this.initWX(() => {
+                console.log('wx success');
+            });
         },
         activated() {
         },
@@ -61,6 +69,42 @@
                         this.$router.go(-1);
                     }, 2000);
                 });
+            },
+            chooseImage() {
+                let that = this;
+                wx.chooseImage({
+                    count: 1, // 默认9
+                    sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+                    sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+                    success: function (res) {
+                        that.localIds = that.localIds.concat(res.localIds);
+                    }
+                });
+            },
+            remove(localId) {
+                this.localIds.splice(this.localIds.indexOf(localId), 1);
+            },
+            upload(callback) {
+                if (this.localIds && this.localIds.length > 0) {
+                    if (this.localIds.length === this.localIdIndex) {
+                        callback && callback();
+                        console.log(this.serverIds);
+                        this.localIdIndex = 0;
+                        return;
+                    }
+
+                    let that = this;
+                    wx.uploadImage({
+                        localId: this.localIds[that.localIdIndex++], // 需要上传的图片的本地ID，由chooseImage接口获得
+                        isShowProgressTips: 1, // 默认为1，显示进度提示
+                        success: function (res) {
+                            that.serverIds.push(res.serverId);
+                            that.upload(callback);
+                        }
+                    });
+                } else {
+                    callback && callback();
+                }
             }
         }
     };

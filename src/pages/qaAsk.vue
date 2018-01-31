@@ -71,8 +71,8 @@
             return {
                 type: 0,//1付费
                 qa: {
-                    title: 't',
-                    content: 't',
+                    title: '',
+                    content: '',
                     reward: 5,
                 },
                 localIds: [],

@@ -3,7 +3,7 @@
         <app-bar :title="title"></app-bar>
         <div class="card shadow" v-if="answer">
             <div class="view1 horizontal-view">
-                <img-wrapper :src="answer.a_avatar" classStyle="avatar"></img-wrapper>
+                <img-wrapper :url="answer.a_avatar" classStyle="avatar"></img-wrapper>
                 <div class="vertical-view">
                     <div class="name">{{answer.username}}
                         <uz-lable :role="answer.role"></uz-lable>
@@ -13,7 +13,7 @@
                 <div class="horizontal-view">
                     <div class="like" v-bind:class="answer.liked == 1 ? 'liked' : ''"
                          @click.stop="like()">
-                        <img-wrapper :src="answer.liked == 1 ? icon4 : icon3 "
+                        <img-wrapper :url="answer.liked == 1 ? icon4 : icon3 "
                                      classStyle="icon"></img-wrapper>
                         {{answer.like_num}}
                     </div>
@@ -38,7 +38,7 @@
                                 <div class="horizontal-view">
                                     <div class="like" v-bind:class="item.liked == 1 ? 'liked' : ''"
                                          @click.stop="like(item)">
-                                        <img-wrapper :src="item.liked == 1 ? icon4 : icon3 "
+                                        <img-wrapper :url="item.liked == 1 ? icon4 : icon3 "
                                                      classStyle="icon"></img-wrapper>
                                         {{item.like_num}}
                                     </div>
@@ -118,6 +118,12 @@
 
                 this.doRequest(Constants.Method.get_comment_list, data, (result) => {
                     this.comments = result;
+
+                    if (this.comments && this.comments.length > 0) {
+                        this.title = `${this.comments.length}条回复`;
+                    } else {
+                        this.title = `暂无回复`;
+                    }
                 });
             },
             getRoleClass(role) {

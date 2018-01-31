@@ -3,7 +3,7 @@
         <app-bar :title="title"></app-bar>
         <div class="card shadow" v-if="question">
             <div class="view1">
-                <img-wrapper :src="question.avatar" classStyle="avatar"></img-wrapper>
+                <img-wrapper :url="question.avatar" classStyle="avatar"></img-wrapper>
                 <div class="username">{{question.uname}}</div>
                 <span class="reward shadow"
                       v-if="parseFloat(question.q_reward) > 0"> ¥{{question.q_reward}}</span>
@@ -29,14 +29,14 @@
                     <div class="item" @click="onItemClick(index)">
                         <div class="card-re">
                             <div class="view1 horizontal-view">
-                                <img-wrapper :src="item.a_avatar" classStyle="avatar"></img-wrapper>
+                                <img-wrapper :url="item.a_avatar" classStyle="avatar"></img-wrapper>
                                 <div class="vertical-view">
                                     <div class="name">{{item.aname}}
                                         <uz-lable :role="item.role"></uz-lable>
                                     </div>
                                     <div class="date">{{item.atime}}</div>
                                 </div>
-                                <div class="accept" v-if="isOwner" @click.stop="accept(index)">采纳</div>
+                                <div class="accept" v-if="isOwner && question.q_adoption == 0" @click.stop="accept(index)">采纳</div>
                             </div>
                             <div class="context">{{item.content}}</div>
                             <div v-if="item.hot_comment" class="hotcomment">
@@ -49,7 +49,7 @@
                             <div class="view2 horizontal-view">
                                 <div class="like" v-bind:class="item.liked == 1 ? 'liked' : ''"
                                      @click.stop="like(index)">
-                                    <img-wrapper :src="item.liked == 1 ? icon4 : icon3 "
+                                    <img-wrapper :url="item.liked == 1 ? icon4 : icon3 "
                                                  classStyle="icon"></img-wrapper>
                                     {{item.like_num}}
                                 </div>
@@ -62,11 +62,11 @@
 
         <div class="footer horizontal-view">
             <div @click="gotoResponse">
-                <img-wrapper :src="icon1" classStyle="icon"></img-wrapper>
+                <img-wrapper :url="icon1" classStyle="icon"></img-wrapper>
                 去回答
             </div>
             <div @click="gotoAsk">
-                <img-wrapper :src="icon2" classStyle="icon"></img-wrapper>
+                <img-wrapper :url="icon2" classStyle="icon"></img-wrapper>
                 去提问
             </div>
         </div>
@@ -153,8 +153,10 @@
                 });
             },
             collect() {
-                if (question.is_collect) {
-                    //提示已收藏
+                if (this.question.is_collect) {
+                    EventBus.$emit(Constants.EventBus.showToast, {
+                        message: '已收藏'
+                    });
                 } else {
                     let data = {
                         q_id: this.$route.query.id,
@@ -171,6 +173,9 @@
                 };
 
                 this.doRequest(Constants.Method.adoption, data, (result) => {
+                    EventBus.$emit(Constants.EventBus.showToast, {
+                        message: '已采纳'
+                    });
                     this.getData();
                 });
             },
