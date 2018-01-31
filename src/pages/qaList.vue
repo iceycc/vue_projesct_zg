@@ -49,6 +49,7 @@
         created() {
             let key_word = this.$route.query.key_word;
             if (key_word) {
+                this.title=`搜索'${key_word}'`;
                 this.url = Constants.Method.get_homepage + '&key_word=' + key_word;
                 this.flag = this.url;
                 return;

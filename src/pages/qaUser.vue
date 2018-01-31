@@ -4,9 +4,9 @@
 
         <div>
             <div class="user-view">
-                <img-wrapper url="https://wx1.sinaimg.cn/mw1024/712706afgy1fk4cvufqwsj20nx0zw47h.jpg"
+                <img-wrapper :url="data.avatar"
                              classStyle="avatar"></img-wrapper>
-                <div class="username">asdasda</div>
+                <div class="username">{{data.username}}</div>
             </div>
             <div class="menu">
                 <div class="item" @click="gotoList(1)">
@@ -78,7 +78,7 @@
             },
             gotoWallet() {
                 this.pushPage({
-                    name: Constants.PageName.qaWalletDetail
+                    name: Constants.PageName.qaWallet
                 });
             }
         }
