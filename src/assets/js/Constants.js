@@ -67,6 +67,7 @@ export const PageName = {
 export const LocalStorage = {
     test: 'test',
     uid: 'uid',
+    user: 'user',
     searchHistory: 'searchHistory',
 };
 

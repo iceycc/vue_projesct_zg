@@ -43,4 +43,9 @@
         width: px2rem(25);
         height: px2rem(25);
     }
+    .avatar {
+        border-radius: 50%;
+        margin-right: px2rem(2);
+    }
+
 </style>

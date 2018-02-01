@@ -31,7 +31,7 @@
                     <div class="footer-view">
                         <div class="avatar">
                             <img-wrapper v-for="avatar,index in props.item.avatar" :url="avatar" :key="index"
-                                         classStyle="icon"></img-wrapper>
+                                         classStyle="avatar"></img-wrapper>
                         </div>
                         <div class="pv">{{props.item.pv}}浏览</div>
                     </div>

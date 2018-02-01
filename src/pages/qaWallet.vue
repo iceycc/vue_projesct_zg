@@ -3,7 +3,7 @@
         <app-bar :title="title"></app-bar>
         <div class="money-view">
             <div><span class="money">{{result.money}}</span>元</div>
-            <div class="desc">金额超过10元可提现,今日还可体现1次</div>
+            <div class="desc">{{result.message}}</div>
             <div class="link" @click="gotoWalletDetail">钱包明细</div>
         </div>
         <div style="flex-grow: 1"></div>

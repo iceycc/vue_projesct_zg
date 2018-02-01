@@ -1,7 +1,8 @@
 <template>
     <div class="page">
         <div class="btn-view">
-            <div class="btn-submit" @click="submit"><img src="../assets/img/icon_login_wechat.svg" alt=""> <span>微信登录</span></div>
+            <div class="btn-submit" @click="gotoLogin"><img src="../assets/img/icon_login_wechat.svg" alt="">
+                <span>微信登录</span></div>
             <div class="btn-desc">同意诸葛装修<a href="">用户协议</a></div>
         </div>
 
@@ -26,9 +27,14 @@
         },
         computed: {},
         created() {
+            let id = this.$route.query.id;
+            console.log(id);
+            if (id) {
+                this.gotoMain(id);
+            }
         },
         methods: {
-            submit() {
+            gotoLogin() {
                 let url = 'https://open.weixin.qq.com/connect/oauth2/authorize?';
                 let appid = 'appid=wx7a6e11836803bbbb';
                 let redirect_uri = '&redirect_uri=http%3A%2F%2Fm.uzhuang.com%2Fwxpay%2Fwx_login%2Fwd_wx_login.php';
@@ -37,8 +43,23 @@
                 let wechat_redirect = '#wechat_redirect';
 
                 window.location.href = url + appid + redirect_uri + response_type + scope + wechat_redirect;
-                console.log(url + appid + response_type + scope + wechat_redirect);
-                //
+            },
+            gotoMain(id) {
+                this.$ls.remove(Constants.LocalStorage.uid);
+                console.log(id);
+                this.doRequest(Constants.Method.profile, {
+                    uid: id
+                }, (result) => {
+                    this.data = result;
+                    this.$ls.set(Constants.LocalStorage.uid, id);
+
+                    this.$router.replace({
+                        name: Constants.PageName.qaIndex,
+                        params: {
+                            isLogin: true
+                        }
+                    });
+                });
             }
         }
     };

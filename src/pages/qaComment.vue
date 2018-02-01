@@ -5,8 +5,8 @@
             <div class="view1 horizontal-view">
                 <img-wrapper :url="answer.a_avatar" classStyle="avatar"></img-wrapper>
                 <div class="vertical-view">
-                    <div class="name">{{answer.username}}
-                        <uz-lable :role="answer.role"></uz-lable>
+                    <div class="name">{{answer.aname}}
+                        <uz-lable v-if="answer.role" :role="answer.role"></uz-lable>
                     </div>
                     <div class="date">{{answer.atime}}</div>
                 </div>
@@ -29,9 +29,9 @@
                     <div class="item" @click="onItemClick(index)">
                         <div class="card card-re">
                             <div class="view1 horizontal-view">
-                                <img-wrapper classStyle="avatar"></img-wrapper>
+                                <img-wrapper classStyle="avatar" :url="item.a_avatar"></img-wrapper>
                                 <div class="vertical-view">
-                                    <div class="name">{{item.username}}
+                                    <div class="name">{{item.aname}}
                                     </div>
                                     <div class="date">{{item.c_add_time}}</div>
                                 </div>
@@ -141,6 +141,7 @@
                 let data = {
                     q_id: this.$route.query.q_id,
                     a_id: this.$route.query.a_id,
+                    c_id: 0,
                     content: this.recomment
                 };
                 this.doRequest(Constants.Method.comment, data, (result) => {

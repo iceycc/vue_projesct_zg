@@ -4,7 +4,7 @@
         <div class="card shadow" v-if="question">
             <div class="view1">
                 <img-wrapper :url="question.avatar" classStyle="avatar"></img-wrapper>
-                <div class="username">{{question.uname}}</div>
+                <div class="username">{{question.aname}}</div>
                 <span class="reward shadow"
                       v-if="parseFloat(question.q_reward) > 0"> ¥{{question.q_reward}}</span>
             </div>
@@ -16,7 +16,7 @@
                 <div @click="collect">{{question.is_collect ? '已' : ''}}收藏</div>
                 <div>{{question.qtime}}</div>
             </div>
-            <div class="card-tags">
+            <div class="card-tags" v-if="question.label && question.label.length > 0">
                 <div class="tag" v-for="item in question.label">
                     {{item}}
                 </div>
@@ -37,10 +37,11 @@
                                     <div class="date">{{item.atime}}</div>
                                 </div>
                                 <div class="accept" v-if="isOwner && question.q_adoption == 0" @click.stop="accept(index)">采纳</div>
+                                <div class="accept" v-if="question.q_adoption ==item.id" >已采纳</div>
                             </div>
                             <div class="context">{{item.content}}</div>
                             <div v-if="item.hot_comment" class="hotcomment">
-                                <div class="title">{{item.hot_comment.username}}-{{item.hot_comment.role}}
+                                <div class="title">{{item.hot_comment.username}}
                                     <uz-lable :role="item.hot_comment.role"></uz-lable>
                                     :{{item.hot_comment.content}}
                                 </div>

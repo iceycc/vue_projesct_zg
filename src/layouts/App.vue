@@ -42,15 +42,8 @@
             EventBus.$on(Constants.EventBus.login, value => {
                 this.login = true;
             });
-
-            this.$ls.set(Constants.LocalStorage.uid, '1300');
-            this.getdata();
         },
         methods: {
-            getdata() {
-                this.doRequest(Constants.Method.test, null, (result) => {
-                });
-            },
             showMessage(value) {
                 this.toast.show = true;
                 this.toast.message = value.message;

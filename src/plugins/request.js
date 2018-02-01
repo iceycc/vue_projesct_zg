@@ -18,9 +18,10 @@ class Request {
             param = {};
         }
 
-        param.uid = localStorage.getItem('uid');
-
-        //param.cityid = localStorage.getItem('cityid') : ''
+        let id = localStorage.getItem('uid');
+        if (id) {
+            param.uid = id;
+        }
         return param;
         /*        param.app_env = process.env.NODE_ENV;
                 param.app_version = process.env.APP_VERSION;

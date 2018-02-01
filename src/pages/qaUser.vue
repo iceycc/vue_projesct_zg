@@ -19,7 +19,9 @@
                 <div class="item" @click="gotoList(2)">
                     <img-wrapper :url="icon_qu" classStyle="icon"></img-wrapper>
                     <div class="name">我的问题</div>
-                    <div class="num">{{data.my_question_num}}</div>
+                    <div class="num" v-bind:class="{'red-point':data.red_dot > 0}">
+                        {{data.my_question_num}}
+                    </div>
                     <div class="arrow"></div>
                 </div>
                 <div class="divider"></div>
@@ -148,6 +150,12 @@
             .num {
                 font-weight: bold;
             }
+            .red-point:before {
+                content: '•';
+                color: red;
+                margin-right: px2rem(10);
+            }
+
             .arrow:before {
                 content: '>';
                 margin-left: px2rem(10);

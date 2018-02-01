@@ -84,6 +84,10 @@
             if (this.bottomNav === -1) {
                 this.handleChange(0);
             }
+
+            if(this.$route.params.isLogin){
+                EventBus.$emit(Constants.EventBus.login);
+            }
         },
         mounted() {
             this.style = {
