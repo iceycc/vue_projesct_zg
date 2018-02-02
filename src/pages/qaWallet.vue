@@ -9,7 +9,7 @@
         <div style="flex-grow: 1"></div>
         <div class="btn-view">
             <div v-if="result.money > 0" class="btn btn-white" @click="gotoAsk(1)">用于悬赏提问</div>
-            <div v-if="result.money > 0" class="btn">提现</div>
+            <div v-if="result.money > 0" class="btn" @click="gotoWithdraw">提现</div>
             <div class="desc">仅支持提现至微信零钱</div>
         </div>
     </div>
@@ -47,6 +47,11 @@
             gotoWalletDetail() {
                 this.pushPage({
                     name: Constants.PageName.qaWalletDetail
+                });
+            },
+            gotoWithdraw() {
+                this.pushPage({
+                    name: Constants.PageName.qaWithdraw
                 });
             },
             gotoAsk(type) {

@@ -36,7 +36,7 @@ let routes = [{
 }];
 
 addRouter(Constants.PageName.template, {title: '测试页面'});
-addRouter(Constants.PageName.qaDetail, {title: '问答详情'});
+addRouter(Constants.PageName.qaDetail, {keepAlive: false, title: '问答详情'});
 addRouter(Constants.PageName.qaAsk, {title: '提问'});
 addRouter(Constants.PageName.qaResponse, {title: '回复'});
 addRouter(Constants.PageName.qaComment, {title: '评论'});

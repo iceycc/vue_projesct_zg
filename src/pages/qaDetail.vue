@@ -109,9 +109,9 @@
         },
         computed: {},
         created() {
+            this.getData();
         },
         activated() {
-            this.getData();
         },
         methods: {
             getData() {

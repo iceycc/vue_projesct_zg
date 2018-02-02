@@ -2,13 +2,13 @@
     <div class="content">
         <app-bar :title="title"></app-bar>
         <div class="card-view">
-            <span class="money">{{result.money}}</span>
-            <div class="desc">提现金额(元)</div>
+            <span class="money">{{data.money}}</span>
+            <div class="desc">提现金额( 元)</div>
             <div class="line"></div>
             <div class="wechatinfo">
                 <div class="status">您已绑定微信</div>
-                <img-wrapper></img-wrapper>
-                username
+                <img-wrapper :url="data.avatar" classStyle="avatar"></img-wrapper>
+                {{data.username}}
             </div>
         </div>
         <div style="flex-grow: 1"></div>
@@ -16,7 +16,6 @@
             <div class="btn" @click="gotoWithdraw">确认提现</div>
         </div>
     </div>
-
 </template>
 
 <script>
@@ -37,31 +36,26 @@
         name: Constants.PageName.qaWithdraw,
         data() {
             return {
-                result: {}
+                data: {
+                    money: 0,
+                    username: '',
+                    avatar: ''
+                }
             };
         },
         computed: {},
         created() {
             this.doRequest(Constants.Method.wallet, null, (result) => {
-                this.result = result;
+                this.data.money = result.money;
+            });
+            this.doRequest(Constants.Method.profile, null, (result) => {
+                this.data.username = result.username;
+                this.data.avatar = result.avatar;
             });
         },
         methods: {
-            gotoWalletDetail() {
-                this.pushPage({
-                    name: Constants.PageName.qaWalletDetail
-                });
-            },
-            gotoAsk(type) {
-                this.pushPage({
-                    name: Constants.PageName.qaAsk,
-                    params: {
-                        type
-                    }
-                });
-            },
             gotoWithdraw() {
-
+                window.location.href = 'http://m.uzhuang.com/wxpay/sendWallet/payuser.php?uid=' + localStorage.getItem('uid') + '&amount=' + parseInt(this.data.money);
             }
         }
     };
@@ -94,6 +88,7 @@
         .wechatinfo {
             display: flex;
             flex-direction: row;
+            align-items: center;
             padding: px2rem(10);
             .status {
                 flex-grow: 1;

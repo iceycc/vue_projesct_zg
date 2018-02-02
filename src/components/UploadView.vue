@@ -4,7 +4,7 @@
             <img :src="localId" class="img"/>
             <img src="../assets/img/icon_upload_close.svg" class="close" @click="remove(localId)">
         </div>
-        <img src="../assets/img/icon_upload_img.svg" class="img" @click="upload"/>
+        <img src="../assets/img/icon_upload_image.svg" class="img upload" @click="upload"/>
     </div>
 </template>
 
@@ -55,6 +55,11 @@
             width: px2rem(20);
             height: px2rem(20);
         }
+    }
+
+    .upload {
+        background-color: $divider;
+        padding: px2rem(10);
     }
 
     .img {
