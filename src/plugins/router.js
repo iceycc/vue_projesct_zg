@@ -46,6 +46,7 @@ addRouter(Constants.PageName.qaWalletDetail, {keepAlive: false, title: '钱包�
 addRouter(Constants.PageName.qaLogin, {keepAlive: false, title: '登录'});
 addRouter(Constants.PageName.qaWallet, {keepAlive: false, title: '钱包'});
 addRouter(Constants.PageName.qaWithdraw, {keepAlive: false, title: '提现'});
+addRouter(Constants.PageName.qaknowledge, { title: '课堂'});
 // addRouter(Constants.PageName.qaUser, {title: '我的'});
 //addRouter(Constants.PageName.qaIndex, {title: '问答'});
 

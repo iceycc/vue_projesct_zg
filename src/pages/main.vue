@@ -116,7 +116,7 @@
                             name = Constants.PageName.qaIndex;
                             break;
                         case 1:
-                            name = Constants.PageName.qaIndex;
+                            name = Constants.PageName.qaknowledge;
                             break;
                         case 3:
                             break;
