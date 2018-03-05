@@ -124,11 +124,12 @@
       console.log(this.type)
       if (this.type === 1) {
         this.title = '悬赏问题';
+        window.document.title = '悬赏问题';//修改网页标题
         this.showMask = true;
       }
       if(this.type === 0) {
         this.title = '免费问题';
-
+        window.document.title = '免费问题';
         this.showMask = false;
 
       }
