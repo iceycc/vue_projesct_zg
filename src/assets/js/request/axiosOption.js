@@ -14,7 +14,7 @@ export default {
     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
     // `transformRequest`允许在请求数据发送到服务器之前对其进行更改
     // 这只适用于请求方法'PUT'，'POST'和'PATCH'
-    // 数组中的最后一个函数必须返回一个字符串，一个 ArrayBuffer或一个 Stream
+    // 数组中的最后一个函数必须返回一个字符串，一个 ArrayBuffer 或一个 Stream
     transformRequest: [function (data) {
         if (data) {
             data = Qs.stringify(data);

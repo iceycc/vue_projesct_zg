@@ -25,22 +25,22 @@
         </mu-bottom-nav>
         <div class="mask" v-if="showAsk">
             <div class="btn-view">
-                <div class="icon-view" @click="gotoAsk(0)">
+              <keep-alive> <div class="icon-view" @click="gotoAsk(0)">
                     <div style="visibility: hidden">
                         <div>更快更多更优质回答</div>
                         <div>查看更多<a href="">专属权利</a></div>
                     </div>
                     <img-wrapper :url="icon1" classStyle="icon"></img-wrapper>
                     <div class="name">免费提问</div>
-                </div>
-                <div class="icon-view" @click="gotoAsk(1)">
+                </div></keep-alive>
+              <keep-alive><div class="icon-view" @click="gotoAsk(1)">
                     <div>
                         <div>更快更多更优质回答</div>
                         <div>查看更多<a href="" @click.self="webpage">专属权利</a></div>
                     </div>
                     <img-wrapper :url="icon2" classStyle="icon"></img-wrapper>
                     <div class="name">悬赏提问</div>
-                </div>
+                </div></keep-alive>
             </div>
             <div class="close" @click="toggleAsk">X</div>
         </div>

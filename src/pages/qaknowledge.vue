@@ -82,6 +82,7 @@
                 });*/
             },
             selectHotWord(index) {
+                // todo
                 this.category_index = index;
                 console.log(this.category_index);
                 if (this.category_index === 0) {

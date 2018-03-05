@@ -71,12 +71,14 @@
         },
         computed: {},
         created() {
+          console.log(1)
             this.doRequest(Constants.Method.get_banner_list, null, (result) => {
                 this.banners = result;
             });
 
             this.doRequest(Constants.Method.get_hot_words, null, (result) => {
                 this.hot_words = this.hot_words.concat(result);
+                console.log(this.hot_words)
                 this.getList();
             });
         },
