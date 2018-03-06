@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h3 class="title">通知1</h3>
-    <notice-info></notice-info>
+    <h3 class="title">通知</h3>
+    <notice-info v-for="(item,index) in datas" :key="index" :info="item"></notice-info>
   </div>
 </template>
 
@@ -16,19 +16,38 @@
     name: Constants.PageName.qaknowledge,
     data(){
       return{
-
+        datas:[
+          // {
+          //   status:1,
+          //   detail:{},
+          //   role:'',//回答者1
+          //   aname:'',//管家
+          //   content:'',//问1题内容
+          //   time:''
+          // }
+        ],
+        data:{
+          a_id:16,
+          q_id:7,
+          uid:25416
+        }
       }
     },
     created(){
-      let data = {
-        a_id:16,
-        q_id:7,
-        uid:25416
-      }
-      var url = 'http://m.uzhuang.com/index.php?m=wenda&f=question_list&v=get_answer&q_id=7&a_id=16&uid=25416';
-      this.doRequest(url,null,(result)=>{
-        // console.log("1" + result)
-      })
+      this.getData()
+    },
+    methods:{
+      getData() {
+        let obj ={}
+        this.doRequest(Constants.Method.get_answer, this.data, (result) => {
+          obj.status =2;//
+          obj.role= result.role;
+          obj.aname= result.aname;
+          obj.content= result.content;
+          obj.time= result.atime;
+        });
+        this.datas.push(obj)
+      },
     }
   }
 </script>

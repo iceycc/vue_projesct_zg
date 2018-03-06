@@ -47,6 +47,7 @@
         },
         computed: {},
         created() {
+          console.log(1111);
 
             this.doRequest(Constants.Method.wallet, null, (result) => {
                 console.log(result);

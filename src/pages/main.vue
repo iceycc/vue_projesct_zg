@@ -119,7 +119,9 @@
                             name = Constants.PageName.qaknowledge;
                             break;
                         case 3:
-                            break;
+                          name = Constants.PageName.qaNotice;
+
+                          break;
                         case 4:
                             name = Constants.PageName.qaUser;
                             break;
@@ -207,6 +209,4 @@
         }
     }
 </style>
-<style>
 
-</style>

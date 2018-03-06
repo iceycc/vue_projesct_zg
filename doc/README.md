@@ -67,6 +67,10 @@
 
 ## Build Setup
 
+## 其他问题
+- 移动应用抓包调试利器Charles  https://www.jianshu.com/p/68684780c1b0
+- 微信开发者工具
+
 ``` bash
 # install dependencies
 npm install

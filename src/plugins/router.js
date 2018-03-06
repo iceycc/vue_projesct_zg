@@ -31,7 +31,7 @@ let routes = [{
       path: Constants.PageName.qaUser,
       name: Constants.PageName.qaUser,
       component: Pages[Constants.PageName.qaUser],
-      meta: {keepAlive: true, title: '问答'},
+      meta: {keepAlive: true, title: '我的'},
     },
     {
       path: Constants.PageName.qaNotice,
