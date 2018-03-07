@@ -1,9 +1,11 @@
 <template>
   <div class="page">
     <div class="top-text">
-      <div>
+      <div class="app-title">
         <img src="../assets/img/icon_ask.png" alt="">
+        <span>诸葛装修</span>
       </div>
+      <p class="app-text">立即登陆，解锁全部功能</p>
     </div>
     <div class="btn-view">
       <div class="btn-submit" @click="gotoLogin"><img src="../assets/img/icon_login_wechat.svg" alt="">
@@ -79,7 +81,31 @@
     background-size: cover;
     /*background-color: #1bd4bb;*/
   }
-
+  .top-text{
+    font-size: 0;
+    text-align: center;
+    margin-top: px2rem(50);
+    .app-title{
+      img{
+        width: px2rem(60);
+        height: px2rem(60);
+        vertical-align: middle;
+      }
+      span{
+        display: inline-block;
+        height: 100%;
+        line-height: px2rem(60);
+        font-size: px2rem(40);
+        color: #fff;
+        vertical-align: middle;
+      }
+    }
+    .app-text{
+      margin: 0;
+      font-size:px2rem(20) ;
+      color: #fff;
+    }
+  }
   .btn-view {
     position: absolute;
     width: px2rem(250);

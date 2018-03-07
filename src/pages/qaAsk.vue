@@ -113,16 +113,17 @@
       }
     },
     created() {
-      console.log(this.type)
+      console.log(this.type) //0  触发一次
       this.initWX(() => {
         console.log('wx success');
       });
+
     },
-    activated() {
+    activated() {  // 组件激活时
       if (this.$route.params && this.$route.params.type) {
         this.type = this.$route.params.type;
       }
-      // console.log(this.type)
+      console.log(this.type)
       if (this.type === 1) {
         this.title = '悬赏提问';
         window.document.title = '悬赏提问';//修改网页标题
@@ -164,8 +165,10 @@
 
           if (this.type === 0) {
             data.reward = 0;
+            console.log("免费提问")
           } else {
             data.reward = this.qa.reward;
+            console.log("付费提问")
           }
 
           this.doRequest(Constants.Method.ask_question, data, (result) => {
@@ -266,8 +269,8 @@
       }
     },
     // todo 尝试修改bug 552
-    updated(){
-      this.type=0
+    deactivated(){  //组件停用时调用！！！
+      this.type=0  //
     }
   };
 </script>
