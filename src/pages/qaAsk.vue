@@ -69,7 +69,7 @@
     name: Constants.PageName.qaIndex,
     data() {
       return {
-        type: '',//1付费
+        type: 0,//1付费
         qa: {
           title: '',
           content: '',
@@ -113,6 +113,7 @@
       }
     },
     created() {
+      console.log(this.type)
       this.initWX(() => {
         console.log('wx success');
       });
@@ -121,15 +122,15 @@
       if (this.$route.params && this.$route.params.type) {
         this.type = this.$route.params.type;
       }
-      console.log(this.type)
+      // console.log(this.type)
       if (this.type === 1) {
-        this.title = '悬赏问题';
-        window.document.title = '悬赏问题';//修改网页标题
+        this.title = '悬赏提问';
+        window.document.title = '悬赏提问';//修改网页标题
         this.showMask = true;
       }
       if(this.type === 0) {
-        this.title = '免费问题';
-        window.document.title = '免费问题';
+        this.title = '免费提问';
+        window.document.title = '免费提问';
         this.showMask = false;
 
       }
@@ -138,7 +139,15 @@
       toggleMask() {
         this.showMask = !this.showMask;
       },
-      submit() {
+      onItemClick(item) {
+        this.pushPage({
+          name: Constants.PageName.qaDetail,
+          query: {
+            id: item.id
+          }
+        });
+      },
+      submit: function () {
         if (!this.qa.title) {
           EventBus.$emit(Constants.EventBus.showToast, {
             message: '标题不能为空'
@@ -161,7 +170,18 @@
 
           this.doRequest(Constants.Method.ask_question, data, (result) => {
             EventBus.$emit(Constants.EventBus.showToast, {
-              message: '发布成功'
+              message: '发布成功',
+            });
+            // console.log(result)
+            // todo 发布成功后新的问题发布需要新的id啊
+            //  获取问题id
+
+            //  然后跳转
+            this.pushPage({
+              name: Constants.PageName.qaDetail,
+              query: {
+                id: 11
+              }
             });
 
             if (data.reward > 0) {//付费问题
@@ -200,12 +220,22 @@
       },
       chooseImage() {
         let that = this;
+        // console.log(11)
         wx.chooseImage({
-          count: 1, // 默认9
+          count: 9, // 默认9
           sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
           sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
           success: function (res) {
             that.localIds = that.localIds.concat(res.localIds);
+          },
+          fail: function() {
+            // fail
+            // console.log("chooseImage-fail")
+          },
+          complete: function() {
+            // complete
+            // console.log("chooseImage-complete")
+
           }
         });
       },
@@ -216,7 +246,7 @@
         if (this.localIds && this.localIds.length > 0) {
           if (this.localIds.length === this.localIdIndex) {
             callback && callback();
-            console.log(this.serverIds);
+            // console.log(this.serverIds);
             this.localIdIndex = 0;
             return;
           }
@@ -235,7 +265,7 @@
         }
       }
     },
-    // 尝试修改bug 552
+    // todo 尝试修改bug 552
     updated(){
       this.type=0
     }

@@ -159,7 +159,8 @@
     }
     .hot_word_select {
       color: $mainColor;
-      font-size: px2rem(15);
+      font-size: px2rem(16);
+      font-weight: bold;
       border-bottom: px2rem(2) solid $mainColor;
     }
   }

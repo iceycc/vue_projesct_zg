@@ -19,7 +19,6 @@ let routes = [{
   name: Constants.PageName.main,
   component: Pages.main,
   meta: {keepAlive: true, title: '主页'},
-  redirect: {name: Constants.PageName.qaNotice},
   children: [
     {
       path: Constants.PageName.qaIndex,

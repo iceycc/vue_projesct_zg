@@ -5,7 +5,7 @@
         </keep-alive>
         <router-view v-if="!$route.meta.keepAlive"></router-view>
         <mu-toast v-if="toast.show" :message="toast.message"></mu-toast>
-        <mu-dialog :open="login" title="登录成功">
+        <mu-dialog :open="login" title="登录成功" titleClass="text-center">
             <div style="text-align: center">
                 关注诸葛装修公众号<br>
                 第一时间收到回答提醒<br>
@@ -31,7 +31,8 @@
                     message: '',
                     Timer: null
                 },
-                login: false
+                login: false,
+
             };
         },
         created() {
@@ -59,4 +60,11 @@
 
 <style lang="scss">
     @import "../assets/scss/base";
+.text-center{
+  /**/
+  /*margin:0 auto;*/
+  display: block !important;
+  text-align: center !important;
+  /*padding:0 px2rem(90);*/
+}
 </style>
