@@ -8,11 +8,14 @@ import AutoListView from "../components/AutoListView.vue";
 import uzLable from "../components/uzLable.vue";
 import ImgWrapper from "../components/ImgWrapper.vue";
 
+//公共组件？
 Vue.component(template.name, template);
 Vue.component(AutoListView.name, AutoListView);
 Vue.component(uzLable.name, uzLable);
 Vue.component(ImgWrapper.name, ImgWrapper);
 
+
+// 引入MuseUI
 import MuseUI from 'muse-ui';
 import 'muse-ui/dist/muse-ui.css';
 import 'muse-ui/dist/theme-light.css';
@@ -20,6 +23,7 @@ import 'material-design-icons/iconfont/material-icons.css';
 
 Vue.use(MuseUI);
 
+// 轮播图
 import VueAwesomeSwiper from 'vue-awesome-swiper';
 import 'swiper/dist/css/swiper.css';
 

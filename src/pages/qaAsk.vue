@@ -65,6 +65,7 @@
       MuDivider,
       AppBar,
     },
+    // 混入对象
     mixins: [mixins.base, mixins.request],
     name: Constants.PageName.qaIndex,
     data() {
@@ -87,10 +88,11 @@
         let size = 60;
 
         return {
+          insert_id:'',
           direction: "horizontal",
           width: "auto",// 组件宽度
           height: height,
-          min: 1,
+          min: 0.01,
           max: 10,
           sliderStyle: {
             //"backgroundColor": "#f05b72",
@@ -113,7 +115,6 @@
       }
     },
     created() {
-      console.log(this.type) //0  触发一次
       this.initWX(() => {
         console.log('wx success');
       });
@@ -123,7 +124,6 @@
       if (this.$route.params && this.$route.params.type) {
         this.type = this.$route.params.type;
       }
-      console.log(this.type)
       if (this.type === 1) {
         this.title = '悬赏提问';
         window.document.title = '悬赏提问';//修改网页标题
@@ -132,7 +132,7 @@
       if(this.type === 0) {
         this.title = '免费提问';
         window.document.title = '免费提问';
-        this.showMask = false;
+        // this.showMask = false;
 
       }
     },
@@ -170,44 +170,37 @@
             data.reward = this.qa.reward;
             console.log("付费提问")
           }
-
+          console.log('付费金额'+data.reward)
           this.doRequest(Constants.Method.ask_question, data, (result) => {
             EventBus.$emit(Constants.EventBus.showToast, {
               message: '发布成功',
             });
-            // console.log(result)
-            // todo 发布成功后新的问题发布需要新的id啊
-            //  获取问题id
+            this.insert_id=result.insert_id
+            console.log("发布成功返回的数据")
+            console.log(result)
 
-            //  然后跳转
-            this.pushPage({
-              name: Constants.PageName.qaDetail,
-              query: {
-                id: 11
-              }
-            });
+            if (data.reward > 0) {//付费问题  微信支付改怎么办呢
 
-            if (data.reward > 0) {//付费问题
               window.location.href = `http://m.uzhuang.com/wxpay/pay/Weixin/h5_wx/example/jsapi.php?question_id=${result.insert_id}&pay_type=h5_wx&uid=${localStorage.getItem('uid')}`;
-              /*this.doRequestGet(Constants.Method.wxpay, {
-                  question_id: result.insert_id,
-                  pay_type: 'h5_wx'
-              }, (result) => {
-                  console.log(result);
-                  wx.chooseWXPay({
-                      timestamp: result.time_stamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
-                      nonceStr: result.nonceStr, // 支付签名随机串，不长于 32 位
-                      package: 'prepay_id=' + result.prepay_id, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
-                      signType: result.sign_type, // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
-                      paySign: result.sign, // 支付签名
-                      success: function (res) {
-                          console.log(res.err_msg);
-                      },
-                      error: function (err) {
-                          console.log(err);
-                      }
-                  });
-              });*/
+              // this.doRequestGet(Constants.Method.wxpay, {
+              //     question_id: result.insert_id,
+              //     pay_type: 'h5_wx'
+              // }, (result) => {
+              //     console.log(result);
+              //     wx.chooseWXPay({
+              //         timestamp: result.time_stamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+              //         nonceStr: result.nonceStr, // 支付签名随机串，不长于 32 位
+              //         package: 'prepay_id=' + result.prepay_id, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
+              //         signType: result.sign_type, // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+              //         paySign: result.sign, // 支付签名
+              //         success: function (res) {
+              //             console.log(res.err_msg);
+              //         },
+              //         error: function (err) {
+              //             console.log(err);
+              //         }
+              //     });
+              // });
             }
 
             this.qa.title = '';
@@ -215,9 +208,25 @@
             this.qa.reward = 5;
             this.localIds = [];
             this.serverIds = [];
-            /*setTimeout(() => {
-                this.$router.go(-1);
-            }, 2000);*/
+
+
+            // todo 发布成功后新的问题发布需要新的id啊
+            //  获取问题id
+            setTimeout(() => {
+                // this.$router.push({
+                //     name: Constants.PageName.qaDetail,
+                //     query: {
+                //       id: 11
+                //     }
+                //   });
+              this.pushPage({
+                name: Constants.PageName.qaDetail,
+                query: {
+                  id: this.insert_id
+                }
+              });
+            }, 400);
+
           });
         });
       },
@@ -269,7 +278,7 @@
       }
     },
     // todo 尝试修改bug 552
-    deactivated(){  //组件停用时调用！！！
+    deactivated(){  //success 组件停用时调用！！！
       this.type=0  //
     }
   };

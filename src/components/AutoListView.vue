@@ -137,7 +137,8 @@
                         result = this.$parent.handleResult(result);
                     }
                     this.data = this.data.concat(result);
-
+                    //
+                    console.log(this.data)
                     if (result.length === 0) {
                         this.isMore = false;
                     } else {
