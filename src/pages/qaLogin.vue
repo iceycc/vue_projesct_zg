@@ -2,7 +2,7 @@
   <div class="page">
     <div class="top-text">
       <div class="app-title">
-        <img src="../assets/img/icon_ask.png" alt="">
+        <img src="../assets/img/zhuge-logo.png" alt="">
         <span>诸葛装修</span>
       </div>
       <p class="app-text">立即登陆，解锁全部功能</p>
@@ -39,19 +39,24 @@
       if (id) {
         this.gotoMain(id);
       }
+      // 用于测试！！todo
+      else {
+        this.gotoMain(26319);
+
+      }
+
     },
     methods: {
       gotoLogin() {
-        let url = 'https://open.weixin.qq.com/connect/oauth2/authorize?'; // 请求用微信登陆
-        let appid = 'appid=wx7a6e11836803bbbb'; // 应用唯一标识
-        let redirect_uri = '&redirect_uri=http%3A%2F%2Fm.uzhuang.com%2Fwxpay%2Fwx_login%2Fwd_wx_login.php'; // 目标网站
-        let response_type = '&response_type=code'; //
-        let scope = '&scope=snsapi_userinfo'; // ？ 应用授权作用域，拥有多个作用域用逗号（,）分隔
-        let wechat_redirect = '#wechat_redirect'; //
+        let url = 'https://open.weixin.qq.com/connect/oauth2/authorize?';
+        let appid = 'appid=wx7a6e11836803bbbb';
+        let redirect_uri = '&redirect_uri=http%3A%2F%2Fm.uzhuang.com%2Fwxpay%2Fwx_login%2Fwd_wx_login.php';
+        let response_type = '&response_type=code';
+        let scope = '&scope=snsapi_userinfo';
+        let wechat_redirect = '#wechat_redirect';
 
         window.location.href = url + appid + redirect_uri + response_type + scope + wechat_redirect;
       },
-      // 如果有id直接登陆
       gotoMain(id) {
         this.$ls.remove(Constants.LocalStorage.uid);
         console.log(id);

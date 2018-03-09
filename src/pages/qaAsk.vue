@@ -51,6 +51,7 @@
 </template>
 
 <script>
+
   import {Constants, EventBus, mixins} from '../assets/js/index';
 
   import AppBar from "../components/AppBar.vue";
@@ -92,7 +93,7 @@
           direction: "horizontal",
           width: "auto",// 组件宽度
           height: height,
-          min: 0.01,
+          min: 1,
           max: 10,
           sliderStyle: {
             //"backgroundColor": "#f05b72",
@@ -132,7 +133,7 @@
       if(this.type === 0) {
         this.title = '免费提问';
         window.document.title = '免费提问';
-        // this.showMask = false;
+        this.showMask = false;
 
       }
     },
@@ -181,25 +182,26 @@
 
             if (data.reward > 0) {//付费问题  微信支付改怎么办呢
 
-              window.location.href = `http://m.uzhuang.com/wxpay/pay/Weixin/h5_wx/example/jsapi.php?question_id=${result.insert_id}&pay_type=h5_wx&uid=${localStorage.getItem('uid')}`;
+             window.location.href = `http://m.uzhuang.com/wxpay/pay/Weixin/h5_wx/example/jsapi.php?question_id=${result.insert_id}&pay_type=h5_wx&uid=${localStorage.getItem('uid')}`;
               // this.doRequestGet(Constants.Method.wxpay, {
               //     question_id: result.insert_id,
-              //     pay_type: 'h5_wx'
+              //     pay_type: 'h5_wx',
+              //   uid:localStorage.getItem('uid')
               // }, (result) => {
               //     console.log(result);
-              //     wx.chooseWXPay({
-              //         timestamp: result.time_stamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
-              //         nonceStr: result.nonceStr, // 支付签名随机串，不长于 32 位
-              //         package: 'prepay_id=' + result.prepay_id, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
-              //         signType: result.sign_type, // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
-              //         paySign: result.sign, // 支付签名
-              //         success: function (res) {
-              //             console.log(res.err_msg);
-              //         },
-              //         error: function (err) {
-              //             console.log(err);
-              //         }
-              //     });
+              //     // wx.chooseWXPay({
+              //     //     timestamp: result.time_stamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+              //     //     nonceStr: result.nonceStr, // 支付签名随机串，不长于 32 位
+              //     //     package: 'prepay_id=' + result.prepay_id, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
+              //     //     signType: result.sign_type, // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+              //     //     paySign: result.sign, // 支付签名
+              //     //     success: function (res) {
+              //     //         console.log(res.err_msg);
+              //     //     },
+              //     //     error: function (err) {
+              //     //         console.log(err);
+              //     //     }
+              //     // });
               // });
             }
 
@@ -213,19 +215,19 @@
             // todo 发布成功后新的问题发布需要新的id啊
             //  获取问题id
             setTimeout(() => {
-                // this.$router.push({
-                //     name: Constants.PageName.qaDetail,
-                //     query: {
-                //       id: 11
-                //     }
-                //   });
+              // this.$router.push({
+              //     name: Constants.PageName.qaDetail,
+              //     query: {
+              //       id: 11
+              //     }
+              //   });
               this.pushPage({
                 name: Constants.PageName.qaDetail,
                 query: {
                   id: this.insert_id
                 }
               });
-            }, 400);
+            }, 2000);
 
           });
         });
@@ -234,7 +236,7 @@
         let that = this;
         // console.log(11)
         wx.chooseImage({
-          count: 9, // 默认9
+          count: 1, // 默认9
           sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
           sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
           success: function (res) {

@@ -68,7 +68,6 @@
             }
         },
         methods: {
-            // 获取列表url
             getList(type) {
                 this.url = Constants.Method.get_homepage + '&type=' + type;
                 this.flag = this.url;

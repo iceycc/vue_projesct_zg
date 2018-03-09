@@ -47,6 +47,7 @@ export const Method = {
     ketang_commend: 'http://bang.uzhuang.com/index.php?m=bangV2&f=ketang&v=commend',
 
     // 通知的
+    // http://m.uzhuang.com/index.php?m=wenda&f=question_list&v=get_answer&q_id=7&a_id=16&uid=25416
 
 
   }

@@ -1,5 +1,6 @@
 <template>
     <div class="scroll-view">
+      <!---->
         <mu-list v-if="type == 'list'">
             <template v-for="item, index in data">
                 <mu-list-item @click="onItemClick(index)">
@@ -10,6 +11,7 @@
                 <mu-divider v-if="isNeedDivider"/>
             </template>
         </mu-list>
+      <!---->
         <div class="grid" v-else-if="type == 'grid'">
             <div v-for="item, index in data" @click="onItemClick(index)" v-bind:style="gridstyle">
                 <div class="item">
@@ -27,6 +29,7 @@
 
 <script>
     import minixs_request from '../assets/js/mixins/mixins-request';
+    // import minixs_request from '../assets/js/mixins/mixins-request';
 
     const defaultStartPage = 1;
 
@@ -108,6 +111,8 @@
             if (this.flag) {
                 this.getdata();
             }
+          console.log('列表1')
+
         },
         methods: {
             onItemClick(index) {
@@ -135,10 +140,11 @@
                 this.doRequest(this.url, param, (result) => {
                     if ('handleResult' in this.$parent) {
                         result = this.$parent.handleResult(result);
+
                     }
                     this.data = this.data.concat(result);
-                    //
-                    console.log(this.data)
+                  console.log('列表')
+                  console.log(result)
                     if (result.length === 0) {
                         this.isMore = false;
                     } else {

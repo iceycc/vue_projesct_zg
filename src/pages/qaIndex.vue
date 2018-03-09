@@ -1,5 +1,6 @@
 <template>
   <div class="content">
+    <!--顶部关键词-->
     <div class="hot_word_view">
       <div class="tags">
         <template v-for="item,index in hot_words">
@@ -13,21 +14,27 @@
         <img-wrapper :url="icon_search"></img-wrapper>
       </div>
     </div>
+    <!---->
     <swiper :options="swiperOption" ref="mySwiper" class="banner" v-if="hot_words_index === 0">
       <swiper-slide v-for="item,index in banners" :key="index">
         <img-wrapper :url="item.img_name" @onClick="openWeb(item.activity_url)"
                      classStyle="banner_img"></img-wrapper>
       </swiper-slide>
     </swiper>
+    <!--  -->
     <auto-list-view :url="url" :flag="flag" :isNeedDivider="false" @onItemClick="onItemClick">
       <template slot="item" slot-scope="props">
         <div class="card">
+          <!--标题-->
           <div class="title-view">
             <div class="title">{{props.item.title}}</div>
+            <!--金额 如果有的话显示-->
             <span class="reward shadow"
                   v-if="parseFloat(props.item.q_reward) > 0">{{props.item.q_reward}}</span>
           </div>
+          <!--内容-->
           <div class="card-content">{{props.item.a_content}}</div>
+          <!--底部显示 头像+浏览数-->
           <div class="footer-view">
             <div class="avatar">
               <img-wrapper v-for="avatar,index in props.item.avatar" :url="avatar" :key="index"
@@ -36,8 +43,11 @@
             <div class="pv">{{props.item.pv}}浏览</div>
           </div>
         </div>
+
       </template>
+
     </auto-list-view>
+
   </div>
 
 </template>
@@ -58,8 +68,8 @@
     name: Constants.PageName.qaIndex,
     data() {
       return {
-        swiperOption: {},
-        url: '',
+        swiperOption: {}, // 轮播图
+        url: '',// 请求的地址
         banners: [],
         hot_words: [],
         hot_words_index: 0,
@@ -71,14 +81,16 @@
     },
     computed: {},
     created() {
-      console.log(1)
+
       this.doRequest(Constants.Method.get_banner_list, null, (result) => {
         this.banners = result;
+        // console.log(this.banners)
+        // console.log('banners')
       });
 
       this.doRequest(Constants.Method.get_hot_words, null, (result) => {
         this.hot_words = this.hot_words.concat(result);
-        console.log(this.hot_words)
+        // console.log(this.hot_words)
         this.getList();
       });
     },
