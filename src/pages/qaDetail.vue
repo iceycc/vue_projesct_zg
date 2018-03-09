@@ -94,7 +94,7 @@
       AppBar,
       AutoListView
     },
-    mixins: [mixins.base, mixins.request],
+    mixins: [mixins.base, mixins.request,util],
     name: Constants.PageName.qaDetail,
     data() {
       return {
@@ -149,10 +149,30 @@
         this.doRequest(Constants.Method.get_question_list, data, (result) => {
           this.question = result.question;
           // 倒叙
-          this.answer_list = this.jsonSort(result.answer_list, 'like_num', true);
+          this.answer_list = result.answer_list
 
-          console.log(this.answer_list)
+          // this.jsonSort()
+          // 采纳的部分：
+          let getIndex=function(arr,key) {
+            let index;
+            arr.every(function (vale,i) {
+              if(vale[key] !== 0){
+                index = i
+              }
+            })
+            return index
+          }
+          let i = getIndex(this.answer_list,'a_get_reward')
+          let caiNa= this.answer_list.splice(i,1)[0]
+          console.log(i)
+          // 没有采纳的部分 按点赞排序
+          this.answer_list =  util.jsonSort(this.answer_list, 'like_num', true);
+          if(caiNa){
+            this.answer_list.unshift(caiNa)
+          }
+
           this.isOwner = (this.question.uid === this.$ls.get(Constants.LocalStorage.uid));
+
         });
       },
       gotoResponse() {

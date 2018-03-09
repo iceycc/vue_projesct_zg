@@ -44,4 +44,19 @@ function jsonSort(array, field, reverse) {
   return array;
 }
 
-export {px2rem, deepCopy,jsonSort};
+
+
+
+function getArrIndex(arr, obj) {
+  let index = null;
+  let key = Object.keys(obj)[0];
+  arr.every(function(value, i) {
+    if (value[key] === obj[key]) {
+      index = i;
+      return false;
+    }
+    return true;
+  });
+  return index;
+};
+export {px2rem, deepCopy,jsonSort,getArrIndex};
