@@ -78,7 +78,7 @@
 </template>
 
 <script>
-  import {Constants, EventBus, mixins,util} from '../assets/js/index';
+  import {Constants, EventBus, mixins, util} from '../assets/js/index';
 
   import ComponentTemplate from "../components/template";
   import AutoListView from "../components/AutoListView";
@@ -94,7 +94,7 @@
       AppBar,
       AutoListView
     },
-    mixins: [mixins.base, mixins.request,util],
+    mixins: [mixins.base, mixins.request, util],
     name: Constants.PageName.qaDetail,
     data() {
       return {
@@ -148,26 +148,36 @@
 
         this.doRequest(Constants.Method.get_question_list, data, (result) => {
           this.question = result.question;
+          //
+          let thisId = this.question.q_adoption
+          console.log(thisId)
+
           // 倒叙
           this.answer_list = result.answer_list
+          console.log(this.answer_list)
+
 
           // this.jsonSort()
           // 采纳的部分：
-          let getIndex=function(arr,key) {
+          let getIndex = function (arr, key) {
             let index;
-            arr.every(function (vale,i) {
-              if(vale[key] !== 0){
+            arr.every(function (vale, i) {
+              if (vale['id'] === key) {
                 index = i
               }
             })
             return index
           }
-          let i = getIndex(this.answer_list,'a_get_reward')
-          let caiNa= this.answer_list.splice(i,1)[0]
-          console.log(i)
+          let i = getIndex(this.answer_list, thisId)
+          let caiNa = ''
+          if (i) {
+            caiNa = this.answer_list.splice(i, 1)[0]
+          }
+          console.log(2121)
+          console.log(caiNa)
           // 没有采纳的部分 按点赞排序
-          this.answer_list =  util.jsonSort(this.answer_list, 'like_num', true);
-          if(caiNa){
+          this.answer_list = util.jsonSort(this.answer_list, 'like_num', true);
+          if (caiNa) {
             this.answer_list.unshift(caiNa)
           }
 
