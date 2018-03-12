@@ -29,7 +29,7 @@
         data:{
           a_id:16,
           q_id:7,
-          uid:25416
+          uid:Constants.LocalStorage.uid
         }
       }
     },
@@ -40,7 +40,7 @@
       getData() {
         let obj ={}
         this.doRequest(Constants.Method.get_answer, this.data, (result) => {
-          obj.status =2;//
+          obj.status =1;//
           obj.role= result.role;
           obj.aname= result.aname;
           obj.content= result.content;

@@ -14,7 +14,7 @@
         <div>{{question.pv}}浏览</div>
         <div>{{question.answer_num}}回答</div>
         <div @click="collect">{{question.is_collect ? '已' : ''}}收藏</div>
-        <div>{{question.qtime}}</div>
+        <div>{{ question.qtime | my_time }}</div>
       </div>
       <div class="card-tags" v-if="question.label && question.label.length > 0">
         <div class="tag" v-for="item in question.label">
@@ -55,7 +55,7 @@
                   {{item.like_num}}
 
                 </div>
-                <div @click.stop="fenXiang(index)"> ---分享</div>
+                <!--<div @click.stop="fenXiang(index)"> 分享</div>-->
 
               </div>
             </div>
@@ -96,6 +96,14 @@
     },
     mixins: [mixins.base, mixins.request, util],
     name: Constants.PageName.qaDetail,
+    filters: {
+      my_time: function (value) {
+        if (value) {
+          return value.substring(5)
+        }
+        return value
+      }
+    },
     data() {
       return {
         icon1: require('../assets/img/icon_detail_response.svg'),
@@ -143,37 +151,37 @@
       getData() {
         let data = {
           q_id: this.$route.query.id,
-          uid: 1300
+          uid: this.$ls.get(Constants.LocalStorage.uid)
         };
-
         this.doRequest(Constants.Method.get_question_list, data, (result) => {
           this.question = result.question;
-          //
+          console.log(result)
+          // 获取当前问题采纳的回答的id
           let thisId = this.question.q_adoption
           console.log(thisId)
 
           // 倒叙
           this.answer_list = result.answer_list
           console.log(this.answer_list)
-
-
           // this.jsonSort()
           // 采纳的部分：
           let getIndex = function (arr, key) {
-            let index;
+            let index = -1;
             arr.every(function (vale, i) {
               if (vale['id'] === key) {
                 index = i
+              }else {
+                index = -1
               }
             })
             return index
           }
           let i = getIndex(this.answer_list, thisId)
+          console.log(i)
           let caiNa = ''
-          if (i) {
+          if (i !== -1) {
             caiNa = this.answer_list.splice(i, 1)[0]
           }
-          console.log(2121)
           console.log(caiNa)
           // 没有采纳的部分 按点赞排序
           this.answer_list = util.jsonSort(this.answer_list, 'like_num', true);

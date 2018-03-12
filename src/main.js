@@ -11,8 +11,8 @@ import {} from './plugins/loadComponent';
 // localstorage
 import {} from './plugins/localstorage';
 
-// 过滤器
-import {} from './plugins/filter';
+//  这个干啥呢
+// import {} from './plugins/filter';
 
 import {} from './assets/js/mixins/mixins-base';
 import {} from './assets/js/mixins/mixins-request';

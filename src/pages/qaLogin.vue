@@ -40,10 +40,7 @@
         this.gotoMain(id);
       }
       // 用于测试！！todo
-      else {
-        this.gotoMain(26319);
-
-      }
+      else {this.gotoMain(26319);}
 
     },
     methods: {
@@ -58,6 +55,7 @@
         window.location.href = url + appid + redirect_uri + response_type + scope + wechat_redirect;
       },
       gotoMain(id) {
+
         this.$ls.remove(Constants.LocalStorage.uid);
         console.log(id);
         this.doRequest(Constants.Method.profile, {

@@ -24,6 +24,9 @@
                 if (role == '金牌管家') {
                     return 'role-guanjia';
                 }
+                if(role == '达人'){
+                  return 'role-daren';
+                }
             }
         }
     };
@@ -44,4 +47,9 @@
         color: rgb(255, 182, 0);
         background-color: rgb(254, 250, 229);
     }
+  .role-daren{
+    border-color: rgb(255, 143, 159);
+    color: rgb(255, 143, 159);
+    background-color: rgb(254, 250, 229);
+  }
 </style>

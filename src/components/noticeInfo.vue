@@ -1,6 +1,6 @@
 <template>
   <div>
-      <div class="info-box">
+      <div class="info-box" v-for="(item,index) in infos" @click="goDetail(index)" :key="index">
         <!--问题指向1-->
         <p>{{title}}</p>
         <p class="infos-text">{{info.content}}</p>
@@ -25,7 +25,8 @@
     },
     data() {
       return {
-        title:''
+        title:'',
+        infos:['','']
       }
     },
     created(){
@@ -36,7 +37,7 @@
     mounted(){
       setTimeout(() => {
         this.getReq()
-        },1000)
+        },400)
 
     },
     methods:{
@@ -55,12 +56,16 @@
           this.title = this.info.role + " 回答了您的问题"
         }
         if(this.info.status ===3) {
-
+          this.title = this.info.role + " 采纳了你的问答"
         }
-
+        if(this.info.status ===4) {
+          this.title = this.info.role + " 点赞了你的问答"
+        }
 
       },
       // 2 获取父组件传递的参数
+
+      // 3 点击进入详情
 
     }
   }

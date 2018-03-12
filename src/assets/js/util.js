@@ -1,5 +1,6 @@
 const defaultDesignWidth = 375;
 
+// 你真好
 function px2rem(px, designWidth) {
     //预判你将会在JS中用到尺寸，特提供一个方法助你在JS中将px转为rem。就是这么贴心。
     if (!designWidth) {
@@ -10,7 +11,7 @@ function px2rem(px, designWidth) {
 
     return parseInt(px, 10) * 320 / designWidth / 20;
 }
-
+// 深拷贝
 function deepCopy(source) {
     var result = {};
     for (var key in source) {
@@ -44,9 +45,6 @@ function jsonSort(array, field, reverse) {
   return array;
 }
 
-
-
-
 function getArrIndex(arr, obj) {
   let index = null;
   let key = Object.keys(obj)[0];
@@ -58,5 +56,6 @@ function getArrIndex(arr, obj) {
     return true;
   });
   return index;
-};
+}
+
 export {px2rem, deepCopy,jsonSort,getArrIndex};
