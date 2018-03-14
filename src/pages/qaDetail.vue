@@ -1,45 +1,59 @@
 <template>
   <div class="content">
+    <!--标题 问题详情-->
     <app-bar :title="title"></app-bar>
+    <!--顶部问题详情-->
     <div class="card shadow" v-if="question">
+      <!--用户头像 名称 赏金-->
       <div class="view1">
         <img-wrapper :url="question.avatar" classStyle="avatar"></img-wrapper>
         <div class="username">{{question.aname}}</div>
         <span class="reward shadow"
               v-if="parseFloat(question.q_reward) > 0"> ¥{{question.q_reward}}</span>
       </div>
+      <!--问题标题-->
       <div class="card-title">{{question.title}}</div>
+      <!--问题描述-->
       <div class="card-content">{{question.content}}</div>
+      <!--展示 浏览数 回答数 收藏 时间-->
       <div class="view2">
         <div>{{question.pv}}浏览</div>
         <div>{{question.answer_num}}回答</div>
         <div @click="collect">{{question.is_collect ? '已' : ''}}收藏</div>
         <div>{{ question.qtime | my_time }}</div>
       </div>
+      <!--11-->
       <div class="card-tags" v-if="question.label && question.label.length > 0">
         <div class="tag" v-for="item in question.label">
           {{item}}
         </div>
       </div>
     </div>
-
+    <!--评论列表-->
     <div class="scroll-view">
+      <!--mu-->
       <mu-list>
         <template v-for="item, index in answer_list">
           <div class="item" @click="onItemClick(index)">
             <div class="card-re">
+              <!--评论 人 头像 名称 用户等级 是否采纳-->
               <div class="view1 horizontal-view">
                 <img-wrapper :url="item.a_avatar" classStyle="avatar"></img-wrapper>
                 <div class="vertical-view">
                   <div class="name">{{item.aname}}
-                    <uz-lable :role="item.role"></uz-lable>
+                    <uz-lable :role="item.uid ===question.uid ? '赏金发起人' : item.role"></uz-lable>
                   </div>
                   <div class="date">{{item.atime}}</div>
                 </div>
                 <div class="accept" v-if="isOwner && question.q_adoption == 0" @click.stop="accept(index)">采纳</div>
-                <div class="accept" v-if="question.q_adoption ==item.id">已采纳</div>
+                <div class="accepted" v-if="question.q_adoption ==item.id"><img src="../assets/img/accepted@2x.png"
+                                                                                alt=""></div>
+                <div class="get_reward" v-if="question.q_adoption ==item.id && question.q_reward > 0"><img
+                  src="../assets/img/get_reward.png" alt=""></div>
               </div>
+              <!--评论内容-->
               <div class="context">{{item.content}}</div>
+              <!--获取评论下的评论 -->
               <div v-if="item.hot_comment" class="hotcomment">
                 <div class="title">{{item.hot_comment.username}}
                   <uz-lable :role="item.hot_comment.role"></uz-lable>
@@ -47,7 +61,9 @@
                 </div>
                 <div class="count">查看全部{{item.hot_comment.comment_total_num}}条回复</div>
               </div>
+              <!--底部信息展示-->
               <div class="view2 horizontal-view">
+                <!--点赞功能-->
                 <div class="like" v-bind:class="item.liked == 1 ? 'liked' : ''"
                      @click.stop="like(index)">
                   <img-wrapper :url="item.liked == 1 ? icon4 : icon3 "
@@ -158,11 +174,8 @@
           console.log(result)
           // 获取当前问题采纳的回答的id
           let thisId = this.question.q_adoption
-          console.log(thisId)
-
           // 倒叙
           this.answer_list = result.answer_list
-          console.log(this.answer_list)
           // this.jsonSort()
           // 采纳的部分：
           let getIndex = function (arr, key) {
@@ -170,19 +183,17 @@
             arr.every(function (vale, i) {
               if (vale['id'] === key) {
                 index = i
-              }else {
+              } else {
                 index = -1
               }
             })
             return index
           }
           let i = getIndex(this.answer_list, thisId)
-          console.log(i)
           let caiNa = ''
           if (i !== -1) {
             caiNa = this.answer_list.splice(i, 1)[0]
           }
-          console.log(caiNa)
           // 没有采纳的部分 按点赞排序
           this.answer_list = util.jsonSort(this.answer_list, 'like_num', true);
           if (caiNa) {
@@ -314,6 +325,8 @@
     }
 
     .view2 {
+      position: relative;
+
       color: $fontcolor_gray;
       display: flex;
       flex-direction: row;
@@ -380,6 +393,24 @@
         padding: px2rem(2) px2rem(8);
         color: $mainColor;
         border: px2rem(1) solid $mainColor;
+      }
+      .accepted, .get_reward {
+        position: absolute;
+        top: px2rem(10);
+        width: px2rem(60);
+        height: px2rem(60);
+        opacity: 1;
+        img {
+          width: 100%;
+          height: 100%;
+        }
+      }
+      .accepted {
+        right: px2rem(10);
+      }
+      .get_reward {
+        right: px2rem(75);
+
       }
     }
     .view2 {

@@ -25,7 +25,7 @@ export const Method = {
     get_comment_list: BASE_URL + "f=question_list&v=get_comment_list",
     //采纳回答
     adoption: BASE_URL + "f=question_list&v=adoption",
-    //喜欢回答
+    //点赞回答
     like: BASE_URL + "f=question_list&v=like",
     //评论回答
     comment: BASE_URL + "f=question_list&v=comment",

@@ -8,15 +8,16 @@
 <script>
   import {Constants, EventBus, mixins} from '../assets/js/index';
   import noticeInfo from "../components/noticeInfo"
+
   export default {
-    components:{
+    components: {
       noticeInfo,
     },
     mixins: [mixins.base, mixins.request],
     name: Constants.PageName.qaknowledge,
-    data(){
-      return{
-        datas:[
+    data() {
+      return {
+        datas: [
           // {
           //   status:1,
           //   detail:{},
@@ -26,26 +27,28 @@
           //   time:''
           // }
         ],
-        data:{
-          a_id:16,
-          q_id:7,
-          uid:Constants.LocalStorage.uid
+        data: {
+          a_id: 16,
+          q_id: 7,
+          uid: Constants.LocalStorage.uid
         }
       }
     },
-    created(){
+    created() {
       this.getData()
     },
-    methods:{
+    methods: {
       getData() {
-        let obj ={}
+        let obj = {}
         this.doRequest(Constants.Method.get_answer, this.data, (result) => {
-          obj.status =1;//
-          obj.role= result.role;
-          obj.aname= result.aname;
-          obj.content= result.content;
-          obj.time= result.atime;
+          obj.status = 1;//
+          obj.role = result.role;
+          obj.aname = result.aname;
+          obj.content = result.content;
+          obj.time = result.atime;
         });
+        this.datas.push(obj)
+        this.datas.push(obj)
         this.datas.push(obj)
       },
     }
@@ -54,7 +57,7 @@
 
 <style lang="scss" scoped>
 
-  .title{
+  .title {
     text-align: center;
     padding-bottom: 0.6rem;
     border-bottom: 0.05rem solid #ccc;

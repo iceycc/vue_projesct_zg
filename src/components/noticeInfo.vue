@@ -1,6 +1,6 @@
 <template>
   <div>
-      <div class="info-box" v-for="(item,index) in infos" @click="goDetail(index)" :key="index">
+      <div class="info-box" @click="goDetail(index)">
         <!--问题指向1-->
         <p>{{title}}</p>
         <p class="infos-text">{{info.content}}</p>

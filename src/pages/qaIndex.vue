@@ -22,31 +22,37 @@
       </swiper-slide>
     </swiper>
     <!--  -->
-    <auto-list-view :url="url" :flag="flag" :isNeedDivider="false" @onItemClick="onItemClick">
-      <template slot="item" slot-scope="props">
-        <div class="card">
-          <!--标题-->
-          <div class="title-view">
-            <div class="title">{{props.item.title}}</div>
-            <!--金额 如果有的话显示-->
-            <span class="reward shadow"
-                  v-if="parseFloat(props.item.q_reward) > 0">{{props.item.q_reward}}</span>
-          </div>
-          <!--内容-->
-          <div class="card-content">{{props.item.a_content}}</div>
-          <!--底部显示 头像+浏览数-->
-          <div class="footer-view">
-            <div class="avatar">
-              <img-wrapper v-for="avatar,index in props.item.avatar" :url="avatar" :key="index"
-                           classStyle="avatar"></img-wrapper>
+      <auto-list-view :url="url" :flag="flag" :isNeedDivider="false" @onItemClick="onItemClick">
+
+        <template slot="item" slot-scope="props">
+          <v-touch v-on:swipeleft="onSwipeLeft" v-on:swiperight="onSwipeRight" :style="{width:'100%'}">
+
+          <div class="card">
+            <!--标题-->
+            <div class="title-view">
+              <div class="title">{{props.item.title}}</div>
+              <!--金额 如果有的话显示-->
+              <span class="reward shadow"
+                    v-if="parseFloat(props.item.q_reward) > 0">{{props.item.q_reward}}</span>
             </div>
-            <div class="pv">{{props.item.pv}}浏览</div>
+            <!--内容-->
+            <div class="card-content">{{props.item.a_content}}</div>
+            <!--底部显示 头像+浏览数-->
+            <div class="footer-view">
+              <div class="avatar">
+                <img-wrapper v-for="avatar,index in props.item.avatar" :url="avatar" :key="index"
+                             classStyle="avatar"></img-wrapper>
+              </div>
+              <div class="pv">{{props.item.pv}}浏览</div>
+            </div>
           </div>
-        </div>
+        </v-touch>
 
-      </template>
+        </template>
 
-    </auto-list-view>
+      </auto-list-view>
+
+
 
   </div>
 
@@ -54,7 +60,6 @@
 
 <script>
   import {Constants, EventBus, mixins} from '../assets/js/index';
-
   import ComponentTemplate from "../components/template";
   import AutoListView from "../components/AutoListView";
   import ImgWrapper from "../components/ImgWrapper";
@@ -62,7 +67,7 @@
   export default {
     components: {
       ImgWrapper,
-      AutoListView
+      AutoListView,
     },
     mixins: [mixins.base, mixins.request],
     name: Constants.PageName.qaIndex,
@@ -76,7 +81,8 @@
         icon_search: require('../assets/img/icon_search.svg'),
         flag: null,
         version: process.env.APP_VERSION,
-        localValue: this.$ls.get(Constants.LocalStorage.test, '-1')
+        localValue: this.$ls.get(Constants.LocalStorage.test, '-1'),
+        swiper_i:0
       };
     },
     computed: {},
@@ -95,6 +101,23 @@
       });
     },
     methods: {
+      onSwipeLeft(){
+        console.log('left')
+
+        this.swiper_i++;
+        if(this.swiper_i == this.hot_words.length-1){
+          this.swiper_i = this.hot_words.length - 2
+        }
+        this.selectHotWord(this.swiper_i)
+      },
+      onSwipeRight(){
+        console.log('right')
+        this.swiper_i--;
+        if(this.swiper_i == -1){
+          this.swiper_i = 0
+        }
+        this.selectHotWord(this.swiper_i)
+      },
       getList() {
         this.url = Constants.Method.get_homepage + '&hot_words_id=' + this.hot_words[this.hot_words_index].id;
         this.flag = this.url;
