@@ -22,10 +22,21 @@
       </swiper-slide>
     </swiper>
     <!--  -->
-      <auto-list-view :url="url" :flag="flag" :isNeedDivider="false" @onItemClick="onItemClick">
-
+      <auto-list-view
+        :url="url"
+        :flag="flag"
+        @onItemClick="onItemClick"
+        :isNeedDivider="false">
+        <!--@SwipeLeft="onSwipeLeft"-->
+        <!--@SwipeRight="onSwipeRight"-->
+        <!--@SwipeDown="onSwipeDown"-->
+        <!--@SwipeUp="onSwipeUp"-->
         <template slot="item" slot-scope="props">
-          <v-touch v-on:swipeleft="onSwipeLeft" v-on:swiperight="onSwipeRight" :style="{width:'100%'}">
+          <!--<v-touch-->
+            <!--v-on:swipeleft="onSwipeLeft"-->
+            <!--v-on:swiperight="onSwipeRight"-->
+            <!--v-on:swiperdown="onSwipeDown"-->
+            <!--:style="{width:'100%'}">-->
 
           <div class="card">
             <!--标题-->
@@ -46,7 +57,7 @@
               <div class="pv">{{props.item.pv}}浏览</div>
             </div>
           </div>
-        </v-touch>
+        <!--</v-touch>-->
 
         </template>
 
@@ -90,8 +101,7 @@
 
       this.doRequest(Constants.Method.get_banner_list, null, (result) => {
         this.banners = result;
-        // console.log(this.banners)
-        // console.log('banners')
+
       });
 
       this.doRequest(Constants.Method.get_hot_words, null, (result) => {
@@ -102,22 +112,29 @@
     },
     methods: {
       onSwipeLeft(){
-        console.log('left')
-
         this.swiper_i++;
         if(this.swiper_i == this.hot_words.length-1){
           this.swiper_i = this.hot_words.length - 2
+          return
         }
         this.selectHotWord(this.swiper_i)
       },
       onSwipeRight(){
-        console.log('right')
         this.swiper_i--;
         if(this.swiper_i == -1){
           this.swiper_i = 0
+          return
         }
         this.selectHotWord(this.swiper_i)
       },
+      onSwipeDown($event){
+
+        console.log($event)
+      },
+      onSwipeUp(){
+
+      },
+
       getList() {
         this.url = Constants.Method.get_homepage + '&hot_words_id=' + this.hot_words[this.hot_words_index].id;
         this.flag = this.url;
