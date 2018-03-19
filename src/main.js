@@ -1,6 +1,7 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue';
+// import Vue from './plugins/filter';
 
 // 加载路由
 import router from './plugins/router';
@@ -12,7 +13,6 @@ import {} from './plugins/loadComponent';
 import {} from './plugins/localstorage';
 
 //  这个干啥呢
-// import {} from './plugins/filter';
 
 import {} from './assets/js/mixins/mixins-base';
 import {} from './assets/js/mixins/mixins-request';

@@ -1,10 +1,15 @@
 <template>
-  <div>
-      <div class="info-box" @click="goDetail(index)">
+  <div  class="scroll-view">
+      <div class="info-box" v-for="(item,index) in datas" :key="index" @click="goDetail(item.type,index,item.question_id)">
         <!--问题指向1-->
-        <p>{{title}}</p>
-        <p class="infos-text">{{info.content}}</p>
-        <p><span class="no-date">{{info.time}}</span></p>
+        <p v-if="item.type === '1'">{{item.from_user}} 回答了您的问题</p>
+        <p v-if="item.type === '2'">{{item.from_user}} 采纳了您的问题</p>
+        <p v-if="item.type === '3'">{{item.from_user}} 点赞了你的问答</p>
+        <p v-if="item.type === '4'">{{item.from_user}} 点赞了你的评论</p>
+        <p v-if="item.type === '5'">{{item.from_user}} 评论了你的问答</p>
+        <p v-if="item.type === '6'">{{item.from_user}} 评论了你的评论</p>
+        <p class="infos-text">{{item.content}}</p>
+        <p><span class="no-date">{{item.addtime | crtTime }}</span></p>
       </div>
   </div>
 </template>
@@ -17,60 +22,99 @@
   export default {
     name: "notice-info",
     mixins: [minixs_request],
-    props:{
-      info: {
-        type:Object
-      },
+    props:['datas'],
+    filters:{
+      crtTime:function (val) {
 
+        if (val != null) {
+          var date = new Date(val * 1000);
+          return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' '
+            + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() ;
+        }
+      }
     },
     data() {
       return {
         title:'',
-        infos:['','']
       }
     },
     created(){
-
-
     },
 
     mounted(){
-      setTimeout(() => {
-        this.getReq()
-        },400)
 
     },
     methods:{
       // 1 先确定是什么类型的请求11111
-      // 1-1 管家文丑回答了您的问题 接口：http://m.uzhuang.com/index.php?m=wenda&f=question_list&v=get_answer&q_id=7&a_id=16&uid=25416
-      // 1-2 用户名称 回答了您的问题
-      // 1-3 用户名称 点赞了 您的回答
-      // 1-4 用户名称采纳了您的回答
-      getReq(){
-        //  管家回复
-        if(this.info.status ===1){
-          this.title = "管家 " + this.info.aname + " 回答了您的问题";
-        }
-        //  用户回复
-        if(this.info.status ===2){
-          this.title = this.info.role + " 回答了您的问题"
-        }
-        if(this.info.status ===3) {
-          this.title = this.info.role + " 采纳了你的问答"
-        }
-        if(this.info.status ===4) {
-          this.title = this.info.role + " 点赞了你的问答"
+      // type: 1 回答 2采纳 3点赞回答 4点赞评论 5评论回答 6评论评论
+      // 2 获取父组件传递的参数
+      // 3 点击进入详情
+
+      goDetail(type,index,id) {
+        switch (type){
+          case '1':
+            this.$router.push({
+              name: Constants.PageName.qaDetail,
+              query: {
+                id: id
+              }
+            });
+            break;
+          case '2':
+            this.$router.push({
+              name: Constants.PageName.qaDetail,
+              query: {
+                id: id
+              }
+            });
+            break;
+          case '3':
+            this.$router.push({
+              name: Constants.PageName.qaDetail,
+              query: {
+                id: idv
+              }
+            });
+            break;
+          case '4':
+            this.$router.push({
+              name: Constants.PageName.qaComment,
+              query: {
+                id: id
+              }
+            });
+            break;
+          case '5':
+            this.$router.push({
+              name: Constants.PageName.qaDetail,
+              query: {
+                id: id
+              }
+            });
+            break;
+          case '6':
+            this.$router.push({
+              name: Constants.PageName.qaComment,
+              query: {
+                id: id
+              }
+            });
+            break;
         }
 
       },
-      // 2 获取父组件传递的参数
-
-      // 3 点击进入详情
 
     }
   }
 </script>
 <style lang="scss">
+
+  .scroll-view {
+    height: 100%;
+    overflow: scroll;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
   .info-box{
     border-bottom: 0.02rem solid #adadad;
     padding: 0 0.4rem;

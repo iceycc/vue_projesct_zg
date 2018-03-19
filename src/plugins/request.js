@@ -43,7 +43,9 @@ class Request {
     get(url, param, success, fail, finish) {
         return this._request(url, 'get', param, success, fail, finish);
     }
-
+    all(reqAll,){
+      return this._request(url, '')
+    }
     _request(url, type, param, success, fail, finish) {
         url = Request.isHasHttp(url) ? url : this.getOption().baseURL + '?' + url;
 
@@ -59,7 +61,7 @@ class Request {
                 this.getOption().params = param;
                 request = axios.get(url);
                 break;
-            default:
+          default:
                 this.getOption().data = param;
                 request = axios[type](url, null);
         }

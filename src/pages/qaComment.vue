@@ -52,7 +52,7 @@
               <!--<div class="small-recomment">-->
                 <!--<mu-text-field v-model="recomment" class="input" hintText="回复评论" :underlineShow="false"-->
                                <!--inputClass="text-field-content"></mu-text-field>-->
-                <!--<div class="btn" @click="submit">发布</div>-->
+                <!--<doiv class="btn" @click="submit">发布</div>-->
               <!--</div>-->
             </div>
           </div>
@@ -116,7 +116,8 @@
         };
 
         this.doRequest(Constants.Method.get_answer, data, (result) => {
-          this.answer = result;
+          this.answer = result[0];
+          console.log(this.answer)
         });
       },
       getComment() {

@@ -19,7 +19,10 @@
       <div class="view2">
         <div>{{question.pv}}浏览</div>
         <div>{{question.answer_num}}回答</div>
-        <div @click="collect">{{question.is_collect ? '已' : ''}}收藏</div>
+        <div @click="collect">
+          <img-wrapper :url="question.is_collect ?  icon5 : icon6 " classStyle="icon"></img-wrapper>
+        </div>
+
         <div>{{ question.qtime | my_time }}</div>
       </div>
       <!--11-->
@@ -53,8 +56,8 @@
               </div>
               <!--评论内容-->
               <div class="context">{{item.content}}</div>
-              <!--获取评论下的评论 -->
-              <div v-if="item.hot_comment" class="hotcomment">
+              <!--获取评论下的评论 todo 如何判断是否有评论-->
+              <div v-if="item.hot_comment.c_id" class="hotcomment">
                 <div class="title">{{item.hot_comment.username}}
                   <uz-lable :role="item.hot_comment.role"></uz-lable>
                   :{{item.hot_comment.content}}
@@ -65,7 +68,7 @@
               <div class="view2 horizontal-view">
                 <!--点赞功能-->
                 <div class="like" v-bind:class="item.liked == 1 ? 'liked' : ''"
-                     @click.stop="like(index)">
+                     @click.stop="toLiked(index,item.liked)">
                   <img-wrapper :url="item.liked == 1 ? icon4 : icon3 "
                                classStyle="icon"></img-wrapper>
                   {{item.like_num}}
@@ -126,6 +129,8 @@
         icon2: require('../assets/img/icon_detail_ask.svg'),
         icon3: require('../assets/img/icon_detail_like.svg'),
         icon4: require('../assets/img/icon_detail_liked.svg'),
+        icon5: require('../assets/img/accepted.svg'),
+        icon6: require('../assets/img/accept.svg'),
         uid: 0,
         question: {},
         answer_list: [],
@@ -199,7 +204,7 @@
           if (caiNa) {
             this.answer_list.unshift(caiNa)
           }
-
+          console.log(this.answer_list)
           this.isOwner = (this.question.uid === this.$ls.get(Constants.LocalStorage.uid));
 
         });
@@ -220,16 +225,52 @@
           }
         });
       },
-      like(index) {
+
+      like(index, liked) {
         let data = {
           q_id: this.$route.query.id,
           a_id: this.answer_list[index].id,
           c_id: 0
         };
-        this.doRequest(Constants.Method.like, data, (result) => {
-          this.getData();
-        });
+        switch (liked) {
+          case 1:
+            this.doRequest(Constants.Method.un_like, data, (result) => {
+              this.getData();
+            })
+            break;
+          case 0:
+            this.doRequest(Constants.Method.like, data, (result) => {
+              this.getData();
+            })
+            break;
+          default:
+            console.log('操作太快')
+        }
       },
+      toLiked(index, liked){
+        this.debounce(this.like(index, liked),1000)
+      },
+      debounce(fn, delay) {
+        // 1 记录一个初始时间
+        console.log(delay)
+        let last = Date.now()
+        // 2 维护一个 timer
+        let timer;
+        return function () {
+          // 3 记录当前时间
+          let current = Date.now()
+          // 4 进来的时候清除之前的定时器
+          // 5
+          if((current - last)>delay){
+            timer = setTimeout(fn,delay)
+            last = current
+          } else{
+            // 当前是2秒以内重复触发
+            timer = setTimeout(fn,delay)
+          }
+        }
+      },
+
       collect() {
         if (this.question.is_collect) {
           EventBus.$emit(Constants.EventBus.showToast, {
@@ -396,9 +437,9 @@
       }
       .accepted, .get_reward {
         position: absolute;
-        top: px2rem(10);
-        width: px2rem(60);
-        height: px2rem(60);
+        top: px2rem(15);
+        width: px2rem(50);
+        height: px2rem(50);
         opacity: 1;
         img {
           width: 100%;
@@ -406,7 +447,7 @@
         }
       }
       .accepted {
-        right: px2rem(10);
+        right: px2rem(15);
       }
       .get_reward {
         right: px2rem(75);

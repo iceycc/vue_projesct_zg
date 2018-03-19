@@ -1,5 +1,5 @@
 <template>
-  <div class="scroll-view" @mousedown.stop="">
+  <div class="scroll-view">
     <!---->
     <!--<v-touch-->
       <!--v-on:swipeleft="onSwipeLeft"-->
@@ -196,6 +196,7 @@
 
 <style lang="scss" scoped>
   @import "AutoListView";
+
 
   .mu-infinite-scroll {
     padding-top: 10px;

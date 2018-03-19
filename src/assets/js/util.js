@@ -59,15 +59,7 @@ function getArrIndex(arr, obj) {
 }
 
 function swipe() {
-  // 功能：封装手势
-  //步骤 ：
-  // 1 声明变量 startTx,startTy,endTx,endTy,absTx,absTy,direction;
-  let startTx,startTy,endTx,endTy,absTy,absTx,direction
-  // 给document绑定touchstart以获取startTx，startTy
-  document.addeventListener('touchstart',function (e) {
-    let touches = e.targetTouches[0]
-    startTx = touches.clientX;
-  })
+
 }
 
 export {px2rem, deepCopy,jsonSort,getArrIndex};

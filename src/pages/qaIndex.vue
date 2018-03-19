@@ -22,49 +22,46 @@
       </swiper-slide>
     </swiper>
     <!--  -->
-      <auto-list-view
-        :url="url"
-        :flag="flag"
-        @onItemClick="onItemClick"
-        :isNeedDivider="false">
-        <!--@SwipeLeft="onSwipeLeft"-->
-        <!--@SwipeRight="onSwipeRight"-->
-        <!--@SwipeDown="onSwipeDown"-->
-        <!--@SwipeUp="onSwipeUp"-->
-        <template slot="item" slot-scope="props">
-          <!--<v-touch-->
-            <!--v-on:swipeleft="onSwipeLeft"-->
-            <!--v-on:swiperight="onSwipeRight"-->
-            <!--v-on:swiperdown="onSwipeDown"-->
-            <!--:style="{width:'100%'}">-->
+    <auto-list-view
+      :url="url"
+      :flag="flag"
+      @onItemClick="onItemClick"
+      :isNeedDivider="false">
+      <!--@SwipeLeft="onSwipeLeft"-->
+      <!--@SwipeRight="onSwipeRight"-->
+      <!--@SwipeDown="onSwipeDown"-->
+      <!--@SwipeUp="onSwipeUp"-->
+      <template slot="item" slot-scope="props">
+        <!--<v-touch-->
+        <!--v-on:swipeleft="onSwipeLeft"-->
+        <!--v-on:swiperight="onSwipeRight"-->
+        <!--v-on:swiperdown="onSwipeDown"-->
+        <!--:style="{width:'100%'}">-->
 
-          <div class="card">
-            <!--标题-->
-            <div class="title-view">
-              <div class="title">{{props.item.title}}</div>
-              <!--金额 如果有的话显示-->
-              <span class="reward shadow"
-                    v-if="parseFloat(props.item.q_reward) > 0">{{props.item.q_reward}}</span>
-            </div>
-            <!--内容-->
-            <div class="card-content">{{props.item.a_content}}</div>
-            <!--底部显示 头像+浏览数-->
-            <div class="footer-view">
-              <div class="avatar">
-                <img-wrapper v-for="avatar,index in props.item.avatar" :url="avatar" :key="index"
-                             classStyle="avatar"></img-wrapper>
-              </div>
-              <div class="pv">{{props.item.pv}}浏览</div>
-            </div>
+        <div class="card">
+          <!--标题-->
+          <div class="title-view">
+            <div class="title">{{props.item.title}}</div>
+            <!--金额 如果有的话显示-->
+            <span class="reward shadow"
+                  v-if="parseFloat(props.item.q_reward) > 0">{{props.item.q_reward}}</span>
           </div>
+          <!--内容-->
+          <div class="card-content">{{props.item.a_content}}</div>
+          <!--底部显示 头像+浏览数-->
+          <div class="footer-view">
+            <div class="avatar">
+              <img-wrapper v-for="avatar,index in props.item.avatar" :url="avatar" :key="index"
+                           classStyle="avatar"></img-wrapper>
+            </div>
+            <div class="pv">{{props.item.pv}}浏览</div>
+          </div>
+        </div>
         <!--</v-touch>-->
 
-        </template>
+      </template>
 
-      </auto-list-view>
-
-
-
+    </auto-list-view>
   </div>
 
 </template>
@@ -93,7 +90,7 @@
         flag: null,
         version: process.env.APP_VERSION,
         localValue: this.$ls.get(Constants.LocalStorage.test, '-1'),
-        swiper_i:0
+        swiper_i: 0
       };
     },
     computed: {},
@@ -111,27 +108,27 @@
       });
     },
     methods: {
-      onSwipeLeft(){
+      onSwipeLeft() {
         this.swiper_i++;
-        if(this.swiper_i == this.hot_words.length-1){
+        if (this.swiper_i == this.hot_words.length - 1) {
           this.swiper_i = this.hot_words.length - 2
           return
         }
         this.selectHotWord(this.swiper_i)
       },
-      onSwipeRight(){
+      onSwipeRight() {
         this.swiper_i--;
-        if(this.swiper_i == -1){
+        if (this.swiper_i == -1) {
           this.swiper_i = 0
           return
         }
         this.selectHotWord(this.swiper_i)
       },
-      onSwipeDown($event){
+      onSwipeDown($event) {
 
         console.log($event)
       },
-      onSwipeUp(){
+      onSwipeUp() {
 
       },
 
@@ -191,7 +188,7 @@
     background-color: white;
     .go_search {
       position: fixed;
-      right:0;
+      right: 0;
       background: #fff;
       padding: px2rem(13) 0;
     }
