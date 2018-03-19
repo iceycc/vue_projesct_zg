@@ -19,6 +19,7 @@
       <div class="view2">
         <div>{{question.pv}}浏览</div>
         <div>{{question.answer_num}}回答</div>
+        <!--收藏 -->
         <div @click="collect">
           <img-wrapper :url="question.is_collect ?  icon5 : icon6 " classStyle="icon"></img-wrapper>
         </div>
@@ -48,6 +49,7 @@
                   </div>
                   <div class="date">{{item.atime}}</div>
                 </div>
+                <!--采纳-->
                 <div class="accept" v-if="isOwner && question.q_adoption == 0" @click.stop="accept(index)">采纳</div>
                 <div class="accepted" v-if="question.q_adoption ==item.id"><img src="../assets/img/accepted@2x.png"
                                                                                 alt=""></div>
@@ -273,8 +275,14 @@
 
       collect() {
         if (this.question.is_collect) {
-          EventBus.$emit(Constants.EventBus.showToast, {
-            message: '已收藏'
+          let data = {
+            q_id: this.$route.query.id,
+          };
+          this.doRequest(Constants.Method.un_favourites, data, (result) => {
+            this.getData();
+            EventBus.$emit(Constants.EventBus.showToast, {
+              message: '取消收藏'
+            });
           });
         } else {
           let data = {
@@ -282,6 +290,9 @@
           };
           this.doRequest(Constants.Method.favourites, data, (result) => {
             this.getData();
+            EventBus.$emit(Constants.EventBus.showToast, {
+              message: '收藏成功'
+            });
           });
         }
       },
