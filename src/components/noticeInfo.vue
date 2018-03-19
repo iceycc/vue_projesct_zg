@@ -1,6 +1,10 @@
 <template>
-  <div  class="scroll-view">
-      <div class="info-box" v-for="(item,index) in datas" :key="index" @click="goDetail(item.type,index,item.question_id)">
+  <div class="scroll-view">
+      <div class="info-box"
+           v-for="(item,index) in datas" :key="index"
+           @click="goDetail(item.type,index,item.question_id)"
+           :class="{isread:item.isread != '0'}"
+      >
         <!--问题指向1-->
         <p v-if="item.type === '1'">{{item.from_user}} 回答了您的问题</p>
         <p v-if="item.type === '2'">{{item.from_user}} 采纳了您的问题</p>
@@ -8,8 +12,8 @@
         <p v-if="item.type === '4'">{{item.from_user}} 点赞了你的评论</p>
         <p v-if="item.type === '5'">{{item.from_user}} 评论了你的问答</p>
         <p v-if="item.type === '6'">{{item.from_user}} 评论了你的评论</p>
-        <p class="infos-text">{{item.content}}</p>
-        <p><span class="no-date">{{item.addtime | crtTime }}</span></p>
+        <div class="infos-text">{{item.content}}</div>
+        <div><span class="no-date">{{item.addtime | crtTime }}</span></div>
       </div>
   </div>
 </template>
@@ -36,12 +40,14 @@
     data() {
       return {
         title:'',
+        isReadNum:0
       }
     },
     created(){
     },
 
     mounted(){
+      this.addRednum()
 
     },
     methods:{
@@ -72,7 +78,7 @@
             this.$router.push({
               name: Constants.PageName.qaDetail,
               query: {
-                id: idv
+                id: id
               }
             });
             break;
@@ -103,24 +109,43 @@
         }
 
       },
+      addRednum(){
+        this.datas.forEach(function (item,index) {
+          if(item.isread != '0'){
+            this.isReadNum ++
+          }
+        })
 
+        console.log(this.isReadNum)
+        EventBus.$emit(Constants.EventBus.add_red,this.isReadNum)
+      }
     }
   }
 </script>
 <style lang="scss">
+  @import "../assets/scss/px2rem";
 
-  .scroll-view {
-    height: 100%;
-    overflow: scroll;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
+  .isread p:after {
+    font-size: 0;
+    display: inline-block;
+    content: '';
+    height: px2rem(4);
+    width: px2rem(4);
+    vertical-align: top;
+    background-color:red;
+    border-radius:px2rem(2);
+    margin-left: px2rem(10);
+    margin-top:px2rem(6) ;
   }
+
   .info-box{
     border-bottom: 0.02rem solid #adadad;
     padding: 0 0.4rem;
     color: #adadad;
     .infos-text{
-      color:#000
+      color:#000;
+      padding: px2rem(4) 0;
+
     }
   }
 </style>

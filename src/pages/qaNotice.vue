@@ -1,11 +1,8 @@
 <template>
-  <div>
     <div class="content">
       <h3 class="title">通知</h3>
       <notice-info :datas="datas"></notice-info>
     </div>
-
-  </div>
 </template>
 
 <script>
@@ -30,18 +27,18 @@
         thisId: ''
       }
     },
-    created() {
-
+    mounted(){
+    },
+    created(){
       this.getData()
     },
     methods: {
       getData() {
         this.doRequest(Constants.Method.get_notice_list, this.data, (result) => {
-          console.log("获取通1知列表")
+          console.log("获取通知列表")
           console.log(result)
           this.datas = result
         });
-
       },
 
       goDetail(index) {
@@ -58,12 +55,18 @@
 </script>
 
 <style lang="scss" scoped>
-
-
+  @import "../assets/scss/px2rem";
 
   .content {
     height: 100%;
   }
+  .scroll-view {
+    height: 100%;
+    overflow: scroll;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
 
   .title {
     text-align: center;

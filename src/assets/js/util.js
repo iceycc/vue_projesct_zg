@@ -58,8 +58,4 @@ function getArrIndex(arr, obj) {
   return index;
 }
 
-function swipe() {
-
-}
-
 export {px2rem, deepCopy,jsonSort,getArrIndex};

@@ -100,5 +100,6 @@ export const EventBus = {
   userLogin: 'userLogin',
   setTitle: 'setTitle',
   setTitleLeftIcon: 'setTitleLeftIcon',
-  update_main_tab_index: 'update_main_tab_index'
+  update_main_tab_index: 'update_main_tab_index',
+  add_red:'is_read_num'
 };

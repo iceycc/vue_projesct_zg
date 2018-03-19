@@ -88,6 +88,11 @@
             if(this.$route.params.isLogin){
                 EventBus.$emit(Constants.EventBus.login);
             }
+          if(Constants.EventBus.add_red){
+            EventBus.$on(Constants.EventBus.add_red, function (value) {
+              console.log(value)
+            })
+          }
         },
         mounted() {
             this.style = {
@@ -143,13 +148,13 @@
 
     .sub-page {
         flex-grow: 1;
+      padding-bottom: px2rem(100);
     }
 
     .tabicon {
         width: 25px;
         height: 25px;
     }
-
     .btn_ask {
         position: fixed;
         width: 40px;
