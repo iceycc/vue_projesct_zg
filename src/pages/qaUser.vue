@@ -67,7 +67,7 @@
 
         this.data = result;
         console.log("------------")
-        console.log(results)
+        console.log(result)
         console.log("------------")
 
       });

@@ -38,13 +38,17 @@
           console.log("获取通知列表")
           this.getRedNum(result)
           this.datas = result
+
+          console.log("==================")
+          console.log(result)
+          console.log("===================")
         });
       },
 
       getRedNum(result){
         let count = 0;
         result.forEach(function (item,value) {
-          if(item.isread == "1"){
+          if(item.isread == "0"){
             count ++
           }
         })

@@ -110,8 +110,8 @@
     methods: {
       isReadShow(){
         this.notice_isread_num = window.localStorage.getItem("notice_isread_num")
-        console.log(this.notice_isread_num + 'ww')
-        if(this.notice_isread_num >= 0){
+        console.log(this.notice_isread_num )
+        if(this.notice_isread_num > 0){
           this.isreadShow = true
         }
 

@@ -11,8 +11,8 @@
           <div class="date">{{answer.atime}}</div>
         </div>
         <div class="horizontal-view">
-          <div class="like" v-bind:class="answer.liked == 1 ? 'liked' : ''"
-               @click.stop="like()">
+          <div class="like" v-bind:class="answer.is_liked == 1 ? 'liked' : ''"
+               @click.stop="like(answer.id,answer.is_liked,0)">
             <img-wrapper :url="answer.liked == 1 ? icon4 : icon3 "
                          classStyle="icon"></img-wrapper>
             {{answer.like_num}}
@@ -21,7 +21,8 @@
 
       </div>
       <div class="context">{{answer.content}}</div>
-      <div class="huifu">回复</div>
+      <!--todo 1-回复问题 分情况-->
+      <div class="huifu" @click="onItemClick(answer.aname)">回复</div>
 
     </div>
 
@@ -29,7 +30,7 @@
     <div class="scroll-view">
       <mu-list>
         <template v-for="item, index in comments">
-          <div class="item" @click="onItemClick(index)">
+          <div class="item">
             <div class="card card-re">
               <div class="view1 horizontal-view">
                 <img-wrapper classStyle="avatar" :url="item.a_avatar"></img-wrapper>
@@ -39,8 +40,8 @@
                   <div class="date">{{item.c_add_time}}</div>
                 </div>
                 <div class="horizontal-view">
-                  <div class="like" v-bind:class="item.liked == 1 ? 'liked' : ''"
-                       @click.stop="like(item)">
+                  <div class="like" v-bind:class="item.is_liked == 1 ? 'liked' : ''"
+                       @click.stop="like(item.a_id,item.is_liked,item.c_id)">
                     <img-wrapper :url="item.liked == 1 ? icon4 : icon3 "
                                  classStyle="icon"></img-wrapper>
                     {{item.like_num}}
@@ -48,12 +49,12 @@
                 </div>
               </div>
               <div class="context">{{item.content}}</div>
-              <div class="huifu">回复</div>
-              <!--<div class="small-recomment">-->
-              <!--<mu-text-field v-model="recomment" class="input" hintText="回复评论" :underlineShow="false"-->
-              <!--inputClass="text-field-content"></mu-text-field>-->
-              <!--<doiv class="btn" @click="submit">发布</div>-->
-              <!--</div>-->
+              <!--todo 1 回复问题-->
+              <div class="huifu" @click="onItemClick(item.aname)">回复</div>
+              <div class="small-recomment">
+                <p class=""><span>某人</span> 回复 <span>{{item.aname}}</span> ：<span>哈哈哈哈哈1</span><span class="huifu">回复</span></p>
+                <p class=""><span>{{item.aname}}</span> 回复 <span>某人</span> ：<span>呵呵呵呵呵</span></p>
+              </div>
             </div>
           </div>
         </template>
@@ -61,8 +62,9 @@
     </div>
 
     <div class="footer">
-      <mu-text-field v-model="recomment" class="input" hintText="回复评论" :underlineShow="false"
+      <mu-text-field v-model="recomment" class="input" :hintText="to_who" :underlineShow="false"
                      inputClass="text-field-content"></mu-text-field>
+      <!--todo 分两种情况-->
       <div class="btn" @click="submit">发布</div>
     </div>
   </div>
@@ -98,7 +100,8 @@
         uid: 0,
         answer: {},
         comments: [],
-        recomment: ''
+        recomment: '',
+        to_who:'回复评论'
       };
     },
     computed: {},
@@ -116,8 +119,11 @@
         };
 
         this.doRequest(Constants.Method.get_answer, data, (result) => {
-          this.answer = result[0];
+          this.answer = result
+          console.log("============get_answer===============")
+          console.log(this.answer.is_liked)
           console.log(this.answer)
+          console.log("=======================================")
         });
       },
       getComment() {
@@ -128,6 +134,10 @@
 
         this.doRequest(Constants.Method.get_comment_list, data, (result) => {
           this.comments = result;
+          console.log("================get_comment_list=======================")
+          console.log(result);
+          console.log("=======================================")
+
 
           if (this.comments && this.comments.length > 0) {
             this.title = `${this.comments.length}条回复`;
@@ -157,21 +167,35 @@
         this.doRequest(Constants.Method.comment, data, (result) => {
           this.getComment();
           this.recomment = '';
+          console.log(result);
         });
       },
-      like(comment) {
+      like(a_id,liked,c_id) {
         let data = {
           q_id: this.$route.query.q_id,
-          a_id: this.$route.query.a_id,
-          c_id: comment ? comment.c_id : 0
+          a_id: a_id,
+          c_id: c_id
         };
-        this.doRequest(Constants.Method.like, data, (result) => {
-          if (comment) {
-            this.getComment();
-          } else {
-            this.getData();
-          }
-        });
+        switch (liked){
+          case 1:
+            this.doRequest(Constants.Method.un_like, data, (result) => {
+              if (c_id) {
+                this.getComment();
+              } else {
+                this.getData();
+              }
+            });
+            break;
+          case 0:
+            this.doRequest(Constants.Method.like, data, (result) => {
+              if (c_id) {
+                this.getComment();
+              } else {
+                this.getData();
+              }
+            });
+        }
+
       },
       collect() {
         console.log(collect);
@@ -183,11 +207,20 @@
         };
 
         this.doRequest(Constants.Method.adoption, data, (result) => {
+          console.log("========adoption============");
           console.log(result);
+          console.log("====================");
         });
       },
-      onItemClick(index) {
-        console.log(index);
+      onItemClick(name) {
+        console.log(name);
+        let data = {
+
+        }
+        this.to_who = "回复 " + name + " 评论："
+        this.doRequest(Constants.Method.comment, data, (result) => {
+          console.log(result);
+        });
       }
     }
   };
@@ -252,6 +285,9 @@
       }
       .liked {
         color: $fontcolor_red;
+        .icon{
+          color: $fontcolor_red;
+        }
       }
     }
     .context {
@@ -310,26 +346,9 @@
   .small-recomment{
     width: 100%;
     font-size: px2rem(12);
-    color: #333333;
-    padding: px2rem(5) px2rem(3);
-    background-color: #616161;
-    border-top: px2rem(1) solid $fontcolor_gray;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    .input {
-      background-color: $divider;
-      border-radius: px2rem(20);
-      padding-left: px2rem(20);
-      margin-bottom: 0;
-      flex-grow: 1;
-      min-height: px2rem(30);
-    }
-    .btn {
-      background-color: $divider;
-      border-radius: px2rem(5);
-      padding: px2rem(5) px2rem(5);
-      margin-left: px2rem(10);
-    }
+    color: #333;
+    padding: px2rem(2) px2rem(3);
+    background-color: #eee;
+
   }
 </style>

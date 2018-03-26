@@ -143,8 +143,11 @@
 
           }
           this.data = this.data.concat(result);
-          console.log('列表')
+          console.log('==================列表=========')
+          console.log(this.url)
           console.log(result)
+          console.log('============================')
+
           if (result.length === 0) {
             this.isMore = false;
           } else {

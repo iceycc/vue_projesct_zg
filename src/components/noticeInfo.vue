@@ -3,7 +3,7 @@
       <div class="info-box"
            v-for="(item,index) in datas" :key="index"
            @click="goDetail(item.type,index,item.question_id)"
-           :class="{isread:item.isread != '0'}"
+           :class="{isread:item.isread != '1'}"
       >
         <!--问题指向1-->
         <p v-if="item.type === '1'">{{item.from_user}} 回答了您的问题</p>
