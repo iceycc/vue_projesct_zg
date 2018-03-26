@@ -36,9 +36,22 @@
       getData() {
         this.doRequest(Constants.Method.get_notice_list, this.data, (result) => {
           console.log("获取通知列表")
-          console.log(result)
+          this.getRedNum(result)
           this.datas = result
         });
+      },
+
+      getRedNum(result){
+        let count = 0;
+        result.forEach(function (item,value) {
+          if(item.isread == "1"){
+            count ++
+          }
+        })
+        // console.log(count)
+        window.localStorage.setItem("notice_isread_num",count)
+
+
       },
 
       goDetail(index) {

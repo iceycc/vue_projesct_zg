@@ -20,7 +20,7 @@
         <div>{{question.pv}}浏览</div>
         <div>{{question.answer_num}}回答</div>
         <!--收藏 -->
-        <div @click="collect">
+        <div @click="collect" class="collect-icon">
           <img-wrapper :url="question.is_collect ?  icon5 : icon6 " classStyle="icon"></img-wrapper>
         </div>
 
@@ -469,6 +469,13 @@
       color: $fontcolor_gray;
       font-size: px2rem(12);
       justify-content: flex-end;
+      .collect-icon{
+        .icon{
+          display: inline-block;
+          width: px2rem(10);
+          height: px2rem(10);
+        }
+      }
       .like {
         display: flex;
         flex-direction: row;

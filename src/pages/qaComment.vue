@@ -50,9 +50,9 @@
               <div class="context">{{item.content}}</div>
               <div class="huifu">回复</div>
               <!--<div class="small-recomment">-->
-                <!--<mu-text-field v-model="recomment" class="input" hintText="回复评论" :underlineShow="false"-->
-                               <!--inputClass="text-field-content"></mu-text-field>-->
-                <!--<doiv class="btn" @click="submit">发布</div>-->
+              <!--<mu-text-field v-model="recomment" class="input" hintText="回复评论" :underlineShow="false"-->
+              <!--inputClass="text-field-content"></mu-text-field>-->
+              <!--<doiv class="btn" @click="submit">发布</div>-->
               <!--</div>-->
             </div>
           </div>

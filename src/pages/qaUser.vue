@@ -66,6 +66,9 @@
       this.doRequest(Constants.Method.profile, null, (result) => {
 
         this.data = result;
+        console.log("------------")
+        console.log(results)
+        console.log("------------")
 
       });
     },

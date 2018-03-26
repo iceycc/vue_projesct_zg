@@ -1,12 +1,6 @@
 <template>
   <div class="scroll-view">
     <!---->
-    <!--<v-touch-->
-      <!--v-on:swipeleft="onSwipeLeft"-->
-      <!--v-on:swiperight="onSwipeRight"-->
-      <!--v-on:swipedown="onSwipeDown($event)"-->
-      <!--v-on:swipeup="onSwipeUp"-->
-    <!--:style="{width:'100%',height:'auto'}">-->
     <mu-list v-if="type == 'list'">
       <template v-for="item, index in data">
         <mu-list-item @click="onItemClick(index)">
@@ -30,8 +24,6 @@
     </div>
     <mu-infinite-scroll v-if="isMore" :scroller="scroller" :loading="loading" @load="loadMore"
                         loadingText="数据加载中..."/>
-    <!--</v-touch>-->
-
   </div>
 </template>
 
@@ -107,7 +99,6 @@
       }
     },
     computed: {
-
       gridstyle() {
         let width = this.$el.childNodes[0].offsetWidth / cols;
         return {
@@ -120,32 +111,13 @@
       if (this.flag) {
         this.getdata();
       }
+      console.log('列表1')
 
     },
     methods: {
-      onSwipeLeft(){
-        this.$emit('SwipeLeft')
-        console.log("left")
-
-      },
-      onSwipeRight(){
-        this.$emit('SwipeRight')
-        console.log("right")
-
-      },
-      onSwipeDown($event){
-        this.$emit('SwipeDown',$event)
-        console.log("down")
-      },
-      onSwipeUp(){
-        this.$emit('SwipeUp')
-        console.log("up")
-
-      },
       onItemClick(index) {
         this.$emit('onItemClick', this.data[index], index);
       },
-
       init() {
         this.isMore = true;
         this.page = defaultStartPage;
@@ -166,13 +138,12 @@
         }
 
         this.doRequest(this.url, param, (result) => {
-
           if ('handleResult' in this.$parent) {
             result = this.$parent.handleResult(result);
 
           }
           this.data = this.data.concat(result);
-          console.log(this.url);
+          console.log('列表')
           console.log(result)
           if (result.length === 0) {
             this.isMore = false;
@@ -196,7 +167,6 @@
 
 <style lang="scss" scoped>
   @import "AutoListView";
-
 
   .mu-infinite-scroll {
     padding-top: 10px;
