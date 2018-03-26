@@ -68,7 +68,6 @@
         },
         methods: {
             getList(url) {
-                console.log(url);
                 this.url = url;
                 this.flag = this.url;
             },
@@ -84,7 +83,7 @@
             selectHotWord(index) {
                 // todo
                 this.category_index = index;
-                console.log(this.category_index);
+
                 if (this.category_index === 0) {
                     //信息列表
                     this.getList(Constants.Method.ketang_commend);

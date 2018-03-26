@@ -40,7 +40,7 @@
         this.gotoMain(id);
       }
       // 用于测试！！todo
-      // else {this.gotoMain(26319);}
+      else {this.gotoMain(26319);}
 
     },
     methods: {

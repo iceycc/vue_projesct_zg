@@ -90,7 +90,6 @@
             }
           if(Constants.EventBus.add_red){
             EventBus.$on(Constants.EventBus.add_red, function (value) {
-              console.log(value)
             })
           }
         },

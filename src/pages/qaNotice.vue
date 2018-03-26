@@ -42,7 +42,6 @@
       },
 
       goDetail(index) {
-        console.log(11111212)
         this.$router.push({
           name: Constants.PageName.qaDetail,
           query: {
