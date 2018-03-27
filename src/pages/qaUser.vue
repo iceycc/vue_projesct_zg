@@ -64,17 +64,22 @@
     },
     created() {
       this.doRequest(Constants.Method.profile, null, (result) => {
-
         this.data = result;
-        console.log("------------")
+        console.log("-----profile-------")
         console.log(result)
         console.log("------------")
-
       });
     },
+    watch:{
+      "$router":"isTab"
+    },
+
     activated() {
     },
     methods: {
+      isTab(){
+
+      },
       gotoList(type) {
         this.pushPage({
           name: Constants.PageName.qaList,

@@ -37,7 +37,12 @@ let routes = [{
       name: Constants.PageName.qaNotice,
       component: Pages[Constants.PageName.qaNotice],
       meta: {keepAlive: true, title: '通知'},
-
+    },
+    {
+      path:Constants.PageName.qaknowledge,
+      name:Constants.PageName.qaknowledge,
+      component:Pages[Constants.PageName.qaknowledge],
+      meta:{keepAlive: true, title: '课堂'}
     }
   ]
 }];
@@ -53,7 +58,7 @@ addRouter(Constants.PageName.qaWalletDetail, {keepAlive: false, title: '钱包�
 addRouter(Constants.PageName.qaLogin, {keepAlive: false, title: '登录'});
 addRouter(Constants.PageName.qaWallet, {keepAlive: false, title: '钱包'});
 addRouter(Constants.PageName.qaWithdraw, {keepAlive: false, title: '提现'});
-addRouter(Constants.PageName.qaknowledge, {title: '课堂'});
+// addRouter(Constants.PageName.qaknowledge, {title: '课堂'});
 // addRouter(Constants.PageName.qaNotice, {title: '通知'});// 新增notice
 // addRouter(Constants.PageName.qaUser, {title: '我的'});
 //addRouter(Constants.PageName.qaIndex, {title: '问答'});

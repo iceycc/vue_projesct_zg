@@ -87,6 +87,7 @@
   .title {
     text-align: center;
     padding-bottom: 0.6rem;
+    color:#666;
     border-bottom: 0.05rem solid #ccc;
   }
 </style>

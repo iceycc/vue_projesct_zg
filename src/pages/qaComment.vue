@@ -21,8 +21,7 @@
 
       </div>
       <div class="context">{{answer.content}}</div>
-      <!--todo 1-回复问题 分情况-->
-      <div class="huifu" @click="onItemClick(answer.aname)">回复</div>
+      <div class="huifu" @click="onItemClick(answer.aname,0)">回复</div>
 
     </div>
 
@@ -35,36 +34,42 @@
               <div class="view1 horizontal-view">
                 <img-wrapper classStyle="avatar" :url="item.a_avatar"></img-wrapper>
                 <div class="vertical-view">
-                  <div class="name">{{item.aname}}
+                  <div class="name">{{item.from_user}}  {{item.to_user ? " 回复 "+ item.to_user : " 回复 "+ answer.aname}}
                   </div>
                   <div class="date">{{item.c_add_time}}</div>
                 </div>
-                <div class="horizontal-view">
-                  <div class="like" v-bind:class="item.is_liked == 1 ? 'liked' : ''"
-                       @click.stop="like(item.a_id,item.is_liked,item.c_id)">
-                    <img-wrapper :url="item.liked == 1 ? icon4 : icon3 "
-                                 classStyle="icon"></img-wrapper>
-                    {{item.like_num}}
-                  </div>
-                </div>
+                <!--<div class="horizontal-view">-->
+                  <!--<div class="like" v-bind:class="item.is_liked == 1 ? 'liked' : ''"-->
+                       <!--@click.stop="like(item.a_id,item.is_liked,item.c_id)">-->
+                    <!--<img-wrapper :url="item.liked == 1 ? icon4 : icon3 "-->
+                                 <!--classStyle="icon"></img-wrapper>-->
+                    <!--{{item.like_num}}-->
+                  <!--</div>-->
+                <!--</div>-->
               </div>
               <div class="context">{{item.content}}</div>
-              <!--todo 1 回复问题-->
-              <div class="huifu" @click="onItemClick(item.aname)">回复</div>
-              <div class="small-recomment">
-                <p class=""><span>某人</span> 回复 <span>{{item.aname}}</span> ：<span>哈哈哈哈哈1</span><span class="huifu">回复</span></p>
-                <p class=""><span>{{item.aname}}</span> 回复 <span>某人</span> ：<span>呵呵呵呵呵</span></p>
-              </div>
+              <div class="huifu" @click="onItemClick(item.from_user,item.from_user_id)">回复</div>
+              <!--<div class="small-recomment">-->
+                <!--todo -->
+                <!--<p class="recomment-p"-->
+                   <!--v-for="item,index in from_to"-->
+                   <!--:key="index">-->
+                  <!--<span>{{item.from_user}}</span>-->
+                  <!--回复-->
+                  <!--<span>{{item.to_user}}</span>-->
+                  <!--：<span>{{item.content}} <i></i></span>-->
+                  <!--<span class="recomment-p-huifu">回复</span>-->
+                <!--</p>-->
+              <!--</div>-->
             </div>
           </div>
         </template>
       </mu-list>
     </div>
 
-    <div class="footer">
+    <div class="footer" v-if="is_footer_show">
       <mu-text-field v-model="recomment" class="input" :hintText="to_who" :underlineShow="false"
                      inputClass="text-field-content"></mu-text-field>
-      <!--todo 分两种情况-->
       <div class="btn" @click="submit">发布</div>
     </div>
   </div>
@@ -101,7 +106,32 @@
         answer: {},
         comments: [],
         recomment: '',
-        to_who:'回复评论'
+        to_who: '回复评论',
+        c_id: 0,
+        is_footer_show: false,
+        from_to: [
+          {
+            from_user_id: 1,
+            from_user: '我啊啊啊',
+            to_user_id: 2,
+            to_user: '你',
+            content: '哈哈哈哈哈'
+          },
+          {
+            from_user_id: 1,
+            from_user: '我顶顶顶顶',
+            to_user_id: 2,
+            to_user: '你',
+            content: '哈哈哈哈哈'
+          },
+          {
+            from_user_id: 2,
+            from_user: '你',
+            to_user_id: 2,
+            to_user: '我2222',
+            content: '哈哈哈哈哈'
+          }
+        ]
       };
     },
     computed: {},
@@ -130,6 +160,7 @@
         let data = {
           q_id: this.$route.query.q_id,
           a_id: this.$route.query.a_id,
+          c_id: this.c_id
         };
 
         this.doRequest(Constants.Method.get_comment_list, data, (result) => {
@@ -151,6 +182,12 @@
           return 'role-guanjia';
         }
       },
+      onItemClick(name, c_id) {
+        console.log(name);
+        this.is_footer_show = true
+        this.c_id = c_id
+        this.to_who = "回复 " + name + " 评论："
+      },
       submit() {
         if (!this.recomment) {
           EventBus.$emit(Constants.EventBus.showToast, {
@@ -161,22 +198,25 @@
         let data = {
           q_id: this.$route.query.q_id,
           a_id: this.$route.query.a_id,
-          c_id: 0,
+          c_id: this.c_id,
           content: this.recomment
         };
         this.doRequest(Constants.Method.comment, data, (result) => {
           this.getComment();
           this.recomment = '';
+          console.log("++++++++++++comment+++++++++++++");
           console.log(result);
+          this.is_footer_show = false
+          console.log("++++++++++++++++++++++++++++++++");
         });
       },
-      like(a_id,liked,c_id) {
+      like(a_id, liked, c_id) {
         let data = {
           q_id: this.$route.query.q_id,
           a_id: a_id,
           c_id: c_id
         };
-        switch (liked){
+        switch (liked) {
           case 1:
             this.doRequest(Constants.Method.un_like, data, (result) => {
               if (c_id) {
@@ -212,16 +252,7 @@
           console.log("====================");
         });
       },
-      onItemClick(name) {
-        console.log(name);
-        let data = {
 
-        }
-        this.to_who = "回复 " + name + " 评论："
-        this.doRequest(Constants.Method.comment, data, (result) => {
-          console.log(result);
-        });
-      }
     }
   };
 </script>
@@ -257,6 +288,7 @@
         color: $fontcolor_gray;
       }
       .name {
+        font-size: px2rem(14);
         color: #333;
       }
       .role {
@@ -285,7 +317,7 @@
       }
       .liked {
         color: $fontcolor_red;
-        .icon{
+        .icon {
           color: $fontcolor_red;
         }
       }
@@ -317,7 +349,7 @@
 
   }
 
-  .footer{
+  .footer {
     width: 100%;
     font-size: px2rem(12);
     color: #333333;
@@ -343,12 +375,22 @@
     }
 
   }
-  .small-recomment{
+
+  .small-recomment {
     width: 100%;
     font-size: px2rem(12);
     color: #333;
     padding: px2rem(2) px2rem(3);
     background-color: #eee;
 
+  }
+
+  .recomment-p {
+    position: relative;
+    .recomment-p-huifu {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+    }
   }
 </style>
