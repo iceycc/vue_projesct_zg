@@ -7,10 +7,12 @@
                     <div class="title-view">
                         <div class="title">{{props.item.title}}</div>
                         <span class="reward shadow"
-                              v-if="parseFloat(props.item.q_reward) > 0">{{props.item.q_reward}}</span>
+                              v-if="parseFloat(props.item.money) > 0">{{props.item.money}}</span>
                     </div>
                     <div class="card-content">{{props.item.a_content}}</div>
-                    <div class="footer-view">
+                  <div class="card-time">{{props.item.addtime}}</div>
+
+                  <div class="footer-view">
                         <div class="avatar">
                             <img-wrapper v-for="avatar,index in props.item.avatar" :url="avatar" :key="index"
                                          classStyle="icon"></img-wrapper>

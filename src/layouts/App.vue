@@ -7,7 +7,7 @@
     <mu-toast v-if="toast.show" :message="toast.message"></mu-toast>
     <mu-dialog :open="login" title="登录成功" titleClass="text-center">
       <div style="text-align: center">
-        关注诸葛装修公众号<br>
+        关注优装美家公众号<br>
         第一时间收到回答提醒<br>
         更多悬赏问题推送,助你拿取赏金
       </div>

@@ -18,13 +18,11 @@
             {{answer.like_num}}
           </div>
         </div>
-
       </div>
       <div class="context">{{answer.content}}</div>
       <div class="huifu" @click="onItemClick(answer.aname,0)">回复</div>
 
     </div>
-
     <div class="title">{{comments.length > 0 ? '全部回复' : '暂无回复'}}</div>
     <div class="scroll-view">
       <mu-list>
@@ -32,11 +30,11 @@
           <div class="item">
             <div class="card card-re">
               <div class="view1 horizontal-view">
-                <img-wrapper classStyle="avatar" :url="item.a_avatar"></img-wrapper>
+                <!--<img-wrapper classStyle="avatar" :url="item.a_avatar"></img-wrapper>-->
                 <div class="vertical-view">
-                  <div class="name">{{item.from_user}}  {{item.to_user ? " 回复 "+ item.to_user : " 回复 "+ answer.aname}}
+                  <div class="name huifu-name">{{item.from_user}} <span class="huifu-text"> 回复 </span> {{item.to_user ? item.to_user : answer.aname + " ："}}
                   </div>
-                  <div class="date">{{item.c_add_time}}</div>
+
                 </div>
                 <!--<div class="horizontal-view">-->
                   <!--<div class="like" v-bind:class="item.is_liked == 1 ? 'liked' : ''"-->
@@ -48,7 +46,12 @@
                 <!--</div>-->
               </div>
               <div class="context">{{item.content}}</div>
-              <div class="huifu" @click="onItemClick(item.from_user,item.from_user_id)">回复</div>
+              <div style="display: flex">
+                <span class="left">{{item.addtime}}</span>
+                <span class="right" @click="onItemClick(item.from_user,item.cid)">回复</span>
+              </div>
+
+
               <!--<div class="small-recomment">-->
                 <!--todo -->
                 <!--<p class="recomment-p"-->
@@ -201,6 +204,9 @@
           c_id: this.c_id,
           content: this.recomment
         };
+        console.log("~~~~~~~~~~~~~~~~~")
+        console.log(this.c_id)
+        console.log("~~~~~~~~~~~~~~~~~")
         this.doRequest(Constants.Method.comment, data, (result) => {
           this.getComment();
           this.recomment = '';
@@ -287,9 +293,16 @@
         margin-left: px2rem(10);
         color: $fontcolor_gray;
       }
-      .name {
+      .name{
         font-size: px2rem(14);
-        color: #333;
+        color: #666;
+      }
+      .huifu-name {
+        font-size: px2rem(14);
+        color: #25c3ff;
+        .huifu-text{
+          color:#ccc
+        }
       }
       .role {
         font-size: px2rem(12);
@@ -337,11 +350,26 @@
 
   .card-re {
     .context {
+      padding:px2rem(8);
+      background: #f6f6f6;
+      border-radius: px2rem(8);
+    }
+    .left{
+      flex: 1;
+      text-align: left;
+      font-size:px2rem(14) ;
+      color:#ccc
+    }
+    .right{
+      flex: 1;
+      text-align: right;
+      font-size:px2rem(14) ;
+      color:#ccc
     }
   }
 
   .huifu {
-    color: #666666;
+    color: #ccc;
     font-size: px2rem(14);
     text-align: right;
     padding-bottom: px2rem(5);
@@ -385,12 +413,6 @@
 
   }
 
-  .recomment-p {
-    position: relative;
-    .recomment-p-huifu {
-      position: absolute;
-      right: 0;
-      bottom: 0;
-    }
-  }
+
+
 </style>

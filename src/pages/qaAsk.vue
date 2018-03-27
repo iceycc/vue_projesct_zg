@@ -211,16 +211,8 @@
             this.localIds = [];
             this.serverIds = [];
 
-
-            // todo 发布成功后新的问题发布需要新的id啊
             //  获取问题id
             setTimeout(() => {
-              // this.$router.push({
-              //     name: Constants.PageName.qaDetail,
-              //     query: {
-              //       id: 11
-              //     }
-              //   });
               this.pushPage({
                 name: Constants.PageName.qaDetail,
                 query: {
@@ -240,15 +232,17 @@
           sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
           sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
           success: function (res) {
+            console.log("chooseImage-success")
+
             that.localIds = that.localIds.concat(res.localIds);
           },
           fail: function() {
             // fail
-            // console.log("chooseImage-fail")
+            console.log("chooseImage-fail")
           },
           complete: function() {
             // complete
-            // console.log("chooseImage-complete")
+            console.log("chooseImage-complete")
 
           }
         });

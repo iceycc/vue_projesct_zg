@@ -2,7 +2,7 @@
   <div class="scroll-view">
       <div class="info-box"
            v-for="(item,index) in datas" :key="index"
-           @click="goDetail(item.type,index,item.question_id)"
+           @click="goDetail(item.type,index,item.question_id,item.id)"
            :class="{isread:item.isread != '1'}"
       >
         <!--问题指向1-->
@@ -47,7 +47,7 @@
     },
 
     mounted(){
-      this.addRednum()
+
 
     },
     methods:{
@@ -55,14 +55,16 @@
       // type: 1 回答 2采纳 3点赞回答 4点赞评论 5评论回答 6评论评论
       // 2 获取父组件传递的参数
       // 3 点击进入详情
+      // todo 根据点击的类型重定向到不同的展示页面
+      // http://m.uzhuang.com/index.php?m=wenda&%20f=question_list&v=get_inform   每条数据返回下 当前回答的id，aid
 
-      goDetail(type,index,id) {
+  goDetail(type,index,q_id,c_id){
         switch (type){
           case '1':
             this.$router.push({
               name: Constants.PageName.qaDetail,
               query: {
-                id: id
+                id: q_id
               }
             });
             break;
@@ -70,7 +72,7 @@
             this.$router.push({
               name: Constants.PageName.qaDetail,
               query: {
-                id: id
+                id: q_id
               }
             });
             break;
@@ -78,7 +80,7 @@
             this.$router.push({
               name: Constants.PageName.qaDetail,
               query: {
-                id: id
+                id: q_id
               }
             });
             break;
@@ -86,7 +88,8 @@
             this.$router.push({
               name: Constants.PageName.qaComment,
               query: {
-                id: id
+                a_id: q_id,
+                c_id:c_id
               }
             });
             break;
@@ -94,7 +97,7 @@
             this.$router.push({
               name: Constants.PageName.qaDetail,
               query: {
-                id: id
+                id: q_id
               }
             });
             break;
@@ -102,23 +105,15 @@
             this.$router.push({
               name: Constants.PageName.qaComment,
               query: {
-                id: id
+                q_id: q_id,
+                a_id: c_id
               }
             });
             break;
         }
 
       },
-      addRednum(){
-        this.datas.forEach(function (item,index) {
-          if(item.isread != '0'){
-            this.isReadNum ++
-          }
-        })
 
-        console.log(this.isReadNum)
-        EventBus.$emit(Constants.EventBus.add_red,this.isReadNum)
-      }
     }
   }
 </script>
