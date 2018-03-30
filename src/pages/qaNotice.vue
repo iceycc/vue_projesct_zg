@@ -35,11 +35,10 @@
     methods: {
       getData() {
         this.doRequest(Constants.Method.get_notice_list, this.data, (result) => {
-          console.log("获取通知列表")
           this.getRedNum(result)
           this.datas = result
 
-          console.log("==================")
+          console.log("======通知result============")
           console.log(result)
           console.log("===================")
         });
@@ -52,7 +51,7 @@
             count ++
           }
         })
-        // console.log(count)
+        // console.log(count) 1
         window.localStorage.setItem("notice_isread_num",count)
 
 
@@ -75,6 +74,8 @@
 
   .content {
     height: 100%;
+    background: $divider;
+
   }
   .scroll-view {
     height: 100%;
@@ -86,8 +87,10 @@
 
   .title {
     text-align: center;
-    padding-bottom: 0.6rem;
+    padding-bottom: px2rem(6);
     color:#666;
-    border-bottom: 0.05rem solid #ccc;
+    border-bottom: px2rem(4) solid #ccc;
+    background-color: white;
   }
+
 </style>

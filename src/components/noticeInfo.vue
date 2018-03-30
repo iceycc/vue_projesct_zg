@@ -2,16 +2,16 @@
   <div class="scroll-view">
       <div class="info-box"
            v-for="(item,index) in datas" :key="index"
-           @click="goDetail(item.type,index,item.question_id,item.id)"
+           @click="goDetail(item.type,index,item.question_id,item.answer_id)"
            :class="{isread:item.isread != '1'}"
       >
-        <!--问题指向1-->
-        <p v-if="item.type === '1'">{{item.from_user}} 回答了您的问题</p>
-        <p v-if="item.type === '2'">{{item.from_user}} 采纳了您的问题</p>
-        <p v-if="item.type === '3'">{{item.from_user}} 点赞了你的问答</p>
-        <p v-if="item.type === '4'">{{item.from_user}} 点赞了你的评论</p>
-        <p v-if="item.type === '5'">{{item.from_user}} 评论了你的问答</p>
-        <p v-if="item.type === '6'">{{item.from_user}} 评论了你的评论</p>
+        <!--问题指向11-->
+        <p v-if="item.type === '1'"><span class="username">{{item.from_user}}</span> 回答了您的问题</p>
+        <p v-if="item.type === '2'"><span class="username">{{item.from_user}}</span> 采纳了您的问题</p>
+        <p v-if="item.type === '3'"><span class="username">{{item.from_user}}</span> 点赞了你的问答</p>
+        <p v-if="item.type === '4'"><span class="username">{{item.from_user}}</span> 点赞了你的评论</p>
+        <p v-if="item.type === '5'"><span class="username">{{item.from_user}}</span> 评论了你的问答</p>
+        <p v-if="item.type === '6'"><span class="username">{{item.from_user}}</span> 评论了你的评论</p>
         <div class="infos-text">{{item.content}}</div>
         <div><span class="no-date">{{item.addtime | crtTime }}</span></div>
       </div>
@@ -55,10 +55,10 @@
       // type: 1 回答 2采纳 3点赞回答 4点赞评论 5评论回答 6评论评论
       // 2 获取父组件传递的参数
       // 3 点击进入详情
-      // todo 根据点击的类型重定向到不同的展示页面
+
       // http://m.uzhuang.com/index.php?m=wenda&%20f=question_list&v=get_inform   每条数据返回下 当前回答的id，aid
 
-  goDetail(type,index,q_id,c_id){
+  goDetail(type,index,q_id,a_id){
         switch (type){
           case '1':
             this.$router.push({
@@ -88,16 +88,19 @@
             this.$router.push({
               name: Constants.PageName.qaComment,
               query: {
-                a_id: q_id,
-                c_id:c_id
+                q_id: q_id,
+                a_id: a_id,
+                c_id: 0
               }
             });
             break;
           case '5':
             this.$router.push({
-              name: Constants.PageName.qaDetail,
+              name: Constants.PageName.qaComment,
               query: {
-                id: q_id
+                q_id: q_id,
+                a_id: a_id,
+                c_id: 0
               }
             });
             break;
@@ -106,7 +109,8 @@
               name: Constants.PageName.qaComment,
               query: {
                 q_id: q_id,
-                a_id: c_id
+                a_id: a_id,
+                c_id: 0
               }
             });
             break;
@@ -134,13 +138,22 @@
   }
 
   .info-box{
-    border-bottom: 0.02rem solid #adadad;
-    padding: 0 0.4rem;
-    color: #adadad;
+    /*border-bottom: px2rem(2)  solid #111adadad;*/
+    margin:px2rem(8);
+    padding:0 px2rem(12);
+    color: #333;
+    background: #fff;
+    p{
+      margin: 0;
+      padding: px2rem(10) 0;
+    }
     .infos-text{
-      color:#000;
-      padding: px2rem(4) 0;
+      color:#999;
+      padding:px2rem(4) 0 px2rem(15);
 
+    }
+    .username{
+      color: #1bd4bb;
     }
   }
 </style>

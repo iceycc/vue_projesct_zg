@@ -18,10 +18,16 @@ export default {
         doRequestGet(url, param, success, error, finish) {
             request.get(url, param, success, error, finish);
         },
+        // doParams(urlStr){
+        //   var num = urlStr.indexOf("#")
+        //   console.log(urlStr.slice(0,num) );
+        // },
         initWX(callBack) {
             let params = {
-                url: window.location.href
+                url: window.location.href.split('#')[0]
             };
+          console.log(params);
+          //  获取当前url的微信配置凭证
             this.doRequest(Constants.Method.get_wx_config_info, params, (result) => {
                 wx.config({
                     debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
@@ -29,7 +35,7 @@ export default {
                     timestamp: result.timestamp, // 必填，生成签名的时间戳
                     nonceStr: result.nonceStr, // 必填，生成签名的随机串
                     signature: result.signature,// 必填，签名，见附录1
-                    jsApiList: ['chooseImage', 'previewImage', 'uploadImage', 'chooseWXPay','onMenuShareTimeline'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+                    jsApiList: ['chooseImage', 'previewImage', 'uploadImage', 'chooseWXPay'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
                 });
                 wx.ready(function () {
                     console.log('wx.ready');

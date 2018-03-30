@@ -111,7 +111,6 @@
       if (this.flag) {
         this.getdata();
       }
-      console.log('列表1')
 
     },
     methods: {

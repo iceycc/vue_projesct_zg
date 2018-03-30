@@ -52,18 +52,22 @@
         let scope = '&scope=snsapi_userinfo';
         let wechat_redirect = '#wechat_redirect';
 
-        window.location.href = url + appid + redirect_uri + response_type + scope + wechat_redirect;
-      },
-      gotoMain(id) {
+          window.location.href = url + appid + redirect_uri + response_type + scope + wechat_redirect;
 
+      },
+      gotoMain(uid) {
         this.$ls.remove(Constants.LocalStorage.uid);
-        console.log(id);
+        // console.log(id);
+        //
         this.doRequest(Constants.Method.profile, {
-          uid: id
+          uid: uid
         }, (result) => {
           this.data = result;
-          this.$ls.set(Constants.LocalStorage.uid, id);
-
+          console.log("======profile=========")
+          console.log(result)
+          // avatar collect_num    my_question_num  red_dot  username
+          console.log("======================")
+          this.$ls.set(Constants.LocalStorage.uid, uid);
           this.$router.replace({
             name: Constants.PageName.qaIndex,
             params: {
@@ -133,7 +137,6 @@
       width: px2rem(20);
       height: px2rem(20);
       margin-right: px2rem(20);
-
     }
   }
 

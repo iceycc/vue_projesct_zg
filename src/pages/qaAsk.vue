@@ -119,7 +119,6 @@
       this.initWX(() => {
         console.log('wx success');
       });
-
     },
     activated() {  // 组件激活时
       if (this.$route.params && this.$route.params.type) {
@@ -226,27 +225,15 @@
       },
       chooseImage() {
         let that = this;
-        // console.log(11)
         wx.chooseImage({
           count: 1, // 默认9
           sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
           sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
           success: function (res) {
-            console.log("chooseImage-success")
-
             that.localIds = that.localIds.concat(res.localIds);
-          },
-          fail: function() {
-            // fail
-            console.log("chooseImage-fail")
-          },
-          complete: function() {
-            // complete
-            console.log("chooseImage-complete")
-
           }
         });
-      },
+        },
       remove(localId) {
         this.localIds.splice(this.localIds.indexOf(localId), 1);
       },
@@ -273,7 +260,6 @@
         }
       }
     },
-    // todo 尝试修改bug 552
     deactivated(){  //success 组件停用时调用！！！
       this.type=0  //
     }

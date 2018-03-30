@@ -40,7 +40,7 @@
         <template v-for="item, index in answer_list">
           <div class="item" @click="onItemClick(index)">
             <div class="card-re">
-              <!--评论 人 头像 名称 用户等级 是否采纳-->
+              <!--评论 人 头像 名称 用户等级 是否采纳 11-->
               <div class="view1 horizontal-view">
                 <img-wrapper :url="item.a_avatar" classStyle="avatar"></img-wrapper>
                 <div class="vertical-view">

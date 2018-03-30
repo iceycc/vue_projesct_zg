@@ -13,7 +13,7 @@
         <div class="horizontal-view">
           <div class="like" v-bind:class="answer.is_liked == 1 ? 'liked' : ''"
                @click.stop="like(answer.id,answer.is_liked,0)">
-            <img-wrapper :url="answer.liked == 1 ? icon4 : icon3 "
+            <img-wrapper :url="answer.is_liked == 1 ? icon4 : icon3 "
                          classStyle="icon"></img-wrapper>
             {{answer.like_num}}
           </div>
@@ -50,10 +50,7 @@
                 <span class="left">{{item.addtime}}</span>
                 <span class="right" @click="onItemClick(item.from_user,item.cid)">回复</span>
               </div>
-
-
               <!--<div class="small-recomment">-->
-                <!--todo -->
                 <!--<p class="recomment-p"-->
                    <!--v-for="item,index in from_to"-->
                    <!--:key="index">-->
@@ -61,7 +58,7 @@
                   <!--回复-->
                   <!--<span>{{item.to_user}}</span>-->
                   <!--：<span>{{item.content}} <i></i></span>-->
-                  <!--<span class="recomment-p-huifu">回复</span>-->
+                  <!--<span class="recomment-p-huifu">回复11</span>-->
                 <!--</p>-->
               <!--</div>-->
             </div>
@@ -284,6 +281,7 @@
     background-color: white;
     width: 100%;
     padding: px2rem(10) px2rem(20);
+    margin-bottom: px2rem(10);
     z-index: 1;
     .view1 {
       align-items: center;
@@ -341,7 +339,6 @@
   }
 
   .title {
-    margin-top: px2rem(10);
     background-color: white;
     color: $fontcolor;
     padding: px2rem(10) px2rem(20);
@@ -364,14 +361,15 @@
       flex: 1;
       text-align: right;
       font-size:px2rem(14) ;
-      color:#ccc
+      color:#aaa
     }
   }
 
   .huifu {
-    color: #ccc;
+    color: #aaa;
     font-size: px2rem(14);
     text-align: right;
+    line-height: px2rem(25);
     padding-bottom: px2rem(5);
     border-bottom: px2rem(1) solid $divider;
 

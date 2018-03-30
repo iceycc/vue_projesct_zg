@@ -49,15 +49,12 @@ export const Method = {
     //wxpay: 'http://m.uzhuang.com/wxpay/pay/Weixin/h5_wx/example/jsapi.php',
     //wx_jssdk 配置信息
     get_wx_config_info: BASE_URL + "f=question_list&v=get_wx_config_info",
-
     //课堂
     //推荐
-    ketang_commend: 'http://bang.uzhuang.com/index.php?m=bangV2&f=ketang&v=commend',
-
+    // ketang_commend: 'http://bang.uzhuang.com/index.php?m=bangV2&f=ketang&v=commend',
+    ketang_commend: 'http://bang.uzhuang.com/index.php?m=bangV2&f=ketang&v=nodeListThumb',
     // 通知的
     // http://m.uzhuang.com/index.php?m=wenda&f=question_list&v=get_answer&q_id=7&a_id=16&uid=25416
-
-
   }
 ;
 
