@@ -39,11 +39,18 @@ let routes = [{
       meta: {keepAlive: true, title: '通知'},
     },
     {
-      path:Constants.PageName.qaknowledge,
-      name:Constants.PageName.qaknowledge,
-      component:Pages[Constants.PageName.qaknowledge],
-      meta:{keepAlive: true, title: '课堂'}
+      path: Constants.PageName.qaknowledge,
+      name: Constants.PageName.qaknowledge,
+      component: Pages[Constants.PageName.qaknowledge],
+      meta: {keepAlive: true, title: '课堂'}
     }
+    // ,
+    // {
+    //   path: Constants.PageName.qaDetail,
+    //   name: Constants.PageName.qaDetail,
+    //   component: Pages[Constants.PageName.qaDetail],
+    //   meta: {keepAlive: true, title: '问答详情'}
+    // }
   ]
 }];
 
@@ -63,6 +70,7 @@ addRouter(Constants.PageName.qaWithdraw, {keepAlive: false, title: '提现'});
 // addRouter(Constants.PageName.qaUser, {title: '我的'});
 //addRouter(Constants.PageName.qaIndex, {title: '问答'});
 
+
 let router = new Router({
   //mode: 'history',
   routes
@@ -72,11 +80,15 @@ router.beforeEach((to, from, next) => {
   if (to.meta && to.meta.title) {
     document.title = to.meta.title;
   }
-  if(to.name==='qaindex' && from.name === 'qaask'){
+  if (to.name === 'qaindex' && from.name === 'qaask') {
+
+  }
+  if (to.name === 'qauser') {
 
   }
 
   next();
 });
+
 
 export default router;

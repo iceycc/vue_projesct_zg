@@ -9,7 +9,7 @@
         <img-wrapper :url="question.avatar" classStyle="avatar"></img-wrapper>
         <div class="username">{{question.aname}}</div>
         <span class="reward shadow"
-              v-if="parseFloat(question.q_reward) > 0"> ¥{{question.q_reward}}</span>
+              v-if="parseFloat(question.q_reward) > 0"> 悬赏金额 ¥{{question.q_reward}}</span>
       </div>
       <!--问题标题-->
       <div class="card-title">{{question.title}}</div>
@@ -45,7 +45,9 @@
                 <img-wrapper :url="item.a_avatar" classStyle="avatar"></img-wrapper>
                 <div class="vertical-view">
                   <div class="name">{{item.aname}}
-                    <uz-lable :role="item.uid ===question.uid ? '赏金发起人' : item.role"></uz-lable>
+                    <!--显示颜色从组件内根据角色名匹配的-->
+                    <uz-lable v-if="question.q_reward > 0" :role="item.uid === question.uid ? '赏金发起人' : item.role"></uz-lable>
+                    <uz-lable v-else :role="item.uid ===question.uid ? '问题发起人' : item.role"></uz-lable>
                   </div>
                   <div class="date">{{item.atime}}</div>
                 </div>
@@ -170,7 +172,6 @@
         })
       },
 
-
       getData() {
         let data = {
           q_id: this.$route.query.id,
@@ -229,6 +230,10 @@
       },
 
       like(index, liked) {
+
+
+
+
         let data = {
           q_id: this.$route.query.id,
           a_id: this.answer_list[index].id,
@@ -251,10 +256,10 @@
       },
       toLiked(index, liked){
         this.debounce(this.like(index, liked),1000)
+
       },
       debounce(fn, delay) {
         // 1 记录一个初始时间
-        console.log(delay)
         let last = Date.now()
         // 2 维护一个 timer
         let timer;
@@ -274,11 +279,14 @@
       },
 
       collect() {
+          var count = window.localStorage.getItem('collect_num')
         if (this.question.is_collect) {
           let data = {
             q_id: this.$route.query.id,
           };
           this.doRequest(Constants.Method.un_favourites, data, (result) => {
+            count --;
+            EventBus.$emit('collect_num',count)
             this.getData();
             EventBus.$emit(Constants.EventBus.showToast, {
               message: '取消收藏'
@@ -289,6 +297,8 @@
             q_id: this.$route.query.id,
           };
           this.doRequest(Constants.Method.favourites, data, (result) => {
+            count ++;
+            EventBus.$emit('collect_num',count)
             this.getData();
             EventBus.$emit(Constants.EventBus.showToast, {
               message: '收藏成功'

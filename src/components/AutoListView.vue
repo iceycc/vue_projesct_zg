@@ -19,6 +19,13 @@
         </div>
       </div>
     </div>
+    <div class="grid" v-else-if="type == 'pics'">
+      <div v-for="item, index in data" @click="onItemClick(index)" v-bind:style="gridstyle">
+        <div class="item">
+          <slot name="item" :item="item" :index="index"></slot>
+        </div>
+      </div>
+    </div>
     <div class="empty-view" v-if="data.length <= 0 && !loading">
       <div class="empty-message">{{emptyMsg}}</div>
     </div>
@@ -173,4 +180,5 @@
   .mu-infinite-scroll {
     padding-top: 10px;
   }
+
 </style>

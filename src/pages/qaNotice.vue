@@ -1,22 +1,25 @@
 <template>
     <div class="content">
-      <h3 class="title">通知</h3>
+      <app-bar :title="title"></app-bar>
       <notice-info :datas="datas"></notice-info>
     </div>
 </template>
 
 <script>
   import {Constants, EventBus, mixins} from '../assets/js/index';
-  import noticeInfo from "../components/noticeInfo"
+  import noticeInfo from "../components/noticeInfo";
+  import AppBar from "../components/AppBar.vue";
 
   export default {
     components: {
       noticeInfo,
+      AppBar
     },
     mixins: [mixins.base, mixins.request],
     name: Constants.PageName.qaknowledge,
     data() {
       return {
+        title:'通知',
         datas: [],
         data: {
           a_id: 16,

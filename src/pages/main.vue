@@ -27,22 +27,26 @@
     </mu-bottom-nav>
     <div class="mask" v-if="showAsk">
       <div class="btn-view">
-        <keep-alive> <div class="icon-view" @click="gotoAsk(0)">
-          <div style="visibility: hidden">
-            <div>更快更多更优质回答</div>
-            <div>查看更多<a href="">专属权利</a></div>
+        <keep-alive>
+          <div class="icon-view" @click="gotoAsk(0)">
+            <div style="visibility: hidden">
+              <div>更快更多更优质回答</div>
+              <div>查看更多<a href="">专属权利</a></div>
+            </div>
+            <img-wrapper :url="icon1" classStyle="icon"></img-wrapper>
+            <div class="name">免费提问</div>
           </div>
-          <img-wrapper :url="icon1" classStyle="icon"></img-wrapper>
-          <div class="name">免费提问</div>
-        </div></keep-alive>
-        <keep-alive><div class="icon-view" @click="gotoAsk(1)">
-          <div>
-            <div>更快更多更优质回答</div>
-            <div>查看更多<a href="" @click.self="webpage">专属权利</a></div>
+        </keep-alive>
+        <keep-alive>
+          <div class="icon-view" @click="gotoAsk(1)">
+            <div>
+              <div>更快更多更优质回答</div>
+              <div>查看更多<a href="" @click.self="webpage">专属权利</a></div>
+            </div>
+            <img-wrapper :url="icon2" classStyle="icon"></img-wrapper>
+            <div class="name">悬赏提问</div>
           </div>
-          <img-wrapper :url="icon2" classStyle="icon"></img-wrapper>
-          <div class="name">悬赏提问</div>
-        </div></keep-alive>
+        </keep-alive>
       </div>
       <div class="close" @click="toggleAsk">X</div>
     </div>
@@ -79,12 +83,12 @@
         tab4: [require('../assets/img/icon_tab_user.svg'), require('../assets/img/icon_tab_user_ed.svg')],
         showAsk: false,
         style: {},
-        notice_isread_num:0,
-        isreadShow:false
+        notice_isread_num: 0,
+        isreadShow: false
       };
     },
     computed: {},
-    updated(){
+    updated() {
       this.isReadShow()
 
     },
@@ -94,28 +98,46 @@
         this.handleChange(0);
       }
 
-      if(this.$route.params.isLogin){
+      if (this.$route.params.isLogin) {
         EventBus.$emit(Constants.EventBus.login);
       }
-      if(Constants.EventBus.add_red){
+      if (Constants.EventBus.add_red) {
         EventBus.$on(Constants.EventBus.add_red, function (value) {
         })
       }
     },
+    watch:{
+      "$router":"getUserData"
+    },
+
     mounted() {
       this.style = {
         height: (this.$el.offsetHeight - this.$refs['bottom'].$el.offsetHeight) + 'px'
       };
     },
     methods: {
-      isReadShow(){
+      getUserData(){
+        this.doRequest(Constants.Method.profile, null, (result) => {
+          this.collect_num = this.collect_num || this.data.collect_num
+          // this.my_question = this.data.my_question_num
+          // 有待优化 监听 ask页面我得问题数量的变化 1
+          // EventBus.$on('my_question_num',content => {
+          //   console.log('my_question_num:' +content)
+          //   this.my_question = content || this.my_question
+          // })
+          window.localStorage.setItem('collect_num',this.collect_num)
+          console.log("==========collect_num====1111==========")
+          console.log(this.collect_num )
+          console.log("===========================")
+        });
+      },
+      isReadShow() {
         this.notice_isread_num = window.localStorage.getItem("notice_isread_num")
-        console.log(this.notice_isread_num )
-        if(this.notice_isread_num > 0){
+        if (this.notice_isread_num > 0) {
           this.isreadShow = true
         }
 
-        if(this.notice_isread_num === 0){
+        if (this.notice_isread_num === 0) {
           this.isreadShow = false
         }
       },
@@ -161,19 +183,24 @@
   };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
+<!-- Add "scoped" attribute to limit CSS to this component only 111-->
 <style lang="scss" scoped>
   @import "../assets/scss/px2rem";
 
+  .page {
+    background: #f2f2f2;
+  }
+
   .sub-page {
     flex-grow: 1;
-    padding-bottom: px2rem(100);
+    /*padding-bottom: px2rem(120);*/
   }
 
   .tabicon {
     width: 25px;
     height: 25px;
   }
+
   .btn_ask {
     position: fixed;
     width: 40px;
@@ -232,7 +259,8 @@
       border-top: px2rem(1) solid $fontcolor_gray;
     }
   }
-  .isread-num{
+
+  .isread-num {
     position: absolute;
     left: px2rem(46);
     top: px2rem(6);

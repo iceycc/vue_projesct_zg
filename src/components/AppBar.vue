@@ -62,7 +62,7 @@
                 switch (this.mode) {
                     case 'test':
                     case 'page':
-                        this.$router.back();
+                        this.$router.go(-1);
                         break;
                     case 'main':
                         EventBus.$emit(Constants.EventBus.toggleDrawer);

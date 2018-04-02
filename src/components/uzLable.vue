@@ -28,7 +28,7 @@
         if (role == '达人') {
           return 'role-daren';
         }
-        if (role == '赏金发起人') {
+        if (role == '问题发起人' || '赏金发起人') {
           return 'role-faqiren'
           //  #fe6d6f
         }

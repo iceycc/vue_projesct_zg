@@ -29,7 +29,6 @@ export const Method = {
     adoption: BASE_URL + "f=operation&v=adoption",
     //点赞回答  1 点赞接口
     like: BASE_URL + "f=operation&v=like",
-    // TODO：取消点赞接口
     un_like: BASE_URL + "f=operation&v=unlike",
   //评论回答 1 回答评论接口
     comment: BASE_URL + "f=operation&v=comment",
@@ -51,8 +50,9 @@ export const Method = {
     get_wx_config_info: BASE_URL + "f=question_list&v=get_wx_config_info",
     //课堂
     //推荐
-    // ketang_commend: 'http://bang.uzhuang.com/index.php?m=bangV2&f=ketang&v=commend',
-    ketang_commend: 'http://bang.uzhuang.com/index.php?m=bangV2&f=ketang&v=nodeListThumb',
+    ketang_commend: 'http://bang.uzhuang.com/index.php?m=bangV2&f=ketang&v=commend',
+    // 装修前 中 后
+    ketang_commend_qzh: 'http://bang.uzhuang.com/index.php?m=bangV2&f=ketang&v=nodeListThumb',
     // 通知的
     // http://m.uzhuang.com/index.php?m=wenda&f=question_list&v=get_answer&q_id=7&a_id=16&uid=25416
   }

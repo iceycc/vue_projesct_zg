@@ -26,7 +26,9 @@
       :url="url"
       :flag="flag"
       @onItemClick="onItemClick"
-      :isNeedDivider="false">
+      :isNeedDivider="false"
+      :class="{isIndex0:hot_words_index === 0}"
+    >
       <!--@SwipeLeft="onSwipeLeft"-->
       <!--@SwipeRight="onSwipeRight"-->
       <!--@SwipeDown="onSwipeDown"-->
@@ -37,22 +39,22 @@
         <!--v-on:swiperight="onSwipeRight"-->
         <!--v-on:swiperdown="onSwipeDown"-->
         <!--:style="{width:'100%'}">-->
-
         <div class="card">
           <!--标题-->
           <div class="title-view">
             <div class="title">{{props.item.title}}</div>
             <!--金额 如果有的话显示-->
             <span class="reward shadow"
-                  v-if="parseFloat(props.item.q_reward) > 0">{{props.item.q_reward}}</span>
+                  v-if="parseFloat(props.item.q_reward) > 0">悬赏金额 ￥{{props.item.q_reward}}</span>
           </div>
           <!--内容-->
-          <div class="card-content">{{props.item.a_content}}</div>
+          <div class="card-content">{{props.item.content}}</div>
           <!--底部显示 头像+浏览数-->
           <div class="footer-view">
             <div class="avatar">
               <img-wrapper v-for="avatar,index in props.item.avatar" :url="avatar" :key="index"
                            classStyle="avatar"></img-wrapper>
+              <span class="text" v-if="props.item.avatar.length != 0">等回答了该问题</span>
             </div>
             <div class="pv">{{props.item.pv}}浏览</div>
           </div>
@@ -93,9 +95,23 @@
         swiper_i: 0
       };
     },
+    filter:{
+
+    },
     computed: {},
     created() {
-
+      // let id = this.$route.query.id;
+      // console.log("=====index=======");
+      // console.log(id);
+      // console.log("===============");
+      // if(id != null){
+      //   this.$router.replace({
+      //     name: Constants.PageName.qaLogin,
+      //     params: {
+      //       isLogin: false
+      //     }
+      //   });
+      // }
       this.doRequest(Constants.Method.get_banner_list, null, (result) => {
         this.banners = result;
 
@@ -125,13 +141,11 @@
         this.selectHotWord(this.swiper_i)
       },
       onSwipeDown($event) {
-
         console.log($event)
       },
       onSwipeUp() {
 
       },
-
       getList() {
         this.url = Constants.Method.get_homepage + '&hot_words_id=' + this.hot_words[this.hot_words_index].id;
         this.flag = this.url;
@@ -160,7 +174,7 @@
   };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
+<!-- Add "scoped" attribute to limit CSS to this component only 11-->
 <style lang="scss" scoped>
   @import "../assets/scss/px2rem";
 
@@ -168,7 +182,12 @@
     background-color: $divider;
     height: 100%;
   }
-
+  .scroll-view{
+    padding-bottom:px2rem(70);
+    &.isIndex0{
+      padding-bottom:px2rem(170);
+    }
+  }
   .banner {
     height: px2rem(100);
     background-color: white;
@@ -219,6 +238,7 @@
     width: 100%;
     padding: px2rem(10);
     border-radius: px2rem(3);
+
     .title-view {
       display: flex;
       flex-direction: row;
@@ -235,17 +255,17 @@
         padding: px2rem(4) px2rem(10);
         border-radius: px2rem(13);
       }
-      .reward:before {
-        content: '¥';
-        font-size: px2rem(10);
-      }
     }
 
     &-content {
       color: #666666;
       font-size: px2rem(14);
-      padding: px2rem(10) 0;
-      border-bottom: px2rem(1) solid $divider;
+      padding-top: px2rem(10);
+      margin-bottom: px2rem(10);
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+      overflow: hidden;
     }
 
     .footer-view {
@@ -255,8 +275,16 @@
       color: $fontcolor_gray;
       padding-top: px2rem(10);
       font-size: px2rem(10);
+      border-top: px2rem(1) solid $divider;
+
       .avatar {
         flex-grow: 1;
+        vertical-align: middle;
+
+        text{
+          height: 100%;
+          vertical-align: middle;
+        }
       }
       .pv {
       }

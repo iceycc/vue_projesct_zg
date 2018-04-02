@@ -12,7 +12,7 @@
         <div class="item" @click="gotoList(1)">
           <img-wrapper :url="icon_fav" classStyle="icon"></img-wrapper>
           <div class="name">我的收藏</div>
-          <div class="num">{{data.collect_num}}</div>
+          <div class="num">{{collect_num}}</div>
           <div class="arrow"></div>
         </div>
         <div class="divider"></div>
@@ -20,7 +20,7 @@
           <img-wrapper :url="icon_qu" classStyle="icon"></img-wrapper>
           <div class="name">我的问题</div>
           <div class="num" v-bind:class="{'red-point':data.red_dot > 0}">
-            {{data.my_question_num}}
+            {{my_question}}
           </div>
           <div class="arrow"></div>
         </div>
@@ -32,9 +32,7 @@
           <div class="arrow"></div>
         </div>
       </div>
-
     </div>
-
   </div>
 
 </template>
@@ -59,24 +57,37 @@
         icon_wallet: require('../assets/img/icon_user_wallet.svg'),
         icon_qu: require('../assets/img/icon_user_qu.svg'),
         icon_fav: require('../assets/img/icon_user_fav.svg'),
-        data: {}
+        data: {},
+        my_question:0,
+        collect_num:0,
       };
     },
     created() {
+
       this.doRequest(Constants.Method.profile, null, (result) => {
         this.data = result;
-        console.log("-----profile-------")
-        console.log(result)
-        console.log("------------")
+        this.collect_num = this.data.collect_num
+        this.my_question = this.data.my_question_num
+
+        // 有待优化 监听 ask页面我得问题数量的变化 1
+        EventBus.$on('my_question_num',content => {
+          this.my_question = content || this.my_question
+        })
+        // 有待优化 监听 ask页面我得问题数量的变化 1
+        EventBus.$on('collect_num',content => {
+          this.collect_num = content || this.collect_num
+        })
+        window.localStorage.setItem('collect_num',this.collect_num)
       });
     },
-    watch:{
-      "$router":"isTab"
-    },
+
 
     activated() {
     },
     methods: {
+      getUserData(){
+
+      },
       isTab(){
 
       },

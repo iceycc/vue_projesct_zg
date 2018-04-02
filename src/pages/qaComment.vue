@@ -30,6 +30,7 @@
           <div class="item">
             <div class="card card-re">
               <div class="view1 horizontal-view">
+
                 <!--<img-wrapper classStyle="avatar" :url="item.a_avatar"></img-wrapper>-->
                 <div class="vertical-view">
                   <div class="name huifu-name">{{item.from_user}} <span class="huifu-text"> 回复 </span> {{item.to_user ? item.to_user : answer.aname + " ："}}
@@ -109,10 +110,11 @@
         to_who: '回复评论',
         c_id: 0,
         is_footer_show: false,
+        title:'',
         from_to: [
           {
             from_user_id: 1,
-            from_user: '我啊啊啊',
+            from_user: '22',
             to_user_id: 2,
             to_user: '你',
             content: '哈哈哈哈哈'

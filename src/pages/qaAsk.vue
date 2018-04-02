@@ -262,7 +262,13 @@
     },
     deactivated(){  //success 组件停用时调用！！！
       this.type=0  //
-    }
+    },
+    beforeRouteLeave(to, from, next){
+      this.doRequest(Constants.Method.profile, null, (result) => {
+        EventBus.$emit('my_question_num',result.my_question_num)
+      });
+      next()
+    },
   };
 </script>
 
