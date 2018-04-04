@@ -53,12 +53,12 @@
         let wechat_redirect = '#wechat_redirect';
 
           window.location.href = url + appid + redirect_uri + response_type + scope + wechat_redirect;
-        this.$router.replace({
-          name: Constants.PageName.qaIndex,
-          params: {
-            isLogin: true
-          }
-        });
+        // this.$router.replace({
+        //   name: Constants.PageName.qaIndex,
+        //   params: {
+        //     isLogin: true
+        //   }
+        // });
       },
       gotoMain(uid) {
         this.$ls.remove(Constants.LocalStorage.uid);

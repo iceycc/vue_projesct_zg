@@ -9,38 +9,35 @@
       </template>
     </div>
 
-    <auto-list-view :url="url" :flag="flag" :isNeedDivider="false" @onItemClick="onItemClick">
+    <auto-list-view :url="url" :flag="flag" :isNeedDivider="false" @onItemClick="onItemClick" v-if="isFirst">
       <template slot="item" slot-scope="props">
         <div class="card">
+          <div class="card-img">
+            <img :src="props.item.thumb" alt="">
+          </div>
           <div class="title-view">
             <div class="title">{{props.item.title}}</div>
             <span class="reward shadow"
                   v-if="parseFloat(props.item.q_reward) > 0">{{props.item.q_reward}}</span>
-          </div>
-          <div class="card-content">{{props.item.remark}}</div>
-          <div class="footer-view">
-            <div class="avatar">
-              <img-wrapper v-for="avatar,index in props.item.avatar" :url="avatar" :key="index"
-                           classStyle="avatar"></img-wrapper>
-            </div>
-            <div class="pv">{{props.item.pv}}浏览</div>
+            <div class="card-content">{{props.item.remark}}</div>
           </div>
         </div>
       </template>
     </auto-list-view>
 
-    <auto-list-view :url="url" :flag="flag" :type="pics" @onItemClick="onItemClick">
-      <template slot="item" slot-scope="props">
-        {{item}}
-      </template>
-    </auto-list-view>
+    <div class="ketang_imgs" v-else>
+
+      <div v-for="item,index in pics" :key="index" class="ketang_img">
+        <span class="title">{{picsTitle | forPicsTitle(index)}}</span>
+        <img :src="item" alt=""></div>
+    </div>
   </div>
 
 </template>
 
 <script>
   import {Constants, EventBus, mixins} from '../assets/js/index';
-
+  import axios from 'axios';
   import ComponentTemplate from "../components/template";
   import AutoListView from "../components/AutoListView";
   import ImgWrapper from "../components/ImgWrapper";
@@ -54,6 +51,7 @@
     name: Constants.PageName.qaknowledge,
     data() {
       return {
+        isFirst:true,
         url: '',
         category_index: 0,
         categorys: [{
@@ -66,8 +64,21 @@
           name: '装修后',
         }],
         flag: null,
-        pics: ''
+        pics:[],
+        picsTitle:[],
+        // [@"收房",@"设计",@"建材",@"预算",@"合同”]  :66/67/32/68/69
+        // [@"拆改",@"水电",@"防水",@"泥瓦",@"木工",@"油漆",@"竣工"] :70~76
+        // [@"软装",@"风水",@"环保",@"家具",@"电器",@"入住",@"保养”]:81/87/82/33/35/83/170
+        picsTitlePrevious:['收房','设计','建材','预算','合同'],
+        picsTitleMiddle:['拆改','水电','防水','泥瓦','木工','油漆','竣工'],
+        picsTitleLast:['软装','风水','环保','家具','电器','入住','保养']
       };
+    },
+    filters:{
+      forPicsTitle:(val,index) => {
+
+        return val[index]
+      }
     },
     computed: {},
     created() {
@@ -77,6 +88,7 @@
       getList(url) {
         this.url = url;
         this.flag = this.url;
+        this.isFirst = true
       },
       onItemClick(item) {
         window.location.href = item.url;
@@ -87,8 +99,27 @@
             }
         });*/
       },
+      getPicsData(url,type,picsTitle){
+        this.isFirst = false
+        this.loading = true
+        this.picsTitle = picsTitle
+        // todo 这里用的原生axios啊1111
+        axios.get(url,{params:{type : type}})
+          .then((res)=>{
+            let urls = res.data.data
+            let urlArr = []
+            let i = 0
+            for(var x in urls){
+              urlArr.push(urls[x])
+              i++
+            }
+            this.pics = urlArr
+          })
+        // this.doRequestGet(url,params,(result) =>{
+        //   console.log(result)
+        // })
+      },
       selectHotWord(index) {
-        // todo
         this.category_index = index;
         switch (this.category_index) {
           case 0:
@@ -97,15 +128,15 @@
             break;
           case 1:
             //信息列表321
-            this.getList(Constants.Method.ketang_commend_qzh + `&type=previous`);
+            this.getPicsData(Constants.Method.ketang_commend_qzh , 'previous',this.picsTitlePrevious);
             break;
           case 2:
             //信息列表
-            this.getList(Constants.Method.ketang_commend_qzh + `&type=middle`);
+            this.getPicsData(Constants.Method.ketang_commend_qzh , 'middle',this.picsTitleMiddle);
             break;
           case 3:
             //信息列表
-            this.getList(Constants.Method.ketang_commend_qzh + `&type=last`);
+            this.getPicsData(Constants.Method.ketang_commend_qzh ,'last',this.picsTitleLast);
             break;
           default:
             console.log("猜猜猜")
@@ -132,7 +163,6 @@
     background-color: $divider;
     height: 100%;
   }
-
   .hot_word_view {
     display: flex;
     flex-direction: row;
@@ -157,23 +187,57 @@
       border-bottom: px2rem(2) solid $mainColor;
     }
   }
+  /*11*/
+  .ketang_imgs{
+    display: flex;
+    flex-wrap:wrap;
+    .ketang_img{
+      position:relative;
+      padding: px2rem(10);
+      display: inline-block;
+      width: 50%;
+      height: px2rem(120);
 
+      img{
+        width: 100%;
+      }
+      .title{
+        position: absolute;
+        padding: px2rem(6);
+        color: #fff;
+      }
+    }
+  }
   .card {
     background-color: white;
     width: 100%;
     padding: px2rem(10);
     border-radius: px2rem(3);
+    /*12111111*/
+    .card-img{
+      display: inline-block;
+      box-sizing: border-box;
+      vertical-align: top;
+      width: px2rem(80);
+      height: px2rem(60);
+      background: #ccc;
+      img{
+        width: 100%;
+        height: 100%;
+      }
+    }
     .title-view {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
+      display: inline-block;
+      box-sizing: border-box;
+      vertical-align: top;
+      width: 65%;
       .title {
         font-size: px2rem(16);
-        flex-grow: 1;
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
       }
+
       .reward {
         font-size: px2rem(12);
         line-height: 1;

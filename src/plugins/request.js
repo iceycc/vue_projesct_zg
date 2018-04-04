@@ -43,9 +43,7 @@ class Request {
     get(url, param, success, fail, finish) {
         return this._request(url, 'get', param, success, fail, finish);
     }
-    all(reqAll,){
-      return this._request(url, '')
-    }
+
     _request(url, type, param, success, fail, finish) {
         url = Request.isHasHttp(url) ? url : this.getOption().baseURL + '?' + url;
 
@@ -72,6 +70,7 @@ class Request {
             EventBus.$emit(Constants.EventBus.showToast, {
                 message: error.data
             });
+            console.log(error)
             if (error && 'data' in error) { //接口错误
                 console.error('接口异常', error.data);
             } else {

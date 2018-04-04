@@ -11,6 +11,7 @@ _axios.interceptors.response.use((response) => {
     let result = response.data;
 
     if (typeof result === 'string') {
+    // if (true) {
         result = JSON.parse(result);
     }
     if (result && 'code' in result) {//&& 'data' in result
@@ -36,7 +37,6 @@ _axios.interceptors.response.use((response) => {
             data: '请检查网络连接是否正常.'
         });
     }
-    console.log(error.message);
 });
 
 export default _axios;

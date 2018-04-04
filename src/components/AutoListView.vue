@@ -133,6 +133,12 @@
         this.init();
         this.getdata();
       },
+      getPicsData(){
+        this.loading = true;
+        this.doRequest(this.url,null,(result) =>{
+
+        })
+      },
       getdata() {
         this.loading = true;
 

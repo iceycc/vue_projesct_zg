@@ -20,13 +20,13 @@
         <div>{{question.pv}}浏览</div>
         <div>{{question.answer_num}}回答</div>
         <!--收藏 -->
-        <div @click="collect" class="collect-icon">
+        <button @click="collect" class="collect-icon" :disabled="disabled" style="border: none;background: transparent;outline:none">
           <img-wrapper :url="question.is_collect ?  icon5 : icon6 " classStyle="icon"></img-wrapper>
-        </div>
+        </button>
 
         <div>{{ question.qtime | my_time }}</div>
       </div>
-      <!--11-->
+      <!-- -->
       <div class="card-tags" v-if="question.label && question.label.length > 0">
         <div class="tag" v-for="item in question.label">
           {{item}}
@@ -44,7 +44,7 @@
               <div class="view1 horizontal-view">
                 <img-wrapper :url="item.a_avatar" classStyle="avatar"></img-wrapper>
                 <div class="vertical-view">
-                  <div class="name">{{item.aname}}
+                  <div class="name">{{item.aname.nickname}}
                     <!--显示颜色从组件内根据角色名匹配的-->
                     <uz-lable v-if="question.q_reward > 0" :role="item.uid === question.uid ? '赏金发起人' : item.role"></uz-lable>
                     <uz-lable v-else :role="item.uid ===question.uid ? '问题发起人' : item.role"></uz-lable>
@@ -60,7 +60,7 @@
               </div>
               <!--评论内容-->
               <div class="context">{{item.content}}</div>
-              <!--获取评论下的评论 todo 如何判断是否有评论-->
+              <!--获取评论下的评论 -->
               <div v-if="item.hot_comment.c_id" class="hotcomment">
                 <div class="title">{{item.hot_comment.username}}
                   <uz-lable :role="item.hot_comment.role"></uz-lable>
@@ -71,13 +71,16 @@
               <!--底部信息展示-->
               <div class="view2 horizontal-view">
                 <!--点赞功能-->
-                <div class="like" v-bind:class="item.liked == 1 ? 'liked' : ''"
-                     @click.stop="toLiked(index,item.liked)">
+                <button class="like" v-bind:class="item.liked == 1 ? 'liked' : ''"
+                     @click.stop="like(index,item.liked)"
+                    style="border: none;background: transparent;outline: none"
+                        :disabled="disabled"
+                >
                   <img-wrapper :url="item.liked == 1 ? icon4 : icon3 "
                                classStyle="icon"></img-wrapper>
                   {{item.like_num}}
 
-                </div>
+                </button>
                 <!--<div @click.stop="fenXiang(index)"> 分享</div>-->
 
               </div>
@@ -129,6 +132,7 @@
     },
     data() {
       return {
+        text_lable:['哈哈','hhe1'],
         icon1: require('../assets/img/icon_detail_response.svg'),
         icon2: require('../assets/img/icon_detail_ask.svg'),
         icon3: require('../assets/img/icon_detail_like.svg'),
@@ -140,7 +144,8 @@
         answer_list: [],
         flag: null,
         version: process.env.APP_VERSION,
-        localValue: this.$ls.get(Constants.LocalStorage.test, '-1')
+        localValue: this.$ls.get(Constants.LocalStorage.test, '-1'),
+        disabled:false
       };
     },
     computed: {},
@@ -230,10 +235,11 @@
       },
 
       like(index, liked) {
-
-
-
-
+        if(timer){
+          clearTimeout(timer)
+        }
+        this.disabled = true
+        let timer ;
         let data = {
           q_id: this.$route.query.id,
           a_id: this.answer_list[index].id,
@@ -243,11 +249,17 @@
           case 1:
             this.doRequest(Constants.Method.un_like, data, (result) => {
               this.getData();
+              timer = setTimeout(()=>{
+                this.disabled = false
+              },1000)
             })
             break;
           case 0:
             this.doRequest(Constants.Method.like, data, (result) => {
               this.getData();
+              timer = setTimeout(()=>{
+                this.disabled = false
+              },1000)
             })
             break;
           default:
@@ -259,7 +271,7 @@
 
       },
       debounce(fn, delay) {
-        // 1 记录一个初始时间
+        // 1 记录一个初始时间11
         let last = Date.now()
         // 2 维护一个 timer
         let timer;
@@ -268,6 +280,8 @@
           let current = Date.now()
           // 4 进来的时候清除之前的定时器
           // 5
+          console.log(current - last)
+
           if((current - last)>delay){
             timer = setTimeout(fn,delay)
             last = current
@@ -279,7 +293,15 @@
       },
 
       collect() {
-          var count = window.localStorage.getItem('collect_num')
+
+        if(timer){
+          clearTimeout(timer)
+        }
+        this.disabled = true
+        console.log(this.disabled)
+        let timer
+
+        var count = window.localStorage.getItem('collect_num')
         if (this.question.is_collect) {
           let data = {
             q_id: this.$route.query.id,
@@ -291,6 +313,10 @@
             EventBus.$emit(Constants.EventBus.showToast, {
               message: '取消收藏'
             });
+            timer = setTimeout( () => {
+              this.disabled = false
+              console.log(this.disabled)
+            },1000)
           });
         } else {
           let data = {
@@ -303,8 +329,14 @@
             EventBus.$emit(Constants.EventBus.showToast, {
               message: '收藏成功'
             });
+            timer = setTimeout( () => {
+              this.disabled = false
+              console.log(this.disabled)
+            },1000)
           });
         }
+
+
       },
       accept(index) {
         let data = {
@@ -479,6 +511,7 @@
       color: $fontcolor_gray;
       font-size: px2rem(12);
       justify-content: flex-end;
+      /*11111*/
       .collect-icon{
         .icon{
           display: inline-block;

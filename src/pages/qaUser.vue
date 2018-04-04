@@ -169,7 +169,7 @@
         margin-left: px2rem(10);
       }
       .num {
-        font-weight: bold;
+        color: #666;
       }
       .red-point:before {
         content: '•';
