@@ -11,12 +11,14 @@
           <div class="date">{{answer.atime}}</div>
         </div>
         <div class="horizontal-view">
-          <div class="like" v-bind:class="answer.is_liked == 1 ? 'liked' : ''"
-               @click.stop="like(answer.id,answer.is_liked,0)">
+          <button class="like" v-bind:class="answer.is_liked == 1 ? 'liked' : ''"
+                  @click.stop="like(answer.id,answer.is_liked,0)"
+                  :disabled="disabled"
+          >
             <img-wrapper :url="answer.is_liked == 1 ? icon4 : icon3 "
                          classStyle="icon"></img-wrapper>
             {{answer.like_num}}
-          </div>
+          </button>
         </div>
       </div>
       <div class="context">{{answer.content}}</div>
@@ -33,17 +35,18 @@
 
                 <!--<img-wrapper classStyle="avatar" :url="item.a_avatar"></img-wrapper>-->
                 <div class="vertical-view">
-                  <div class="name huifu-name">{{item.from_user}} <span class="huifu-text"> 回复 </span> {{item.to_user ? item.to_user : answer.aname + " ："}}
+                  <div class="name huifu-name">{{item.from_user}} <span class="huifu-text"> 回复 </span> {{item.to_user ?
+                    item.to_user : answer.aname + " ："}}
                   </div>
 
                 </div>
                 <!--<div class="horizontal-view">-->
-                  <!--<div class="like" v-bind:class="item.is_liked == 1 ? 'liked' : ''"-->
-                       <!--@click.stop="like(item.a_id,item.is_liked,item.c_id)">-->
-                    <!--<img-wrapper :url="item.liked == 1 ? icon4 : icon3 "-->
-                                 <!--classStyle="icon"></img-wrapper>-->
-                    <!--{{item.like_num}}-->
-                  <!--</div>-->
+                <!--<div class="like" v-bind:class="item.is_liked == 1 ? 'liked' : ''"-->
+                <!--@click.stop="like(item.a_id,item.is_liked,item.c_id)">-->
+                <!--<img-wrapper :url="item.liked == 1 ? icon4 : icon3 "-->
+                <!--classStyle="icon"></img-wrapper>-->
+                <!--{{item.like_num}}-->
+                <!--</div>-->
                 <!--</div>-->
               </div>
               <div class="context">{{item.content}}</div>
@@ -52,15 +55,15 @@
                 <span class="right" @click="onItemClick(item.from_user,item.cid)">回复</span>
               </div>
               <!--<div class="small-recomment">-->
-                <!--<p class="recomment-p"-->
-                   <!--v-for="item,index in from_to"-->
-                   <!--:key="index">-->
-                  <!--<span>{{item.from_user}}</span>-->
-                  <!--回复-->
-                  <!--<span>{{item.to_user}}</span>-->
-                  <!--：<span>{{item.content}} <i></i></span>-->
-                  <!--<span class="recomment-p-huifu">回复11</span>-->
-                <!--</p>-->
+              <!--<p class="recomment-p"-->
+              <!--v-for="item,index in from_to"-->
+              <!--:key="index">-->
+              <!--<span>{{item.from_user}}</span>-->
+              <!--回复-->
+              <!--<span>{{item.to_user}}</span>-->
+              <!--：<span>{{item.content}} <i></i></span>-->
+              <!--<span class="recomment-p-huifu">回复11</span>-->
+              <!--</p>-->
               <!--</div>-->
             </div>
           </div>
@@ -110,7 +113,7 @@
         to_who: '回复评论',
         c_id: 0,
         is_footer_show: false,
-        title:'',
+        title: '',
         from_to: [
           {
             from_user_id: 1,
@@ -133,7 +136,8 @@
             to_user: '我2222',
             content: '哈哈哈哈哈'
           }
-        ]
+        ],
+        disabled: false
       };
     },
     computed: {},
@@ -216,6 +220,11 @@
         });
       },
       like(a_id, liked, c_id) {
+        if (timer) {
+          clearTimeout(timer)
+        }
+        this.disabled = true
+        let timer;
         let data = {
           q_id: this.$route.query.q_id,
           a_id: a_id,
@@ -229,6 +238,9 @@
               } else {
                 this.getData();
               }
+              timer = setTimeout(() => {
+                this.disabled = false;
+              }, 1000)
             });
             break;
           case 0:
@@ -238,6 +250,9 @@
               } else {
                 this.getData();
               }
+              timer = setTimeout(() => {
+                this.disabled = false;
+              }, 1000)
             });
         }
 
@@ -293,15 +308,15 @@
         margin-left: px2rem(10);
         color: $fontcolor_gray;
       }
-      .name{
+      .name {
         font-size: px2rem(14);
         color: #666;
       }
       .huifu-name {
         font-size: px2rem(14);
         color: #25c3ff;
-        .huifu-text{
-          color:#ccc
+        .huifu-text {
+          color: #ccc
         }
       }
       .role {
@@ -322,6 +337,9 @@
         display: flex;
         flex-direction: row;
         color: $fontcolor_gray;
+        background: transparent;
+        border: none;
+        outline: none;
         .icon {
           width: px2rem(16);
           height: px2rem(16);
@@ -349,21 +367,21 @@
 
   .card-re {
     .context {
-      padding:px2rem(8);
+      padding: px2rem(8);
       background: #f6f6f6;
       border-radius: px2rem(8);
     }
-    .left{
+    .left {
       flex: 1;
       text-align: left;
-      font-size:px2rem(14) ;
-      color:#ccc
+      font-size: px2rem(14);
+      color: #ccc
     }
-    .right{
+    .right {
       flex: 1;
       text-align: right;
-      font-size:px2rem(14) ;
-      color:#aaa
+      font-size: px2rem(14);
+      color: #aaa
     }
   }
 
@@ -412,7 +430,6 @@
     background-color: #eee;
 
   }
-
 
 
 </style>

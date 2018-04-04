@@ -76,7 +76,8 @@ export const PageName = {
   qaSearch: 'qasearch',
   qaAsk: 'qaask',
   qaResponse: 'qaresponse',
-  qaNotice: 'qanotice'
+  qaNotice: 'qanotice',
+  qaGuanJiaList:'qaguanjialist'
 };
 
 //用于管理router中页面名称

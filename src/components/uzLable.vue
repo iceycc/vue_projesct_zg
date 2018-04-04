@@ -22,13 +22,24 @@
     },
     methods: {
       getRoleClass(role) {
+        /*
+        * 返回字段：
+        * 金牌管家
+        * 管家
+        * 达人
+        * 问题发起人 或者 赏金发起人 （这个字段是前端判断的）
+        * 普通用户(默认)
+        * */
         if (role == '金牌管家') {
-          return 'role-guanjia';
+          return 'role-jinpaiguanjia';
+        }
+        if(role == '管家'){
+          return 'role-guanjia'
         }
         if (role == '达人') {
           return 'role-daren';
         }
-        if (role == '问题发起人' || '赏金发起人') {
+        if (role == '问题发起人' || role == '赏金发起人') {
           return 'role-faqiren'
           //  #fe6d6f
         }
@@ -45,14 +56,17 @@
     padding: px2rem(2) px2rem(5);
     border-radius: px2rem(10);
     border: px2rem(1) solid #333;
+    color: #333;
   }
 
-  .role-guanjia {
+  .role-jinpaiguanjia {
     border-color: rgb(255, 182, 0);
     color: rgb(255, 182, 0);
     background-color: rgb(254, 250, 229);
   }
-
+  .role-guanjia{
+    border-color:#5b9ffe;
+  }
   .role-daren {
     border-color: rgb(255, 143, 159);
     color: rgb(255, 143, 159);

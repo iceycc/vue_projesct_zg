@@ -234,6 +234,12 @@
           }
         });
         },
+      previewImage(){
+        wx.previewImage({
+          current: '', // 当前显示图片的http链接
+          urls: [] // 需要预览的图片http链接列表
+        });
+      },
       remove(localId) {
         this.localIds.splice(this.localIds.indexOf(localId), 1);
       },
@@ -241,7 +247,7 @@
         if (this.localIds && this.localIds.length > 0) {
           if (this.localIds.length === this.localIdIndex) {
             callback && callback();
-            // console.log(this.serverIds);
+            console.log(this.serverIds);
             this.localIdIndex = 0;
             return;
           }
@@ -252,6 +258,8 @@
             isShowProgressTips: 1, // 默认为1，显示进度提示
             success: function (res) {
               that.serverIds.push(res.serverId);
+              console.log(res);
+
               that.upload(callback);
             }
           });
