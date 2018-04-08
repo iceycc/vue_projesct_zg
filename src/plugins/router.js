@@ -66,6 +66,7 @@ addRouter(Constants.PageName.qaLogin, {keepAlive: false, title: '登录'});
 addRouter(Constants.PageName.qaWallet, {keepAlive: false, title: '钱包'});
 addRouter(Constants.PageName.qaWithdraw, {keepAlive: false, title: '提现'});
 addRouter(Constants.PageName.qaGuanJiaList, {keepAlive: false, title: '我的问题'});
+addRouter(Constants.PageName.qaKetangDetail, {keepAlive: false, title: '课堂'});
 
 // addRouter(Constants.PageName.qaknowledge, {title: '课堂'});
 // addRouter(Constants.PageName.qaNotice, {title: '通知'});// 新增notice

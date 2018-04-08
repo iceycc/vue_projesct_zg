@@ -20,6 +20,7 @@
         <div>{{question.pv}}浏览</div>
         <div>{{question.answer_num}}回答</div>
         <!--收藏 -->
+
         <button @click="collect" class="collect-icon" :disabled="disabled" style="border: none;background: transparent;outline:none">
           <img-wrapper :url="question.is_collect ?  icon5 : icon6 " classStyle="icon"></img-wrapper>
         </button>
@@ -81,7 +82,7 @@
                   {{item.like_num}}
 
                 </button>
-                <!--<div @click.stop="fenXiang(index)"> 分享</div>-->
+                <div @click.stop="deleteHandle(index)" v-if="item.uid == current_uid && question.q_adoption !=item.id"> 删除</div>
 
               </div>
             </div>
@@ -145,11 +146,13 @@
         flag: null,
         version: process.env.APP_VERSION,
         localValue: this.$ls.get(Constants.LocalStorage.test, '-1'),
-        disabled:false
+        disabled:false,
+        current_uid:null
       };
     },
     computed: {},
     created() {
+      this.current_uid = window.localStorage.getItem('uid')
       this.getData();
       this.initWX(() => {
         console.log('wx success');
@@ -158,6 +161,17 @@
     activated() {
     },
     methods: {
+      deleteHandle(index){
+        console.log('删除')
+        let data = {
+          // u_id:window.localStorage.getItem('uid'),
+          aid:this.answer_list[index].id
+        }
+        this.doRequest(Constants.Method.del_answer,data,(result) => {
+          console.log(result)
+          this.getData()
+        })
+      },
       fenXiang() {
         console.log(11)
         let url = window.location.href
@@ -182,6 +196,7 @@
           q_id: this.$route.query.id,
           uid: this.$ls.get(Constants.LocalStorage.uid)
         };
+
         this.doRequest(Constants.Method.get_question_list, data, (result) => {
           this.question = result.question;
           console.log(result)
@@ -522,6 +537,7 @@
       .like {
         display: flex;
         flex-direction: row;
+        margin-right: px2rem(10);
         .icon {
           width: px2rem(15);
           height: px2rem(15);

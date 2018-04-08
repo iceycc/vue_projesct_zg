@@ -62,17 +62,16 @@
       },
       gotoMain(uid) {
         this.$ls.remove(Constants.LocalStorage.uid);
-        // console.log(id);
-        //
         this.doRequest(Constants.Method.profile, {
           uid: uid
         }, (result) => {
           this.data = result;
-          console.log("======profile=========")
-          console.log(result)
-          // avatar collect_num    my_question_num  red_dot  username
-          console.log("======================")
+          // console.log("======profile=========")
+          // console.log(result)
+          // // avatar collect_num    my_question_num  red_dot  username
+          // console.log("======================")
           this.$ls.set(Constants.LocalStorage.uid, uid);
+          this.$ls.set(Constants.LocalStorage.role, result.role);
           this.$router.replace({
             name: Constants.PageName.qaIndex,
             params: {

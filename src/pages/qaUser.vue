@@ -60,10 +60,11 @@
         data: {},
         my_question:0,
         collect_num:0,
+        role:0,
       };
     },
     created() {
-
+      this.role = this.$ls.get(Constants.LocalStorage.role);
       this.doRequest(Constants.Method.profile, null, (result) => {
         this.data = result;
         this.collect_num = this.data.collect_num
@@ -92,12 +93,23 @@
 
       },
       gotoList(type) {
-        this.pushPage({
-          name: Constants.PageName.qaList,
-          query: {
-            type
-          }
-        });
+        // this.role = 1
+        // 普通用户
+        if(this.role == 0){
+          this.pushPage({
+            name: Constants.PageName.qaList,
+            query: {
+              type
+            }
+          });
+        }
+        // 管家
+        if(this.role ==1){
+          this.pushPage({
+            name: Constants.PageName.qaGuanJiaList
+          });
+        }
+
       },
       gotoWallet() {
         this.pushPage({

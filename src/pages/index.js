@@ -18,6 +18,7 @@ page[Constants.PageName.qaWithdraw] = resolve => require(['./qaWithdraw.vue'], r
 page[Constants.PageName.qaknowledge] = resolve => require(['./qaknowledge.vue'], resolve);
 page[Constants.PageName.qaNotice] = resolve => require(['./qaNotice.vue'], resolve);//新增qaNotice
 page[Constants.PageName.qaGuanJiaList] = resolve => require(['./qaGuanJiaList.vue'], resolve);//新增qaGuanJiaUser
+page[Constants.PageName.qaKetangDetail] = resolve => require(['./qaKetangDetail.vue'], resolve);//新增qaKetangDetail
 
 
 export default page;

@@ -23,14 +23,14 @@ export const Method = {
     get_answer: BASE_URL + "f=question_list&v=get_answer",
     //获取评论列表
     get_comment_list: BASE_URL + "f=question_list&v=get_comment_list",
-  // 新增获取通知列表 type: 1 回答 2采纳 3点赞回答 4点赞评论 5评论回答 6评论评论
-     get_notice_list : BASE_URL + " f=question_list&v=get_inform",
+    // 新增获取通知列表 type: 1 回答 2采纳 3点赞回答 4点赞评论 5评论回答 6评论评论
+    get_notice_list: BASE_URL + " f=question_list&v=get_inform",
     //采纳回答 1 采纳接口
     adoption: BASE_URL + "f=operation&v=adoption",
     //点赞回答  1 点赞接口
     like: BASE_URL + "f=operation&v=like",
     un_like: BASE_URL + "f=operation&v=unlike",
-  //评论回答 1 回答评论接口
+    //评论回答 1 回答评论接口
     comment: BASE_URL + "f=operation&v=comment",
     //收藏问题
     // favourites: BASE_URL + "f=question_list&v=favourites",
@@ -55,6 +55,25 @@ export const Method = {
     ketang_commend_qzh: 'http://bang.uzhuang.com/index.php?m=bangV2&f=ketang&v=nodeListThumb',
     // 通知的
     // http://m.uzhuang.com/index.php?m=wenda&f=question_list&v=get_answer&q_id=7&a_id=16&uid=25416
+    // 删除操作的接口
+    // 删除评论 del_comment uid cid
+    del_comment: BASE_URL + "f=operation&v=del_comment",
+    // 删除回答 del_answer uid aid
+    del_answer: BASE_URL + "f=operation&v=del_answer",
+    // 删除问题 del_question uid qid
+    del_question: BASE_URL + "f=operation&v=del_answer",
+
+    // 管家我得问题列表
+  //http://m.uzhuang.com/index.php?m=wenda&f=question_list&v=get_question_list&type=2
+    // 未回答 get_question_unanswered   uid page
+    get_question_unanswered: BASE_URL + "f=question_list&v=get_question_unanswered",
+    // 回答  get_question_answered   uid page
+    get_question_answered: BASE_URL + "f=question_list&v=get_question_answered"
+
+
+
+
+
   }
 ;
 
@@ -77,7 +96,8 @@ export const PageName = {
   qaAsk: 'qaask',
   qaResponse: 'qaresponse',
   qaNotice: 'qanotice',
-  qaGuanJiaList:'qaguanjialist'
+  qaGuanJiaList: 'qaguanjialist',
+  qaKetangDetail:'qaketangdetail'
 };
 
 //用于管理router中页面名称
@@ -86,6 +106,7 @@ export const LocalStorage = {
   uid: 'uid',
   user: 'user',
   searchHistory: 'searchHistory',
+  role: 'role',
 };
 
 
@@ -99,5 +120,5 @@ export const EventBus = {
   setTitle: 'setTitle',
   setTitleLeftIcon: 'setTitleLeftIcon',
   update_main_tab_index: 'update_main_tab_index',
-  add_red:'is_read_num'
+  add_red: 'is_read_num'
 };

@@ -52,6 +52,7 @@
               <div class="context">{{item.content}}</div>
               <div style="display: flex">
                 <span class="left">{{item.addtime}}</span>
+                <span class="right" @click="delCommentHandle(item.cid)">删除</span>
                 <span class="right" @click="onItemClick(item.from_user,item.cid)">回复</span>
               </div>
               <!--<div class="small-recomment">-->
@@ -187,6 +188,14 @@
         if (role == '金牌管家') {
           return 'role-guanjia';
         }
+      },
+      delCommentHandle(cid){
+        let data = {
+          cid:cid
+        }
+        this.doRequest(Constants.Method.del_comment,data,(result) => {
+          this.getComment()
+        })
       },
       onItemClick(name, c_id) {
         console.log(name);
@@ -372,16 +381,23 @@
       border-radius: px2rem(8);
     }
     .left {
-      flex: 1;
+      flex: 4;
+      margin-top: px2rem(6);
+      padding-top: px2rem(2);
       text-align: left;
       font-size: px2rem(14);
       color: #ccc
     }
     .right {
-      flex: 1;
+      margin-left: px2rem(10);
       text-align: right;
       font-size: px2rem(14);
-      color: #aaa
+      color: #aaa;
+      margin-top: px2rem(6);
+      padding: px2rem(1) px2rem(4);
+      border: px2rem(1) solid #ccc;
+      border-radius: px2rem(5);
+
     }
   }
 

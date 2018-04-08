@@ -152,7 +152,6 @@
         this.doRequest(this.url, param, (result) => {
           if ('handleResult' in this.$parent) {
             result = this.$parent.handleResult(result);
-
           }
           this.data = this.data.concat(result);
           console.log('==================列表=========')

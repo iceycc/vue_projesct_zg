@@ -247,7 +247,9 @@
         if (this.localIds && this.localIds.length > 0) {
           if (this.localIds.length === this.localIdIndex) {
             callback && callback();
+            console.log('===========this.serverIds================');
             console.log(this.serverIds);
+            console.log('========================');
             this.localIdIndex = 0;
             return;
           }
@@ -258,7 +260,10 @@
             isShowProgressTips: 1, // 默认为1，显示进度提示
             success: function (res) {
               that.serverIds.push(res.serverId);
-              console.log(res);
+              console.log('11111111 res.serverId 11111111111');
+              console.log(res.serverId);
+              console.log('=======es.serverId===========');
+              window.localStorage.setItem("wx_img",res.serverId)
 
               that.upload(callback);
             }

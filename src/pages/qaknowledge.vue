@@ -26,8 +26,7 @@
     </auto-list-view>
 
     <div class="ketang_imgs" v-else>
-
-      <div v-for="item,index in pics" :key="index" class="ketang_img">
+      <div v-for="item,key,index in pics" :key="key" class="ketang_img" @click="goKetangDetail($event,key)">
         <span class="title">{{picsTitle | forPicsTitle(index)}}</span>
         <img :src="item" alt=""></div>
     </div>
@@ -76,7 +75,6 @@
     },
     filters:{
       forPicsTitle:(val,index) => {
-
         return val[index]
       }
     },
@@ -85,6 +83,16 @@
       this.selectHotWord(0);
     },
     methods: {
+      goKetangDetail($event,id){
+        let title = $event.currentTarget.children[0].innerHTML
+        this.$router.push({
+          name:Constants.PageName.qaKetangDetail,
+          query:{
+            cid:id,
+            title:title
+          }
+        })
+      },
       getList(url) {
         this.url = url;
         this.flag = this.url;
@@ -107,17 +115,9 @@
         axios.get(url,{params:{type : type}})
           .then((res)=>{
             let urls = res.data.data
-            let urlArr = []
-            let i = 0
-            for(var x in urls){
-              urlArr.push(urls[x])
-              i++
-            }
-            this.pics = urlArr
+
+            this.pics = urls
           })
-        // this.doRequestGet(url,params,(result) =>{
-        //   console.log(result)
-        // })
       },
       selectHotWord(index) {
         this.category_index = index;
