@@ -10,7 +10,7 @@
     <div class="btn-view">
       <div class="btn-submit" @click="gotoLogin"><img src="../assets/img/icon_login_wechat.svg" alt="">
         <span>微信登录</span></div>
-      <div class="btn-desc">同意诸葛装修<a href="">用户协议</a></div>
+      <div class="btn-desc">同意诸葛装修<router-link :to="user_agreement">用户协议</router-link></div>
     </div>
 
   </div>
@@ -30,10 +30,13 @@
     mixins: [mixins.base, mixins.request],
     name: Constants.PageName.qaLogin,
     data() {
-      return {};
+      return {
+        user_agreement:{}
+      };
     },
     computed: {},
     created() {
+      this.user_agreement = {name:Constants.PageName.qaUserAgreement}
       let id = this.$route.query.id;
       console.log(id);
       if (id) {

@@ -160,24 +160,21 @@
           let data = {
             title: this.qa.title,
             content: this.qa.content,
-            medias: this.serverIds.toString()
+            attach: this.serverIds
           };
-
+          console.log('======attach=======')
+          console.log(this.serverIds.toString())
+          console.log('=======================')
           if (this.type === 0) {
             data.reward = 0;
-            console.log("免费提问")
           } else {
             data.reward = this.qa.reward;
-            console.log("付费提问")
           }
-          console.log('付费金额'+data.reward)
           this.doRequest(Constants.Method.ask_question, data, (result) => {
             EventBus.$emit(Constants.EventBus.showToast, {
               message: '发布成功',
             });
             this.insert_id=result.insert_id
-            console.log("发布成功返回的数据")
-            console.log(result)
 
             if (data.reward > 0) {//付费问题  微信支付改怎么办呢
 
@@ -209,16 +206,15 @@
             this.qa.reward = 5;
             this.localIds = [];
             this.serverIds = [];
-
             //  获取问题id
-            setTimeout(() => {
-              this.pushPage({
-                name: Constants.PageName.qaDetail,
-                query: {
-                  id: this.insert_id
-                }
-              });
-            }, 2000);
+            // setTimeout(() => {
+            //   this.pushPage({
+            //     name: Constants.PageName.qaDetail,
+            //     query: {
+            //       id: this.insert_id
+            //     }
+            //   });
+            // }, 2000);
 
           });
         });
@@ -226,7 +222,7 @@
       chooseImage() {
         let that = this;
         wx.chooseImage({
-          count: 1, // 默认9
+          count: 9, // 默认9
           sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
           sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
           success: function (res) {
@@ -247,9 +243,6 @@
         if (this.localIds && this.localIds.length > 0) {
           if (this.localIds.length === this.localIdIndex) {
             callback && callback();
-            console.log('===========this.serverIds================');
-            console.log(this.serverIds);
-            console.log('========================');
             this.localIdIndex = 0;
             return;
           }
@@ -260,11 +253,8 @@
             isShowProgressTips: 1, // 默认为1，显示进度提示
             success: function (res) {
               that.serverIds.push(res.serverId);
-              console.log('11111111 res.serverId 11111111111');
-              console.log(res.serverId);
-              console.log('=======es.serverId===========');
               window.localStorage.setItem("wx_img",res.serverId)
-
+              console.log(that.serverIds)
               that.upload(callback);
             }
           });

@@ -23,10 +23,11 @@
           </div>
         </div>
       </template>
+
     </auto-list-view>
 
     <div class="ketang_imgs" v-else>
-      <div v-for="item,key,index in pics" :key="key" class="ketang_img" @click="goKetangDetail($event,key)">
+      <div v-for="item,key,index in pics" :key="key" class="ketang_img" @click="goKetangDetail($event,key)" v-if=" key != 32">
         <span class="title">{{picsTitle | forPicsTitle(index)}}</span>
         <img :src="item" alt=""></div>
     </div>
@@ -68,9 +69,9 @@
         // [@"收房",@"设计",@"建材",@"预算",@"合同”]  :66/67/32/68/69
         // [@"拆改",@"水电",@"防水",@"泥瓦",@"木工",@"油漆",@"竣工"] :70~76
         // [@"软装",@"风水",@"环保",@"家具",@"电器",@"入住",@"保养”]:81/87/82/33/35/83/170
-        picsTitlePrevious:['收房','设计','建材','预算','合同'],
+        picsTitlePrevious:['建材','收房','设计','预算','合同'],
         picsTitleMiddle:['拆改','水电','防水','泥瓦','木工','油漆','竣工'],
-        picsTitleLast:['软装','风水','环保','家具','电器','入住','保养']
+        picsTitleLast:['家具','电器','软装','风水','环保','入住','保养']
       };
     },
     filters:{
@@ -115,7 +116,7 @@
         axios.get(url,{params:{type : type}})
           .then((res)=>{
             let urls = res.data.data
-
+            console.log(urls);
             this.pics = urls
           })
       },

@@ -17,6 +17,8 @@
       <div v-if="!data_list || data_list.length == 0" class="no-data">
         没有数据
       </div>
+      <mu-infinite-scroll :scroller="scroller" :loading="loading" @load="loadMore"
+                          loadingText="数据加载中..."/>
     </div>
   </div>
 
@@ -56,7 +58,8 @@
         title:'',
         picsTitle:[],
         data_list:[],
-
+        loading: false,
+        scroller: null
 
       };
     },
@@ -65,7 +68,9 @@
         return val[index]
       }
     },
-
+    mounted(){
+      this.scroller = this.$el
+    },
     computed: {},
     created() {
       let id = this.$route.query.cid || 0;
@@ -75,12 +80,22 @@
 
     },
     methods: {
+      loadMore () {
+        this.loading = true
+        setTimeout(() => {
+          for (let i = this.num; i < this.num + 10; i++) {
+            this.list.push('item' + (i + 1))
+          }
+          this.num += 10
+          this.loading = false
+        }, 2000)
+      },
       getList(id) {
         // this.url = 'http://bang.uzhuang.com/index.php?m=bangV2&f=ketang&v=nodeList'+'&cid=' + id;
         // this.flag = this.url;
         // this.isFirst = true
         let url = 'http://bang.uzhuang.com/index.php?m=bangV2&f=ketang&v=nodeList';
-        axios.get(url,{params:{cid:id}})
+        axios.get(url,{params:{cid:id,page:1}})
           .then((result)=>{
             this.data_list = result.data.data
             console.log(this.data_list)
@@ -112,10 +127,9 @@
 <style lang="scss" scoped>
   @import "../assets/scss/px2rem";
 .scroll-view{
-  padding: px2rem(10) px2rem(6);
+  padding: px2rem(10) px2rem(6) px2rem(50);
   height: 100%;
   overflow: scroll;
-
   background: #f2f2f2;
 }
   .no-data{

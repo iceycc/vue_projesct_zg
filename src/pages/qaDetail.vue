@@ -458,6 +458,7 @@
 
     &-tags {
       display: flex;
+      flex-wrap: wrap;
       flex-direction: row;
       align-items: center;
       margin-top: px2rem(10);
@@ -466,6 +467,7 @@
         color: $fontcolor_gray;
         border: px2rem(1) solid $fontcolor_gray;
         padding: px2rem(2) px2rem(5);
+        margin-bottom: px2rem(4);
         font-size: px2rem(12);
         margin-right: px2rem(10);
       }
