@@ -66,6 +66,8 @@
   }
   .role-guanjia{
     border-color:#5b9ffe;
+    color: #5b9ffe;
+    background-color: #bffdfe;
   }
   .role-daren {
     border-color: rgb(255, 143, 159);

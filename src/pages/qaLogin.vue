@@ -45,7 +45,7 @@
       // 用于测试！！todo
       // else {this.gotoMain(26270);} // 管家
       // else {this.gotoMain(26319);} // 假如时光倒流
-      else {this.gotoMain(25416);}
+      // else {this.gotoMain(25416);}
 
     },
     methods: {

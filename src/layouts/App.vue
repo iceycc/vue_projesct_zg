@@ -1,8 +1,11 @@
 <template>
   <div id="app">
+    <!--<transition :name="transitionName" >-->
     <keep-alive>
       <router-view v-if="$route.meta.keepAlive"></router-view>
     </keep-alive>
+    <!--</transition>-->
+
     <router-view v-if="!$route.meta.keepAlive"></router-view>
     <mu-toast v-if="toast.show" :message="toast.message"></mu-toast>
     <mu-dialog :open="login" title="登录成功" titleClass="text-center">
@@ -24,6 +27,7 @@
     mixins: [mixins.base, mixins.request],
     data() {
       return {
+        // transitionName:'',
         open: false,
         docked: false,
         toast: {
@@ -34,6 +38,7 @@
         login: false,
         isReadArrNum: 0,
 
+
       };
     },
     updated() {
@@ -41,6 +46,13 @@
         console.log(value)
       })
     },
+    // watch: {
+    //   '$route' (to, from){
+    //     const toDepth = to.path.split('/').length
+    //     const fromDepth = from.path.split('/').length
+    //     this.transitionName = toDepth < fromDepth ? 'slide-right' : 'slide-left'
+    //   }
+    // },
     created() {
       EventBus.$on(Constants.EventBus.showToast, value => {
         this.showMessage(value);

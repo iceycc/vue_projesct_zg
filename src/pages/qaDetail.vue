@@ -14,7 +14,12 @@
       <!--问题标题-->
       <div class="card-title">{{question.title}}</div>
       <!--问题描述-->
-      <div class="card-content">{{question.content}}</div>
+      <div class="card-content">{{question.content}}
+        <div class="card-img" v-if="question.attach && question.attach.length !==0 ">
+        <!--<div class="card-img">-->
+          <img :src="item" alt="" @click="showBigImg(item,question.attach)" v-for="item,index in question.attach" :key="index" v-if=" item != ''">
+        </div>
+      </div>
       <!--展示 浏览数 回答数 收藏 时间-->
       <div class="view2">
         <div>{{question.pv}}浏览</div>
@@ -32,6 +37,7 @@
           {{item}}
         </div>
       </div>
+
     </div>
     <!--评论列表-->
     <div class="scroll-view">
@@ -42,7 +48,8 @@
             <div class="card-re">
               <!--评论 人 头像 名称 用户等级 是否采纳 11-->
               <div class="view1 horizontal-view">
-                <img-wrapper :url="item.a_avatar" classStyle="avatar"></img-wrapper>
+                <img-wrapper :url="'http://m.uzhuang.com/res/images/userface.png' ? a_avatar : item.a_avatar " classStyle="avatar"></img-wrapper>
+
                 <div class="vertical-view">
                   <div class="name">{{item.aname.nickname ? item.aname.nickname : '匿名用户'}}
                     <!--显示颜色从组件内根据角色名匹配的-->
@@ -139,6 +146,8 @@
         icon4: require('../assets/img/icon_detail_liked.svg'),
         icon5: require('../assets/img/accepted.svg'),
         icon6: require('../assets/img/accept.svg'),
+
+        a_avatar:require('../assets/img/icon_slider.png'),
         uid: 0,
         question: {},
         answer_list: [],
@@ -146,7 +155,21 @@
         version: process.env.APP_VERSION,
         localValue: this.$ls.get(Constants.LocalStorage.test, '-1'),
         disabled:false,
-        current_uid:null
+        current_uid:null,
+        attach:[// text
+          'http://pic40.nipic.com/20140412/11857649_170524977000_2.jpg',
+          'http://pic34.photophoto.cn/20150202/0005018384491898_b.jpg' ,
+          'http://pic40.nipic.com/20140412/11857649_170524977000_2.jpg',
+          'http://pic34.photophoto.cn/20150202/0005018384491898_b.jpg',
+          'http://pic40.nipic.com/20140412/11857649_170524977000_2.jpg',
+          'http://pic34.photophoto.cn/20150202/0005018384491898_b.jpg' ,
+          'http://pic40.nipic.com/20140412/11857649_170524977000_2.jpg',
+          'http://pic34.photophoto.cn/20150202/0005018384491898_b.jpg',
+          'http://pic40.nipic.com/20140412/11857649_170524977000_2.jpg',
+          'http://pic34.photophoto.cn/20150202/0005018384491898_b.jpg' ,
+          'http://pic40.nipic.com/20140412/11857649_170524977000_2.jpg',
+          'http://pic34.photophoto.cn/20150202/0005018384491898_b.jpg',
+        ]
       };
     },
     computed: {},
@@ -160,6 +183,12 @@
     activated() {
     },
     methods: {
+      showBigImg(src,pics){
+        wx.previewImage({
+          current: src, // 当前显示图片的http链接
+          urls:pics // 需要预览的图片http链接列表
+        });
+      },
       deleteHandle(index){
         console.log('删除')
         let data = {
@@ -401,6 +430,20 @@
     width: 100%;
     padding: px2rem(10) px2rem(20);
     z-index: 1;
+    .card-img{
+      width: 100%;
+      display:flex;
+      overflow-x: scroll;
+      margin-top: px2rem(20);
+      height: px2rem(60);
+      img{
+        margin-right: px2rem(10);
+        display: block;
+        background: #dedede;
+        max-width: px2rem(100);
+        max-height: px2rem(60);
+      }
+    }
     .view1 {
       display: flex;
       flex-direction: row;
@@ -590,4 +633,5 @@
       margin-right: px2rem(10);
     }
   }
+
 </style>
