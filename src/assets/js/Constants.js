@@ -62,9 +62,8 @@ export const Method = {
     del_answer: BASE_URL + "f=operation&v=del_answer",
     // 删除问题 del_question uid qid
     del_question: BASE_URL + "f=operation&v=del_answer",
-
     // 管家我得问题列表
-  //http://m.uzhuang.com/index.php?m=wenda&f=question_list&v=get_question_list&type=2
+    //http://m.uzhuang.com/index.php?m=wenda&f=question_list&v=get_question_list&type=2
     // 未回答 get_question_unanswered   uid page
     get_question_unanswered: BASE_URL + "f=question_list&v=get_question_unanswered",
     // 回答  get_question_answered   uid page
@@ -98,7 +97,7 @@ export const PageName = {
   qaNotice: 'qanotice',
   qaGuanJiaList: 'qaguanjialist',
   qaKetangDetail:'qaketangdetail',
-  qaUserAgreement:'qauseragreement'
+  qaDoc:'qadoc'
 };
 
 //用于管理router中页面名称

@@ -44,7 +44,7 @@
       </div>
 
       <div class="btn" @click="toggleMask">去提问</div>
-      <div class="tip4">付费提问前请阅读<a href="">提问须知</a></div>
+      <div class="tip4">付费提问前请阅读<a href="javascript:;" @click.stop="goDoc">提问须知</a></div>
     </div>
   </div>
 
@@ -137,6 +137,9 @@
       }
     },
     methods: {
+      goDoc(){
+        this.$router.push({name:Constants.PageName.qaDoc,params:{type:3}})
+      },
       toggleMask() {
         this.showMask = !this.showMask;
       },
@@ -207,14 +210,14 @@
             this.localIds = [];
             this.serverIds = [];
             //  获取问题id
-            // setTimeout(() => {
-            //   this.pushPage({
-            //     name: Constants.PageName.qaDetail,
-            //     query: {
-            //       id: this.insert_id
-            //     }
-            //   });
-            // }, 2000);
+            setTimeout(() => {
+              this.pushPage({
+                name: Constants.PageName.qaDetail,
+                query: {
+                  id: this.insert_id
+                }
+              });
+            }, 2000);
 
           });
         });

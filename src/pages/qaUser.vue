@@ -67,6 +67,7 @@
       this.role = this.$ls.get(Constants.LocalStorage.role);
       this.doRequest(Constants.Method.profile, null, (result) => {
         this.data = result;
+        console.log(result);
         this.collect_num = this.data.collect_num
         this.my_question = this.data.my_question_num
 
@@ -95,7 +96,7 @@
       gotoList(type) {
         // this.role = 1
         // 普通用户
-        if(this.role == 0){
+        if(this.role==0){
           this.pushPage({
             name: Constants.PageName.qaList,
             query: {
@@ -105,9 +106,20 @@
         }
         // 管家
         if(this.role ==1){
-          this.pushPage({
-            name: Constants.PageName.qaGuanJiaList
-          });
+          if(type==1){
+            this.pushPage({
+              name: Constants.PageName.qaList,
+              query: {
+                type
+              }
+            });
+          }
+          if(type==2){
+            this.pushPage({
+              name: Constants.PageName.qaGuanJiaList
+            });
+          }
+
         }
 
       },

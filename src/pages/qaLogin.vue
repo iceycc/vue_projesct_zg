@@ -10,7 +10,7 @@
     <div class="btn-view">
       <div class="btn-submit" @click="gotoLogin"><img src="../assets/img/icon_login_wechat.svg" alt="">
         <span>微信登录</span></div>
-      <div class="btn-desc">同意诸葛装修<router-link :to="user_agreement">用户协议</router-link></div>
+      <div class="btn-desc">同意诸葛装修<router-link :to="to_doc">用户协议</router-link></div>
     </div>
 
   </div>
@@ -31,19 +31,21 @@
     name: Constants.PageName.qaLogin,
     data() {
       return {
-        user_agreement:{}
+        to_doc:{}
       };
     },
     computed: {},
     created() {
-      this.user_agreement = {name:Constants.PageName.qaUserAgreement}
+      this.to_doc = {name:Constants.PageName.qaDoc,params:{type:1}}
       let id = this.$route.query.id;
       console.log(id);
       if (id) {
         this.gotoMain(id);
       }
       // 用于测试！！todo
-      // else {this.gotoMain(26319);}
+      // else {this.gotoMain(26270);} // 管家
+      // else {this.gotoMain(26319);} // 假如时光倒流
+      else {this.gotoMain(25416);}
 
     },
     methods: {
@@ -69,10 +71,7 @@
           uid: uid
         }, (result) => {
           this.data = result;
-          // console.log("======profile=========")
-          // console.log(result)
-          // // avatar collect_num    my_question_num  red_dot  username
-          // console.log("======================")
+          // avatar collect_num    my_question_num  red_dot  username
           this.$ls.set(Constants.LocalStorage.uid, uid);
           this.$ls.set(Constants.LocalStorage.role, result.role);
           this.$router.replace({

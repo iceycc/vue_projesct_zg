@@ -27,9 +27,8 @@
 
         <div>{{ question.qtime | my_time }}</div>
       </div>
-      <!-- -->
       <div class="card-tags" v-if="question.label && question.label.length > 0">
-        <div class="tag" v-for="item in question.label">
+        <div class="tag" v-for="item in question.label" v-if="question.label[0] !==''">
           {{item}}
         </div>
       </div>
@@ -45,7 +44,7 @@
               <div class="view1 horizontal-view">
                 <img-wrapper :url="item.a_avatar" classStyle="avatar"></img-wrapper>
                 <div class="vertical-view">
-                  <div class="name">{{item.aname.nickname}}
+                  <div class="name">{{item.aname.nickname ? item.aname.nickname : '匿名用户'}}
                     <!--显示颜色从组件内根据角色名匹配的-->
                     <uz-lable v-if="question.q_reward > 0" :role="item.uid === question.uid ? '赏金发起人' : item.role"></uz-lable>
                     <uz-lable v-else :role="item.uid ===question.uid ? '问题发起人' : item.role"></uz-lable>

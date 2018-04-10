@@ -2,7 +2,7 @@
   <div class="content">
     <app-bar :title="title"></app-bar>
     <div class="text-content">
-      <div>
+      <div class="yonghuxieyi" v-if="view ==1">
         <h4>功能介绍</h4>
         <p> 1、提问：用户可通过“诸葛装修”APP或M站进行提问。问题类型为免费提问、悬赏提问。</p>
         (1)免费提问：用户将获得优秀的专业管家团队48小时内回答，并可进行追答，同时可能会收到其他用户的主观回答（诸葛装修对普通用户的答案内容不负责）;<br>
@@ -110,6 +110,20 @@
         为给您提供更多便利和商业信息，本应用程序可能会包含至其他网站的链接。该等网站的运营商有可能不是我们的关联公司。所链接的网站也可能拥有其自身的隐私政策或声明，所以，我们强烈建议您，在访问任何所链接的网站时查看该等隐私政策或声明。对于非由我们运营之任何网站的内容、对该等网站的任何使用或该等网站的隐私政策，我们概不负责。
         <br>
       </div>
+      <div class="zhuanshuquanli" v-if="view==2" style="">
+        <p>1) 至少一个金牌管家回答；</p>
+
+        <p>2) 提问后2小时之内必答；</p>
+
+        <p>3) 优秀的管家团队参与回答。</p>
+      </div>
+      <div class="tiwenxuzhi" v-if="view==3">
+        用户将获得至少一个金牌管家回答，提问后2小时之内必答，优秀的管家团队参与回答。<br>
+
+        同时可能会收到其他用户的主观回答（诸葛装修对普通用户的答案内容不负责）。<br>
+
+        悬赏提问会扣除相应的赏金（金额由用户自行选择，区间为1-10元钱）。<br>
+      </div>
     </div>
   </div>
 </template>
@@ -123,8 +137,28 @@
     },
     data(){
       return {
-        title:'诸葛装修用户协议'
+        title:'诸葛装修用户协议',
+        view:1
       }
+    },
+    created(){
+
+      let type = this.$route.params.type
+      this.view = type
+      switch (this.view){
+        case 1:
+          this.title = '诸葛装修用户协议';
+          break;
+        case  2:
+          this.title = '专属权力';
+          break;
+        case 3:
+          this.title = '提问须知';
+          break;
+        default:
+          this.title = ''
+      }
+
     }
   }
 </script>

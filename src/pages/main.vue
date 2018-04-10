@@ -13,7 +13,7 @@
       <mu-bottom-nav-item value="1" title="课堂">
         <img-wrapper :url="bottomNav == 1 ? tab1[1] : tab1[0]" class="tabicon"></img-wrapper>
       </mu-bottom-nav-item>
-      <mu-bottom-nav-item value="2" title="提问">
+      <mu-bottom-nav-item value="2" :title="ask_text">
         <img-wrapper :url="bottomNav == 2 ? tab2[1] : tab2[0]" class="tabicon"></img-wrapper>
       </mu-bottom-nav-item>
       <mu-bottom-nav-item value="3" title="通知">
@@ -41,7 +41,7 @@
           <div class="icon-view" @click="gotoAsk(1)">
             <div>
               <div>更快更多更优质回答</div>
-              <div>查看更多<a href="" @click.self="webpage">专属权利</a></div>
+              <div>查看更多<a href="javascript:;" @click.stop="webpage">专属权利</a></div>
             </div>
             <img-wrapper :url="icon2" classStyle="icon"></img-wrapper>
             <div class="name">悬赏提问</div>
@@ -68,6 +68,7 @@
     name: 'main',
     data() {
       return {
+        ask_text:'提问',
         toast: {
           show: false,
           message: '',
@@ -84,7 +85,9 @@
         showAsk: false,
         style: {},
         notice_isread_num: 0,
-        isreadShow: false
+        isreadShow: false,
+        to_doc:{},
+        role:0
       };
     },
     computed: {},
@@ -93,6 +96,9 @@
 
     },
     created() {
+      this.role = window.localStorage.getItem(Constants.LocalStorage.role)
+      if(this.role==1){this.ask_text='提问'}
+      this.to_doc ={name:Constants.PageName.qaDoc,params:{type:2}}
       this.isReadShow()
       if (this.bottomNav === -1) {
         this.handleChange(0);
@@ -116,6 +122,9 @@
       };
     },
     methods: {
+      webpage(){
+        this.$router.push({name:Constants.PageName.qaDoc,params:{type:2}})
+      },
       getUserData(){
         this.doRequest(Constants.Method.profile, null, (result) => {
           this.collect_num = this.collect_num || this.data.collect_num
@@ -154,7 +163,14 @@
       },
       handleChange(value) {
         if (value == 2) {
-          this.toggleAsk();
+          if(this.role==0){
+            this.toggleAsk();
+          }
+          if(this.role == 1){
+            EventBus.$emit(Constants.EventBus.showToast, {
+              message: '管家没有提问权限'
+            });
+          }
         } else {
           let name = '';
           switch (parseInt(value)) {

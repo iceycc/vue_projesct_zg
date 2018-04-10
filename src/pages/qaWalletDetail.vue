@@ -13,7 +13,6 @@
                style="flex:2;text-align: right;"
                :class="props.item.way | isActive "
           >
-
             <i>{{props.item.way | add_sub}} </i>
             {{props.item.money}}
           </div>

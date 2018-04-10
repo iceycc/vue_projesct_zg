@@ -68,8 +68,9 @@
     created() {
       this.getData(1, () => {
         this.answered_list = this.answered_list_1
+        this.getData(2)
       })
-      this.getData(2)
+
     },
     mounted() {
       this.cicikTabs()
@@ -110,7 +111,7 @@
         //  未回答
         if (type == 1) {
           this.doRequest(Constants.Method.get_question_unanswered, null, (result) => {
-            console.log(result)
+            // console.log(result)
             this.answered_list_1 = result.question_list
             this.unanswer_num = result.total
             fn && fn()
@@ -133,6 +134,7 @@
         }
        this.doRequest(Constants.Method.get_question_unanswered,data,(result)=>{
          console.log(result);
+         this.answered_list =result.question_list
          if(result.total == 0){
            EventBus.$emit(Constants.EventBus.showToast, {
              message: '没有找到搜索结果'
@@ -235,9 +237,10 @@
       }
     }
     .title {
+
       font-size: px2rem(16);
       font-weight: bold;
-      color: #000;
+      color: #666;
       padding: px2rem(10) 0;
     }
     .question-content {
@@ -259,7 +262,7 @@
       }
 
     }
-    /*11*/
+    /*11111111*/
     .card-tags {
       display: flex;
       flex-wrap: wrap;
