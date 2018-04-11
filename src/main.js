@@ -21,8 +21,8 @@ import {} from './assets/js/mixins/mixins-request';
 //无使用,仅防止重复打包
 import {} from './assets/js/request/axiosInstance';
 
-import VueTouch from 'vue-touch';
-Vue.use(VueTouch,{name: 'v-touch'})
+// import VueTouch from 'vue-touch';
+// Vue.use(VueTouch,{name: 'v-touch'})
 /*Vue.config.productionTip = true;
  Vue.config.performance = true;*/
 
