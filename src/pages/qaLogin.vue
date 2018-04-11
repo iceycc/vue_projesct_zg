@@ -38,7 +38,7 @@
     created() {
       this.to_doc = {name:Constants.PageName.qaDoc,params:{type:1}}
       let id = this.$route.query.id;
-      console.log(id);
+      // console.log(id);
       if (id) {
         this.gotoMain(id);
       }

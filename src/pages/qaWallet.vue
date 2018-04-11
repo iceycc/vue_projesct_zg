@@ -39,7 +39,7 @@
         },
         computed: {},
         created() {
-          console.log(1)
+          // console.log(1)
             this.doRequest(Constants.Method.wallet, null, (result) => {
                 this.result = result;
             });

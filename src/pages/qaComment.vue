@@ -157,10 +157,10 @@
 
         this.doRequest(Constants.Method.get_answer, data, (result) => {
           this.answer = result
-          console.log("============get_answer===============")
-          console.log(this.answer.is_liked)
-          console.log(this.answer)
-          console.log("=======================================")
+          // console.log("============get_answer===============")
+          // console.log(this.answer.is_liked)
+          // console.log(this.answer)
+          // console.log("=======================================")
         });
       },
       getComment() {
@@ -172,9 +172,9 @@
 
         this.doRequest(Constants.Method.get_comment_list, data, (result) => {
           this.comments = result;
-          console.log("================get_comment_list=======================")
-          console.log(result);
-          console.log("=======================================")
+          // console.log("================get_comment_list=======================")
+          // console.log(result);
+          // console.log("=======================================")
 
 
           if (this.comments && this.comments.length > 0) {
@@ -198,7 +198,7 @@
         })
       },
       onItemClick(name, c_id) {
-        console.log(name);
+        // console.log(name);
         this.is_footer_show = true
         this.c_id = c_id
         this.to_who = "回复 " + name + " 评论："
@@ -217,13 +217,13 @@
           content: this.recomment
         };
         console.log("~~~~~~~~~~~~~~~~~")
-        console.log(this.c_id)
+        // console.log(this.c_id)
         console.log("~~~~~~~~~~~~~~~~~")
         this.doRequest(Constants.Method.comment, data, (result) => {
           this.getComment();
           this.recomment = '';
           console.log("++++++++++++comment+++++++++++++");
-          console.log(result);
+          // console.log(result);
           this.is_footer_show = false
           console.log("++++++++++++++++++++++++++++++++");
         });
@@ -277,7 +277,7 @@
 
         this.doRequest(Constants.Method.adoption, data, (result) => {
           console.log("========adoption============");
-          console.log(result);
+          // console.log(result);
           console.log("====================");
         });
       },

@@ -18,6 +18,7 @@
         <div class="card-img" v-if="question.attach && question.attach.length !==0 ">
         <!--<div class="card-img">-->
           <img :src="item" alt="" @click="showBigImg(item,question.attach)" v-for="item,index in question.attach" :key="index" v-if=" item != ''">
+
         </div>
       </div>
       <!--展示 浏览数 回答数 收藏 时间-->
@@ -201,7 +202,6 @@
         })
       },
       fenXiang() {
-        console.log(11)
         let url = window.location.href
         console.log(url)
         console.log(wx.onMenuShareTimeline)
@@ -227,7 +227,6 @@
 
         this.doRequest(Constants.Method.get_question_list, data, (result) => {
           this.question = result.question;
-          console.log(result)
           // 获取当前问题采纳的回答的id
           let thisId = this.question.q_adoption
           // 倒叙
@@ -255,7 +254,6 @@
           if (caiNa) {
             this.answer_list.unshift(caiNa)
           }
-          console.log(this.answer_list)
           this.isOwner = (this.question.uid === this.$ls.get(Constants.LocalStorage.uid));
 
         });
@@ -323,7 +321,6 @@
           let current = Date.now()
           // 4 进来的时候清除之前的定时器
           // 5
-          console.log(current - last)
 
           if((current - last)>delay){
             timer = setTimeout(fn,delay)
@@ -341,7 +338,6 @@
           clearTimeout(timer)
         }
         this.disabled = true
-        console.log(this.disabled)
         let timer
 
         var count = window.localStorage.getItem('collect_num')
@@ -358,7 +354,6 @@
             });
             timer = setTimeout( () => {
               this.disabled = false
-              console.log(this.disabled)
             },1000)
           });
         } else {
@@ -374,7 +369,6 @@
             });
             timer = setTimeout( () => {
               this.disabled = false
-              console.log(this.disabled)
             },1000)
           });
         }
@@ -437,11 +431,12 @@
       margin-top: px2rem(20);
       height: px2rem(60);
       img{
+        display:block;
         margin-right: px2rem(10);
-        display: block;
+        width: px2rem(80);
+        height: px2rem(60);
         background: #dedede;
-        max-width: px2rem(100);
-        max-height: px2rem(60);
+
       }
     }
     .view1 {

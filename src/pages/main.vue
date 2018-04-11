@@ -135,9 +135,9 @@
           //   this.my_question = content || this.my_question
           // })
           window.localStorage.setItem('collect_num',this.collect_num)
-          console.log("==========collect_num====1111==========")
-          console.log(this.collect_num )
-          console.log("===========================")
+          // console.log("==========collect_num====1111==========")
+          // console.log(this.collect_num )
+          // console.log("===========================")
         });
       },
       isReadShow() {

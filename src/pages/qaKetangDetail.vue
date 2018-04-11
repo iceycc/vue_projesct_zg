@@ -75,7 +75,7 @@
     created() {
       let id = this.$route.query.cid || 0;
       this.title = this.$route.query.title || '课堂'
-      console.log(id);
+      // console.log(id);
       this.getList(id)
 
     },
@@ -98,7 +98,7 @@
         axios.get(url,{params:{cid:id,page:1}})
           .then((result)=>{
             this.data_list = result.data.data
-            console.log(this.data_list)
+            // console.log(this.data_list)
           })
       },
       onItemClick(item) {
@@ -181,8 +181,12 @@
       .title{
         position: absolute;
         padding: px2rem(6);
+        font-size: px2rem(16);
+        white-space:nowrap;
+        text-overflow: ellipsis;
         color: #fff;
       }
+
     }
   }
   .card {
@@ -210,7 +214,8 @@
       width: 65%;
       padding-left: px2rem(10);
       .title {
-        font-size: px2rem(16);
+        font-weight: bold;
+        font-size: px2rem(15);
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
@@ -218,7 +223,7 @@
     }
     &-content {
       color: #666666;
-      font-size: px2rem(14);
+      font-size: px2rem(13);
       padding: px2rem(10) 0;
       border-bottom: px2rem(1) solid $divider;
       white-space: nowrap;

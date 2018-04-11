@@ -67,7 +67,7 @@
       this.role = this.$ls.get(Constants.LocalStorage.role);
       this.doRequest(Constants.Method.profile, null, (result) => {
         this.data = result;
-        console.log(result);
+        // console.log(result);
         this.collect_num = this.data.collect_num
         this.my_question = this.data.my_question_num
 

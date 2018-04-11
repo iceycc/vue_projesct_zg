@@ -42,7 +42,7 @@
           this.datas = result
 
           console.log("======通知result============")
-          console.log(result)
+          // console.log(result)
           console.log("===================")
         });
       },

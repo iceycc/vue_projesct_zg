@@ -233,10 +233,12 @@
       vertical-align: top;
       width: 65%;
       .title {
-        font-size: px2rem(16);
+        font-size: px2rem(15);
+        font-weight: bold;
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
+        color:#1bd4bb;
       }
 
       .reward {

@@ -88,7 +88,7 @@
                 if (this.localIds && this.localIds.length > 0) {
                     if (this.localIds.length === this.localIdIndex) {
                         callback && callback();
-                        console.log(this.serverIds);
+                        // console.log(this.serverIds);
                         this.localIdIndex = 0;
                         return;
                     }

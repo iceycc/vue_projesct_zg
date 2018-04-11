@@ -165,9 +165,9 @@
             content: this.qa.content,
             attach: this.serverIds
           };
-          console.log('======attach=======')
-          console.log(this.serverIds.toString())
-          console.log('=======================')
+          // console.log('======attach=======')
+          // console.log(this.serverIds.toString())
+          // console.log('=======================')
           if (this.type === 0) {
             data.reward = 0;
           } else {
@@ -257,7 +257,7 @@
             success: function (res) {
               that.serverIds.push(res.serverId);
               window.localStorage.setItem("wx_img",res.serverId)
-              console.log(that.serverIds)
+              // console.log(that.serverIds)
               that.upload(callback);
             }
           });

@@ -120,7 +120,7 @@
         // 已回答
         if (type == 2) {
           this.doRequest(Constants.Method.get_question_answered, null, (result) => {
-            console.log(result)
+            // console.log(result)
             this.answered_list_2 = result.question_list
             this.answer_num = result.total
             fn && fn()
@@ -128,12 +128,12 @@
         }
       },
       goSearch(word){
-        console.log(word)
+        // console.log(word)
         let data = {
           key_word:word
         }
        this.doRequest(Constants.Method.get_question_unanswered,data,(result)=>{
-         console.log(result);
+         // console.log(result);
          this.answered_list =result.question_list
          if(result.total == 0){
            EventBus.$emit(Constants.EventBus.showToast, {
