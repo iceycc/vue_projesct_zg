@@ -59,62 +59,70 @@
       // http://m.uzhuang.com/index.php?m=wenda&%20f=question_list&v=get_inform   每条数据返回下 当前回答的id，aid
 
   goDetail(type,index,q_id,a_id){
-        switch (type){
-          case '1':
-            this.$router.push({
-              name: Constants.PageName.qaDetail,
-              query: {
-                id: q_id
-              }
-            });
-            break;
-          case '2':
-            this.$router.push({
-              name: Constants.PageName.qaDetail,
-              query: {
-                id: q_id
-              }
-            });
-            break;
-          case '3':
-            this.$router.push({
-              name: Constants.PageName.qaDetail,
-              query: {
-                id: q_id
-              }
-            });
-            break;
-          case '4':
-            this.$router.push({
-              name: Constants.PageName.qaComment,
-              query: {
-                q_id: q_id,
-                a_id: a_id,
-                c_id: 0
-              }
-            });
-            break;
-          case '5':
-            this.$router.push({
-              name: Constants.PageName.qaComment,
-              query: {
-                q_id: q_id,
-                a_id: a_id,
-                c_id: 0
-              }
-            });
-            break;
-          case '6':
-            this.$router.push({
-              name: Constants.PageName.qaComment,
-              query: {
-                q_id: q_id,
-                a_id: a_id,
-                c_id: 0
-              }
-            });
-            break;
-        }
+    this.$router.push({
+      name: Constants.PageName.qaComment,
+      query: {
+        q_id: q_id,
+        a_id: a_id,
+        c_id: 0
+      }
+    });
+        // switch (type){
+        //   case '1':
+        //     this.$router.push({
+        //       name: Constants.PageName.qaDetail,
+        //       query: {
+        //         id: q_id
+        //       }
+        //     });
+        //     break;
+        //   case '2':
+        //     this.$router.push({
+        //       name: Constants.PageName.qaDetail,
+        //       query: {
+        //         id: q_id
+        //       }
+        //     });
+        //     break;
+        //   case '3':
+        //     this.$router.push({
+        //       name: Constants.PageName.qaDetail,
+        //       query: {
+        //         id: q_id
+        //       }
+        //     });
+        //     break;
+        //   case '4':
+        //     this.$router.push({
+        //       name: Constants.PageName.qaComment,
+        //       query: {
+        //         q_id: q_id,
+        //         a_id: a_id,
+        //         c_id: 0
+        //       }
+        //     });
+        //     break;
+        //   case '5':
+        //     this.$router.push({
+        //       name: Constants.PageName.qaComment,
+        //       query: {
+        //         q_id: q_id,
+        //         a_id: a_id,
+        //         c_id: 0
+        //       }
+        //     });
+        //     break;
+        //   case '6':
+        //     this.$router.push({
+        //       name: Constants.PageName.qaComment,
+        //       query: {
+        //         q_id: q_id,
+        //         a_id: a_id,
+        //         c_id: 0
+        //       }
+        //     });
+        //     break;
+        // }
 
       },
 

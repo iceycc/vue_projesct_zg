@@ -15,11 +15,13 @@
       <div class="card-title">{{question.title}}</div>
       <!--问题描述-->
       <div class="card-content">{{question.content}}
-        <div class="card-img" v-if="question.attach && question.attach.length !==0 ">
-        <!--<div class="card-img">-->
-          <img :src="item" alt="" @click="showBigImg(item,question.attach)" v-for="item,index in question.attach" :key="index" v-if=" item != ''">
+         <div class="card-img" v-if="question.attach && question.attach.length !==0 ">
+           <!--<div class="card-img">-->
+           <div v-for="item,index in question.attach" :key="index" v-if=" item != ''" class="cc-img">
+             <img :src="item" alt="" @click="showBigImg(item,question.attach)" >
+           </div>
 
-        </div>
+       </div>
       </div>
       <!--展示 浏览数 回答数 收藏 时间-->
       <div class="view2">
@@ -27,7 +29,7 @@
         <div>{{question.answer_num}}回答</div>
         <!--收藏 -->
 
-        <button @click="collect" class="collect-icon" :disabled="disabled" style="border: none;background: transparent;outline:none">
+        <button @click.stop="collect" class="collect-icon" :disabled="disabled" style="border: none;background: transparent;outline:none">
           <img-wrapper :url="question.is_collect ?  icon5 : icon6 " classStyle="icon"></img-wrapper>
         </button>
 
@@ -49,18 +51,19 @@
             <div class="card-re">
               <!--评论 人 头像 名称 用户等级 是否采纳 11-->
               <div class="view1 horizontal-view">
-                <img-wrapper :url="'http://m.uzhuang.com/res/images/userface.png' ? a_avatar : item.a_avatar " classStyle="avatar"></img-wrapper>
+                <img-wrapper :url=" item.a_avatar == 'http://m.uzhuang.com/res/images/userface.png' ? a_avatar : item.a_avatar " classStyle="avatar"></img-wrapper>
 
                 <div class="vertical-view">
-                  <div class="name">{{item.aname.nickname ? item.aname.nickname : '匿名用户'}}
+                  <div class="name">{{item.aname ? item.aname : '匿名用户'}}
                     <!--显示颜色从组件内根据角色名匹配的-->
                     <uz-lable v-if="question.q_reward > 0" :role="item.uid === question.uid ? '赏金发起人' : item.role"></uz-lable>
                     <uz-lable v-else :role="item.uid ===question.uid ? '问题发起人' : item.role"></uz-lable>
                   </div>
-                  <div class="date">{{item.atime}}</div>
+                  <div class="date">{{item.atime | my_time}}</div>
                 </div>
                 <!--采纳-->
-                <div class="accept" v-if="isOwner && question.q_adoption == 0" @click.stop="accept(index)">采纳</div>
+                <div class="accept" v-if="isOwner && question.q_adoption == 0" @click.once.stop="accept(index)">采纳</div>
+
                 <div class="accepted" v-if="question.q_adoption ==item.id"><img src="../assets/img/accepted@2x.png"
                                                                                 alt=""></div>
                 <div class="get_reward" v-if="question.q_adoption ==item.id && question.q_reward > 0"><img
@@ -89,7 +92,7 @@
                   {{item.like_num}}
 
                 </button>
-                <div @click.stop="deleteHandle(index)" v-if="item.uid == current_uid && question.q_adoption !=item.id"> 删除</div>
+                <div @click.once.stop="deleteHandle(index)" v-if="item.uid == current_uid && question.q_adoption !=item.id"> 删除</div>
 
               </div>
             </div>
@@ -103,7 +106,7 @@
         <img-wrapper :url="icon1" classStyle="icon"></img-wrapper>
         去回答
       </div>
-      <div @click="gotoAsk">
+      <div @click="gotoAsk" v-if="role ==0 ">
         <img-wrapper :url="icon2" classStyle="icon"></img-wrapper>
         去提问
       </div>
@@ -147,7 +150,7 @@
         icon4: require('../assets/img/icon_detail_liked.svg'),
         icon5: require('../assets/img/accepted.svg'),
         icon6: require('../assets/img/accept.svg'),
-
+        role:0,
         a_avatar:require('../assets/img/icon_slider.png'),
         uid: 0,
         question: {},
@@ -176,10 +179,32 @@
     computed: {},
     created() {
       this.current_uid = window.localStorage.getItem('uid')
+      this.role = window.localStorage.getItem('role')
       this.getData();
       this.initWX(() => {
         console.log('wx success');
       });
+
+      let newTime = new Date()
+      let timeChuo1 = Date.parse(newTime)
+      let timeChuo2 = newTime.valueOf()
+      let timeChuo3 = newTime.getTime()
+      // console.log(formData(newTime));
+      function formData(now){
+        var
+          year = now.getFullYear(),
+          month = now.getMonth() + 1,
+          date = now.getDate(),
+          hour = now.getHours(),
+          minute = now.getMinutes(),
+          second = now.getSeconds();
+        return year + '-' + month + '-' + date + ' ' + hour + ':' + minute + ':' + second;
+      }
+
+
+
+
+
     },
     activated() {
     },
@@ -191,14 +216,16 @@
         });
       },
       deleteHandle(index){
-        console.log('删除')
+
         let data = {
           // u_id:window.localStorage.getItem('uid'),
           aid:this.answer_list[index].id
         }
         this.doRequest(Constants.Method.del_answer,data,(result) => {
-          console.log(result)
           this.getData()
+          EventBus.$emit(Constants.EventBus.showToast, {
+            message: "删除成功"
+          });
         })
       },
       fenXiang() {
@@ -376,6 +403,7 @@
 
       },
       accept(index) {
+        console.log('采纳')
         let data = {
           q_id: this.$route.query.id,
           a_id: this.answer_list[index].id,
@@ -424,19 +452,19 @@
     width: 100%;
     padding: px2rem(10) px2rem(20);
     z-index: 1;
+
     .card-img{
-      width: 100%;
-      display:flex;
+      display: flex;
       overflow-x: scroll;
       margin-top: px2rem(20);
       height: px2rem(60);
+      font-size: 0;
+      .cc-img{
+        margin-right: px2rem(20);
+      }
       img{
-        display:block;
-        margin-right: px2rem(10);
         width: px2rem(80);
         height: px2rem(60);
-        background: #dedede;
-
       }
     }
     .view1 {
@@ -619,8 +647,8 @@
       justify-content: center;
       align-items: center;
     }
-    > div:nth-child(1) {
-      border-right: px2rem(1) solid $fontcolor_gray;
+    > div:nth-child(2) {
+      border-left: px2rem(1) solid $fontcolor_gray;
     }
     .icon {
       width: px2rem(15);

@@ -83,7 +83,6 @@
     data() {
       return {
         swiperOption: {
-          // autoplay:true,//等同于以下设置
           autoplay: 3000
         },
         url: '',// 请求的地址
@@ -99,6 +98,11 @@
     },
     filter:{
 
+    },
+    computed: {
+      swiper() {
+        return this.$refs.mySwiper.swiper
+      }
     },
     computed: {},
     created() {

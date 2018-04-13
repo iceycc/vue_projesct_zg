@@ -5,7 +5,7 @@
       <template slot="item" slot-scope="props">
         <div class="card" style="display: flex">
           <div class="title-view" style="flex: 7">
-            <div v-if="props.item.way == 0" class="title">&nbsp; 提现</div>
+            <div v-if=" props.item.way == 1" class="title">&nbsp; 提现</div>
             <div v-else class="title">【<span>{{props.item.title}}</span>】 的{{props.item.way | ways }}</div>
             <div class="card-time">{{props.item.addtime}}</div>
           </div>
@@ -54,26 +54,26 @@
     filters:{
       ways:function (val) {
         switch(val){
-          case '0':
+          case '1':
             return '提现';
             break;
-          case '1':
+          case '2':
             return '提问';
             break;
-          case '2':
+          case '3':
             return '赏金';
             break;
         }
       },
       add_sub:function(val){
         switch(val){
-          case '0':
-            return '-';
-            break;
           case '1':
             return '-';
             break;
           case '2':
+            return '-';
+            break;
+          case '3':
             return '+';
             break;
         }
@@ -81,13 +81,13 @@
       isActive:function (val) {
 
         switch(val){
-          case '0':
-            return '';
-            break;
           case '1':
             return '';
             break;
           case '2':
+            return '';
+            break;
+          case '3':
             return 'active';
             break;
         }
@@ -117,7 +117,7 @@
         this.pushPage({
           name: Constants.PageName.qaDetail,
           query: {
-            id: item.id
+            id: item.qid
           }
         });
       }

@@ -162,6 +162,8 @@
 
   .content {
     background-color: $divider;
+    padding-bottom:px2rem(60);
+
     height: 100%;
   }
   .hot_word_view {
@@ -238,7 +240,7 @@
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
-        color:#1bd4bb;
+        color:#555;
       }
 
       .reward {

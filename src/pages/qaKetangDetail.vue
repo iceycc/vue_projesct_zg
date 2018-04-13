@@ -219,6 +219,7 @@
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
+        color: #555;
       }
     }
     &-content {

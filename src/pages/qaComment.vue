@@ -185,9 +185,7 @@
         });
       },
       getRoleClass(role) {
-        if (role == '金牌管家') {
-          return 'role-guanjia';
-        }
+
       },
       delCommentHandle(cid){
         let data = {
@@ -333,11 +331,7 @@
         padding: px2rem(2) px2rem(5);
         border-radius: px2rem(10);
       }
-      .role-guanjia {
-        border-color: rgb(255, 182, 0);
-        color: rgb(255, 182, 0);
-        background-color: rgb(254, 250, 229);
-      }
+
       .date {
         font-size: px2rem(12);
       }

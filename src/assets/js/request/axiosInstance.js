@@ -9,22 +9,22 @@ const _axios = axios.create(Config);
  */
 _axios.interceptors.response.use((response) => {
     let result = response.data;
-
     if (typeof result === 'string') {
     // if (true) {
         result = JSON.parse(result);
     }
     if (result && 'code' in result) {//&& 'data' in result
-        if (result.code === 0 || result.code === 200) {
+        if (result.code === 0 || result.code === 200 || result.code === '400') {
             return result;
-        } else {
+        }else {
             return Promise.reject({
                 msg: '接口返回错误',
                 data: result.message
             });
         }
     } else {
-        EventBus.$emit(Constants.EventBus.showToast, {message: '接口异常'});
+        // EventBus.$emit(Constants.EventBus.showToast, {message: '接口异常'});
+      console.log('接口异常')
         return Promise.reject({
             msg: 'api 不符合规范',
             data: result

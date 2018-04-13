@@ -43,9 +43,11 @@
         this.gotoMain(id);
       }
       // 用于测试！！todo
-      // else {this.gotoMain(26270);} // 管家
+      // else {this.gotoMain(26270);} // 管家aaa
       // else {this.gotoMain(26319);} // 假如时光倒流
-      // else {this.gotoMain(25416);}
+      // else {this.gotoMain(49685);} //晓雅
+      // else {this.gotoMain(25416);} // 管家02
+
 
     },
     methods: {

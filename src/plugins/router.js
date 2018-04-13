@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Pages from '../pages/index';
 import * as Constants from '../assets/js/Constants';
-
+let AutoListView2 = resolve => require(['../components/AutoListView2'], resolve);
 function addRouter(name, meta) {
   routes.push({
     path: '/' + name.replace(/-/g, '/'),
@@ -14,45 +14,53 @@ function addRouter(name, meta) {
 
 Vue.use(Router);
 
-let routes = [{
-  path: '/',
-  name: Constants.PageName.main,
-  component: Pages.main,
-  meta: {keepAlive: true, title: '主页'},
-  children: [
-    {
-      path: Constants.PageName.qaIndex,
-      name: Constants.PageName.qaIndex,
-      component: Pages[Constants.PageName.qaIndex],
-      meta: {keepAlive: true, title: '问答'},
-    },
-    {
-      path: Constants.PageName.qaUser,
-      name: Constants.PageName.qaUser,
-      component: Pages[Constants.PageName.qaUser],
-      meta: {keepAlive: true, title: '我的'},
-    },
-    {
-      path: Constants.PageName.qaNotice,
-      name: Constants.PageName.qaNotice,
-      component: Pages[Constants.PageName.qaNotice],
-      meta: {keepAlive: true, title: '通知'},
-    },
-    {
-      path: Constants.PageName.qaknowledge,
-      name: Constants.PageName.qaknowledge,
-      component: Pages[Constants.PageName.qaknowledge],
-      meta: {keepAlive: true, title: '课堂'}
-    }
-    // ,
-    // {
-    //   path: Constants.PageName.qaDetail,
-    //   name: Constants.PageName.qaDetail,
-    //   component: Pages[Constants.PageName.qaDetail],
-    //   meta: {keepAlive: true, title: '问答详情'}
-    // }
-  ]
-}];
+let routes = [
+  {
+    path: '/',
+    name: Constants.PageName.main,
+    component: Pages.main,
+    meta: {keepAlive: true, title: '主页'},
+    children: [
+      {
+        path: Constants.PageName.qaIndex,
+        name: Constants.PageName.qaIndex,
+        component: Pages[Constants.PageName.qaIndex],
+        meta: {keepAlive: true, title: '问答'},
+      },
+      {
+        path: Constants.PageName.qaUser,
+        name: Constants.PageName.qaUser,
+        component: Pages[Constants.PageName.qaUser],
+        meta: {keepAlive: true, title: '我的'},
+      },
+      {
+        path: Constants.PageName.qaNotice,
+        name: Constants.PageName.qaNotice,
+        component: Pages[Constants.PageName.qaNotice],
+        meta: {keepAlive: true, title: '通知'},
+      },
+      {
+        path: Constants.PageName.qaknowledge,
+        name: Constants.PageName.qaknowledge,
+        component: Pages[Constants.PageName.qaknowledge],
+        meta: {keepAlive: true, title: '课堂'}
+      }
+    ]
+  },
+  {
+    path: '/' + Constants.PageName.qaGuanJiaList,
+    name: Constants.PageName.qaGuanJiaList,
+    component: Pages[Constants.PageName.qaGuanJiaList],
+    meta: {keepAlive: false, title: '我的问题'},
+    children:[
+      {
+        path:'gjlist',
+        name:'gjlist',
+        component:AutoListView2
+      }
+    ]
+  }
+];
 
 addRouter(Constants.PageName.template, {title: '测试页面'});
 addRouter(Constants.PageName.qaDetail, {keepAlive: false, title: '问答详情'});
@@ -65,7 +73,7 @@ addRouter(Constants.PageName.qaWalletDetail, {keepAlive: false, title: '钱包�
 addRouter(Constants.PageName.qaLogin, {keepAlive: false, title: '登录'});
 addRouter(Constants.PageName.qaWallet, {keepAlive: false, title: '钱包'});
 addRouter(Constants.PageName.qaWithdraw, {keepAlive: false, title: '提现'});
-addRouter(Constants.PageName.qaGuanJiaList, {keepAlive: false, title: '我的问题'});
+// addRouter(Constants.PageName.qaGuanJiaList, {keepAlive: false, title: '我的问题'});
 addRouter(Constants.PageName.qaKetangDetail, {keepAlive: false, title: '课堂'});
 addRouter(Constants.PageName.qaDoc, {keepAlive: false, title: '用户协议'});
 

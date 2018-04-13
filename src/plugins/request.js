@@ -67,14 +67,21 @@ class Request {
             success && success(response.data, response);
             finish && finish();
         }).catch((error) => {
-            EventBus.$emit(Constants.EventBus.showToast, {
-                message: error.data
-            });
-            console.log(error)
+            // EventBus.$emit(Constants.EventBus.showToast, {
+            //     message: error.data
+            // });
+            // console.log(error)
             if (error && 'data' in error) { //接口错误
+              console.log(error.data)
+              if(error.data == '该问题您已回答过'){
+                EventBus.$emit(Constants.EventBus.showToast, {
+                    message: '你已经回答过了吆！'
+                });
+              }
                 console.error('接口异常', error.data);
             } else {
-                console.error('请求异常', error);
+                // console.error('请求异常', error);
+              console.log(error)
             }
 
             fail && fail();

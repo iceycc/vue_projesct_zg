@@ -78,6 +78,7 @@
   .content {
     height: 100%;
     background: $divider;
+    padding-bottom:px2rem(60)
 
   }
   .scroll-view {

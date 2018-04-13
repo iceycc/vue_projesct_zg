@@ -4,7 +4,7 @@
         <div class="form">
             <mu-text-field fullWidth :underlineShow="false" v-model="qa.content" hintText="回答问题将获得积分奖励" fullWidth
                            multiLine :rows="6"/>
-            <upload-view @upload="chooseImage" @remove="remove" :localIds="localIds"></upload-view>
+            <!--<upload-view @upload="chooseImage" @remove="remove" :localIds="localIds"></upload-view>-->
         </div>
 
         <div class="btn-submit" @click="submit">发布
@@ -62,6 +62,7 @@
 
                 this.doRequest(Constants.Method.answer, data, (result) => {
                     this.qa.content = '';
+
                     EventBus.$emit(Constants.EventBus.showToast, {
                         message: '发布成功'
                     });

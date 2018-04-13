@@ -8,36 +8,11 @@
       </div>
     </div>
     <ul class="question-tab">
-      <li class="active question-tab-li">未回答（{{unanswer_num}}）</li>
-      <li class="question-tab-li">已回答（{{answer_num}}）</li>
+      <li class="active question-tab-li" @click="toList(1)">未回答（{{unanswer_num}}）</li>
+      <li class="question-tab-li" @click="toList(2)">已回答（{{answer_num}}）</li>
     </ul>
-    <div class="scroll-view">
-      <div class="no-data" v-if="answered_list.length == 0">
-        没有数据
-      </div>
-      <div class="question-card" @click="goQuestionDetail(item)" v-for="item,index in answered_list" :key="index" v-else>
-        <div class="view-top">
-          <img-wrapper :url="item.avatar" classStyle="avatar"></img-wrapper>
-          <div class="username">{{item.uname}}</div>
-          <span class="reward" v-if="item.q_reward > 0">悬赏金额￥{{item.q_reward}}</span>
-        </div>
-        <!--问题标题-->
-        <div class="title">{{item.title}}</div>
-        <!--问题内容-->
-        <div class="question-content">{{item.content}}</div>
-        <!--问题介绍-->
-        <div class="question-info" v-if="item.answer_num == 0">还没有对我进行回答的快来回答我哦</div>
-        <!---->
-        <div class="view-footer">
-          <div>{{item.pv}}浏览</div>
-          <div>{{item.answer_num}}条回答</div>
-          <div>{{item.qtime}}</div>
-        </div>
-        <div class="card-tags" v-if="item.label.length > 0">
-          <div class="tag" v-for="value,index in item.label" :key="index" v-if="value !== '' ">{{value}}</div>
-        </div>
-      </div>
-    </div>
+      <auto-list-view2 :url="url" :answered_list="answered_list"></auto-list-view2>
+    <!--<router-view</router-view>-->
   </div>
 </template>
 
@@ -45,12 +20,14 @@
   import {Constants, EventBus, mixins} from '../assets/js/index';
   import AppBar from "../components/AppBar.vue";
   import ImgWrapper from "../components/ImgWrapper.vue";
+  import AutoListView2 from "../components/AutoListView2"
 
   export default {
     name: "qa-guan-jia-list",
     components: {
       AppBar,
-      ImgWrapper
+      ImgWrapper,
+      AutoListView2
     },
     mixins: [mixins.base, mixins.request],
     data() {
@@ -62,7 +39,8 @@
         answer_num: 0,
         search_word:'',
         answered_list_1: [],
-        answered_list_2: []
+        answered_list_2: [],
+        url:''
       }
     },
     created() {
@@ -70,28 +48,30 @@
         this.answered_list = this.answered_list_1
         this.getData(2)
       })
+      // this.url = Constants.Method.get_question_unanswered
 
     },
     mounted() {
       this.cicikTabs()
     },
     methods: {
-      goQuestionDetail(item){
-        this.pushPage({
-          name: Constants.PageName.qaDetail,
-          query: {
-            id: item.id
-          }
-        });
+      toList(type){
+        // if(type==1){
+        //     this.$router.push({name:'gjlist',query:{url:Constants.Method.get_question_unanswered}})
+        // }
+        // if(type==2){
+        //   this.$router.push({name:'gjlist',query:{url:Constants.Method.get_question_answered}})
+        // }
       },
+
       //11
       cicikTabs() {
+        var _this=this
         let tapslis = document.querySelectorAll('.question-tab-li')
         for (let i = 0; i < tapslis.length; i++) {
           tapslis[i].index = i
-          var _this=this
           tapslis[i].addEventListener('click', function(e){
-            for (let i = 0; i < tapslis.length; i++) {
+            for (var i = 0; i < tapslis.length; i++) {
               tapslis[i].classList.remove('active')
               _this.getData(i, () => {
                 if (this.index == 0) {
@@ -122,6 +102,7 @@
           this.doRequest(Constants.Method.get_question_answered, null, (result) => {
             // console.log(result)
             this.answered_list_2 = result.question_list
+
             this.answer_num = result.total
             fn && fn()
           })
@@ -197,12 +178,13 @@
     list-style: none;
     width: 100%;
     height: px2rem(50);
-    display: flex;
     text-align: center;
     background: #fff;
-    margin:px2rem(10) px2rem(10);
+    margin:px2rem(10) 0;
     li {
-      flex: 1;
+      display: inline-block;
+      box-sizing: border-box;
+      width: 45%;
       height: 100%;
       line-height: px2rem(40);
       &.active {

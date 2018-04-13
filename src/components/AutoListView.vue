@@ -29,6 +29,8 @@
     <div class="empty-view" v-if="data.length <= 0 && !loading">
       <div class="empty-message">{{emptyMsg}}</div>
     </div>
+    <!--TODO:下拉加载先取消吧-->
+    <!--<mu-infinite-scroll :scroller="scroller" :loading="loading" @load="loadMore" v-if="isMore"/>-->
     <mu-infinite-scroll v-if="isMore" :scroller="scroller" :loading="loading" @load="loadMore"
                         loadingText="数据加载中..."/>
   </div>
@@ -133,15 +135,14 @@
         this.init();
         this.getdata();
       },
-      getPicsData(){
+      getPicsData() {
         this.loading = true;
-        this.doRequest(this.url,null,(result) =>{
+        this.doRequest(this.url, null, (result) => {
 
         })
       },
       getdata() {
         this.loading = true;
-
         let param = {
           page: this.page
         };
@@ -149,17 +150,17 @@
           param = Object.assign(this.$parent.handleParam(), param);
         }
 
-        this.doRequest(this.url, param, (result) => {
+        this.doRequest(this.url, param,
+          (result) => {
           if ('handleResult' in this.$parent) {
             result = this.$parent.handleResult(result);
           }
           this.data = this.data.concat(result);
-          console.log('==================列表=========')
-          console.log(this.url)
-          console.log(result)
-          console.log('============================')
-
-          if (result.length === 0) {
+          // console.log('==================列表=========')
+          // console.log(this.url)
+          // console.log(result)
+          // console.log('============================')
+          if (result && result.length === 0) {
             this.isMore = false;
           } else {
             this.page = this.page + 1;
@@ -170,10 +171,22 @@
           }
         }, null, () => {
           this.loading = false;
-        });
+        },()=>{
+          console.log('fail')
+          },()=>{
+          console.log('finish')
+          });
+
       },
       loadMore() {
-        this.getdata();
+        console.log(this.isMore)
+        if(this.isMore){
+          this.loading = true
+          setTimeout(() => {
+            this.getdata();
+            this.loading = false
+          }, 2000)
+        }
       }
     }
   };

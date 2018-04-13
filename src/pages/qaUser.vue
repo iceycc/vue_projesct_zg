@@ -31,6 +31,13 @@
           <div class="num" style="visibility: hidden"></div>
           <div class="arrow"></div>
         </div>
+        <div class="divider"></div>
+        <div class="item" @click="gotoWallet">
+          <img-wrapper :url="icon_acont" classStyle="icon"></img-wrapper>
+          <div class="name">账号绑定</div>
+          <div class="num" style="visibility: hidden"></div>
+          <div class="arrow"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -57,6 +64,7 @@
         icon_wallet: require('../assets/img/icon_user_wallet.svg'),
         icon_qu: require('../assets/img/icon_user_qu.svg'),
         icon_fav: require('../assets/img/icon_user_fav.svg'),
+        icon_acont: require('../assets/img/icon_acont.svg'),
         data: {},
         my_question:0,
         collect_num:0,
