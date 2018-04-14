@@ -116,7 +116,6 @@
         axios.get(url,{params:{type : type}})
           .then((res)=>{
             let urls = res.data.data
-            console.log(urls);
             this.pics = urls
           })
       },

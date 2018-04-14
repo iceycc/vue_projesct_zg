@@ -19,7 +19,7 @@ let routes = [
     path: '/',
     name: Constants.PageName.main,
     component: Pages.main,
-    meta: {keepAlive: true, title: '主页'},
+    meta: {keepAlive: false, title: '主页'},
     children: [
       {
         path: Constants.PageName.qaIndex,
@@ -44,7 +44,13 @@ let routes = [
         name: Constants.PageName.qaknowledge,
         component: Pages[Constants.PageName.qaknowledge],
         meta: {keepAlive: true, title: '课堂'}
-      }
+      },
+      // {
+      //   path: Constants.PageName.qaDetail,
+      //   name: Constants.PageName.qaDetail,
+      //   component: Pages[Constants.PageName.qaDetail],
+      //   meta: {keepAlive: true, title: '问答详情',isShowTab:true}
+      // }
     ]
   },
   {
@@ -73,7 +79,6 @@ addRouter(Constants.PageName.qaWalletDetail, {keepAlive: false, title: '钱包�
 addRouter(Constants.PageName.qaLogin, {keepAlive: false, title: '登录'});
 addRouter(Constants.PageName.qaWallet, {keepAlive: false, title: '钱包'});
 addRouter(Constants.PageName.qaWithdraw, {keepAlive: false, title: '提现'});
-// addRouter(Constants.PageName.qaGuanJiaList, {keepAlive: false, title: '我的问题'});
 addRouter(Constants.PageName.qaKetangDetail, {keepAlive: false, title: '课堂'});
 addRouter(Constants.PageName.qaDoc, {keepAlive: false, title: '用户协议'});
 
@@ -101,6 +106,36 @@ router.beforeEach((to, from, next) => {
 
   next();
 });
+
+var sess =window.sessionStorage
+
+const reloadIntercepetor = (to,from)=>{
+  if(to.name == 'qauser'){
+    let isRefresh = sess.getItem('isRefresh')
+    console.log('isRefresh:'+isRefresh)
+    if(isRefresh == '0'){
+      sess.setItem('isRefresh',null)
+      window.location.href = window.location.host + '/#/qauser'
+      // this.$route.push({name:'qauser'})
+      console.log(window.location)
+
+    }else{
+      sess.setItem('isRefresh',0)
+    }
+  }
+
+}
+
+
+router.afterEach((to,from)=>{
+  // reloadIntercepetor(to,from)
+  if(to.mame == 'qaindex'){
+    document.title = '问答';
+  }
+})
+
+
+
 
 
 export default router;

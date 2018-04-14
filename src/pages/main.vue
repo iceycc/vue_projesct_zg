@@ -6,7 +6,7 @@
       </keep-alive>
       <router-view v-if="!$route.meta.keepAlive"></router-view>
     </div>
-    <mu-bottom-nav :value="bottomNav" @change="handleChange" ref="bottom">
+    <mu-bottom-nav :value="bottomNav" @change="handleChange" ref="bottom" v-if="!$route.meta.isShowTab">
       <mu-bottom-nav-item value="0" title="问答">
         <img-wrapper :url="bottomNav == 0 ? tab0[1] : tab0[0]" class="tabicon"></img-wrapper>
       </mu-bottom-nav-item>
@@ -39,9 +39,9 @@
         </keep-alive>
         <keep-alive>
           <div class="icon-view" @click="gotoAsk(1)">
-            <div>
+            <div class="msg-infos">
               <div>更快更多更优质回答</div>
-              <div>查看更多<a href="javascript:;" @click.stop="webpage">专属权利</a></div>
+              <div>查看更多<a href="javascript:;" @click.stop="webpage" style="text-decoration: underline;color:#328afb">专属权利</a></div>
             </div>
             <img-wrapper :url="icon2" classStyle="icon"></img-wrapper>
             <div class="name">悬赏提问</div>
@@ -50,7 +50,7 @@
       </div>
       <div class="close" @click="toggleAsk">X</div>
     </div>
-    <div class="btn_ask" @click="handleChange(2)">
+    <div class="btn_ask" @click="handleChange(2)" v-if="!$route.meta.isShowTab">
       <img-wrapper :url="tab2[1]" class="askicon"></img-wrapper>
     </div>
   </div>
@@ -90,12 +90,19 @@
         role:0
       };
     },
-    computed: {},
     updated() {
       this.isReadShow()
-
     },
+
     created() {
+      var _that = this
+      EventBus.$on('showTotal', (value)=> {
+        if(value){
+          _that.handleChange(2)
+        }else{
+          this.showAsk = !this.showAsk;
+        }
+      })
       this.role = window.localStorage.getItem(Constants.LocalStorage.role)
       if(this.role==1){this.ask_text='提问'}
       this.to_doc ={name:Constants.PageName.qaDoc,params:{type:2}}
@@ -116,7 +123,7 @@
       "$router":"getUserData"
     },
 
-    mounted() {
+      mounted() {
       this.style = {
         height: (this.$el.offsetHeight - this.$refs['bottom'].$el.offsetHeight) + 'px'
       };
@@ -125,7 +132,11 @@
       webpage(){
         this.$router.push({name:Constants.PageName.qaDoc,params:{type:2}})
       },
-      getUserData(){
+      getUserData(to,from){
+        // if(to.mame == 'qaindex'){
+        //   document.title = '问答';
+        // }
+        this.showAsk = false
         this.doRequest(Constants.Method.profile, null, (result) => {
           this.collect_num = this.collect_num || this.data.collect_num
           // this.my_question = this.data.my_question_num
@@ -249,6 +260,11 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+        .msg-infos{
+          // todo 添加背景图片 替换
+          background: yellow;
+
+        }
       }
 
       .icon-view:nth-child(1) {

@@ -150,7 +150,7 @@
           this.title = '诸葛装修用户协议';
           break;
         case  2:
-          this.title = '专属权力';
+          this.title = '专属权利';
           break;
         case 3:
           this.title = '提问须知';

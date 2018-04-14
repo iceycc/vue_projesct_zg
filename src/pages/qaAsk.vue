@@ -1,6 +1,13 @@
 <template>
   <div class="content">
-    <app-bar :title="title"></app-bar>
+    <!--<app-bar :title="title"></app-bar>-->
+    <mu-appbar :title="title" v-if="">
+      <mu-icon-button icon="arrow_back" slot="left" @click="goBack"></mu-icon-button>
+      <!--<template slot="right" v-if="this.mode !== 'test'">-->
+      <!--&lt;!&ndash;<mu-icon-button v-if="showSearch" icon="search" slot="right" @click="goSearch"></mu-icon-button>&ndash;&gt;-->
+      <!--<slot name="right"></slot>-->
+      <!--</template>-->
+    </mu-appbar>
     <div class="form">
       <mu-text-field fullWidth :underlineShow="false" v-model="qa.title" hintText="请输入标题"/>
 
@@ -44,8 +51,10 @@
       </div>
 
       <div class="btn" @click="toggleMask">去提问</div>
-      <div class="tip4">付费提问前请阅读<a href="javascript:;" @click.stop="goDoc">提问须知</a></div>
+      <div class="tip4">付费提问前请阅读<a href="javascript:;" @click.stop="goDoc" class="answer_text"> 提问须知</a></div>
     </div>
+
+
   </div>
 
 </template>
@@ -71,6 +80,7 @@
     name: Constants.PageName.qaIndex,
     data() {
       return {
+
         type: 0,//1付费
         qa: {
           title: '',
@@ -87,11 +97,10 @@
       slider() {
         let height = 40;
         let size = 60;
-
         return {
           insert_id:'',
           direction: "horizontal",
-          width: "auto",// 组件宽度
+          width: "100%",// 组件宽度
           height: height,
           min: 1,
           max: 10,
@@ -116,6 +125,7 @@
       }
     },
     created() {
+
       this.initWX(() => {
         console.log('wx success');
       });
@@ -128,15 +138,57 @@
         this.title = '悬赏提问';
         window.document.title = '悬赏提问';//修改网页标题
         this.showMask = true;
+        console.log(!this.showMask)
+        console.log(this.title)
+        // console.log(this.goBack)
+        if(this.showMask && this.title =='悬赏提问' && this.goBack){
+          // todo
+          console.log("给浏览器自带按钮返回注册时间")
+          // this.lisBack()
+        }
       }
       if(this.type === 0) {
         this.title = '免费提问';
         window.document.title = '免费提问';
         this.showMask = false;
-
       }
+
     },
     methods: {
+      lisBack(){
+        // 监听 浏览器返回
+        pushHistory();
+        var _this = this
+        window.addEventListener("popstate", function(e) {
+          _this.goBack && _this.goBack()
+          console.log('goBack')
+          if(window.event){
+            //IE中阻止函数器默认动作的方式
+            window.event.returnValue = false;
+          }
+          else{
+            //阻止默认浏览器动作(W3C)
+            e.preventDefault();
+          }
+
+        }, false);
+        function pushHistory() {
+          var state = {
+            title: "title",
+            url: "#"
+          };
+          window.history.pushState(state, "title", "#");
+        }
+      },
+      goBack(){
+        if(this.title == '免费提问' || this.showMask ){
+          this.$router.go(-1)
+        }
+        if(!this.showMask && this.title == '悬赏提问'){
+          this.showMask =true
+        }
+
+      },
       goDoc(){
         this.$router.push({name:Constants.PageName.qaDoc,params:{type:3}})
       },
@@ -151,14 +203,33 @@
           }
         });
       },
-      submit: function () {
+      submit: function() {
+        // 去除前后空格
+        this.qa.title=this.qa.title.replace(/^\s+|\s+$/g,"");
         if (!this.qa.title) {
           EventBus.$emit(Constants.EventBus.showToast, {
             message: '标题不能为空'
           });
           return;
         }
-
+        if(this.qa.title.length >50){
+          EventBus.$emit(Constants.EventBus.showToast, {
+            message: '标题长度不能大于50个字符'
+          });
+          return;
+        }
+        if(this.qa.content.length > 1000){
+          EventBus.$emit(Constants.EventBus.showToast, {
+            message: '标题长度不能大于1000个字符'
+          });
+          return;
+        }
+        if(this.serverIds.length > 9){
+          EventBus.$emit(Constants.EventBus.showToast, {
+            message: '最多只能上传9张图片'
+          });
+          return;
+        }
         this.upload(() => {
           let data = {
             title: this.qa.title,
@@ -214,7 +285,8 @@
               this.pushPage({
                 name: Constants.PageName.qaDetail,
                 query: {
-                  id: this.insert_id
+                  id: this.insert_id,
+                  go_home:true
                 }
               });
             }, 2000);
@@ -288,7 +360,12 @@
     display: flex;
     flex-direction: column;
   }
+  .slider{
+    padding:0 px2rem(25) !important;
 
+    box-sizing: border-box;
+
+  }
   .form {
     background-color: white;
     padding: px2rem(10);
@@ -342,7 +419,7 @@
       flex-direction: row;
       justify-content: space-between;
       margin-top: px2rem(10);
-      padding: 0 px2rem(5);
+      padding: 0 px2rem(25);
     }
     .tip3 {
       text-align: center;
@@ -364,6 +441,10 @@
       text-align: center;
       margin-top: px2rem(20);
     }
+  }
+  .answer_text{
+    color: #000;
+    text-decoration: underline;
   }
 
 </style>

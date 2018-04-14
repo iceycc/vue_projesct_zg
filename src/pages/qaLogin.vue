@@ -46,7 +46,7 @@
       // else {this.gotoMain(26270);} // 管家aaa
       // else {this.gotoMain(26319);} // 假如时光倒流
       // else {this.gotoMain(49685);} //晓雅
-      // else {this.gotoMain(25416);} // 管家02
+      // else {this.gotoMain(25416);} //
 
 
     },

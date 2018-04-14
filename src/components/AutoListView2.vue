@@ -1,8 +1,8 @@
 <template>
   <div class="scroll-view">
     <mu-list>
-      <div class="no-data" v-if="answered_list.length == 0">
-        没有数据
+      <div class="no-data" v-if="answered_list && answered_list.length == 0">
+        {{infoMsg}}
       </div>
       <div class="question-card" @click="goQuestionDetail(item)" v-for="item,index in answered_list" :key="index"
            v-else>
@@ -29,31 +29,54 @@
         </div>
       </div>
     </mu-list>
+    <mu-infinite-scroll :scroller="scroller" :loading="loading" @load="loadMore"
+                        loadingText="数据加载中..." v-if="isMore"/>
   </div>
 </template>
 
 <script>
   import {Constants, EventBus, mixins} from '../assets/js/index';
+  const defaultStartPage = 1;
   export default {
     name: "auto-list-view2",
-    props: ['url','answered_list'],
+    props: ['url'],
     mixins: [mixins.base, mixins.request],
-    data(){
-      return{
+    data() {
+      return {
         // answered_list:[]
+        infoMsg:'正在努力加载数据...',
+        page:defaultStartPage,
+        answered_list:[],
+        loading: false,
+        scroller: null,
+        isMore:true
       }
     },
-    created(){
+    created() {
       // let url = this.$route.query.url
-      // console.log(url)
+      // console.log(this.url)
       // this.getDate(url)
+      this.getDate(this.url)
     },
-
-    methods:{
-      getDate(url){this.doRequest(url,null,(result) =>{
-        this.answered_list=result.question_list
-      })},
-      goQuestionDetail(item){
+    mounted () {
+      this.scroller = this.$el
+    },
+    methods: {
+      getDate(url) {
+        let data = {
+          page:this.page
+        }
+        this.doRequest(url, data, (result) => {
+          this.answered_list = this.answered_list.concat(result.question_list)
+          if(result.question_list && result.question_list.length ===0){
+            this.infoMsg = '没有数据......'
+            this.isMore = false
+          }else{
+            this.page = this.page + 1;
+          }
+        })
+      },
+      goQuestionDetail(item) {
         this.pushPage({
           name: Constants.PageName.qaDetail,
           query: {
@@ -61,6 +84,14 @@
           }
         });
       },
+      loadMore () {
+        // console.log(this.page)
+        this.loading = true
+        setTimeout(() => {
+          this.getDate(this.url);
+          this.loading = false
+        }, 2000)
+      }
     }
   }
 </script>

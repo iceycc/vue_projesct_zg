@@ -65,6 +65,8 @@
                     this.title = '我的问题';
                     this.getList(2);
                     break;
+              default:
+                break;
             }
         },
         methods: {

@@ -78,9 +78,18 @@
                 });
             },
             doSearch() {
+
+
+                this.search=this.search.replace(/^\s+|\s+$/g,"");
+                console.log(this.search)
+                if(!this.search){
+                  EventBus.$emit(Constants.EventBus.showToast, {
+                    message: '不能为空'
+                  });
+                  return;
+                }
                 this.searchwords.unshift(this.search);
                 this.$ls.set(Constants.LocalStorage.searchHistory, this.searchwords);
-
                 this.pushPage({
                     name: Constants.PageName.qaList,
                     query: {

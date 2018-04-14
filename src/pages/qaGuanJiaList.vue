@@ -11,7 +11,9 @@
       <li class="active question-tab-li" @click="toList(1)">未回答（{{unanswer_num}}）</li>
       <li class="question-tab-li" @click="toList(2)">已回答（{{answer_num}}）</li>
     </ul>
-      <auto-list-view2 :url="url" :answered_list="answered_list"></auto-list-view2>
+      <auto-list-view2 v-show="isShow" :url="url1" :answered_list="answered_list_1"></auto-list-view2>
+
+      <auto-list-view2 v-show="!isShow" :url="url2" :answered_list="answered_list_2"></auto-list-view2>
     <!--<router-view</router-view>-->
   </div>
 </template>
@@ -40,14 +42,17 @@
         search_word:'',
         answered_list_1: [],
         answered_list_2: [],
-        url:''
+        url:'',
+        isShow:true,
+        url1:'',
+        url2:'',
       }
     },
     created() {
-      this.getData(1, () => {
-        this.answered_list = this.answered_list_1
-        this.getData(2)
-      })
+      this.getData(1)
+      this.getData(2)
+      this.url1 = Constants.Method.get_question_unanswered
+      this.url2 = Constants.Method.get_question_answered
       // this.url = Constants.Method.get_question_unanswered
 
     },
@@ -56,12 +61,16 @@
     },
     methods: {
       toList(type){
-        // if(type==1){
-        //     this.$router.push({name:'gjlist',query:{url:Constants.Method.get_question_unanswered}})
-        // }
-        // if(type==2){
-        //   this.$router.push({name:'gjlist',query:{url:Constants.Method.get_question_answered}})
-        // }
+        if(type==1){
+          this.isShow = true
+          this.url1 = Constants.Method.get_question_unanswered
+            // this.$router.push({name:'gjlist',query:{url:Constants.Method.get_question_unanswered}})
+        }
+        if(type==2){
+          this.isShow = false
+          this.url2 = Constants.Method.get_question_answered
+          // this.$router.push({name:'gjlist',query:{url:Constants.Method.get_question_answered}})
+        }
       },
 
       //11
@@ -73,14 +82,14 @@
           tapslis[i].addEventListener('click', function(e){
             for (var i = 0; i < tapslis.length; i++) {
               tapslis[i].classList.remove('active')
-              _this.getData(i, () => {
-                if (this.index == 0) {
-                  _this.answered_list = _this.answered_list_1
-                }
-                if (this.index == 1) {
-                  _this.answered_list = _this.answered_list_2
-                }
-              })
+              // _this.getData(i, () => {
+              //   if (this.index == 0) {
+              //     // _this.answered_list = _this.answered_list_1
+              //   }
+              //   if (this.index == 1) {
+              //     // _this.answered_list = _this.answered_list_2
+              //   }
+              // })
             }
             let currentLi = e.target
             currentLi.classList.add('active')
@@ -92,7 +101,6 @@
         if (type == 1) {
           this.doRequest(Constants.Method.get_question_unanswered, null, (result) => {
             // console.log(result)
-            this.answered_list_1 = result.question_list
             this.unanswer_num = result.total
             fn && fn()
           })
@@ -101,15 +109,19 @@
         if (type == 2) {
           this.doRequest(Constants.Method.get_question_answered, null, (result) => {
             // console.log(result)
-            this.answered_list_2 = result.question_list
-
             this.answer_num = result.total
             fn && fn()
           })
         }
       },
       goSearch(word){
-        // console.log(word)
+        word = word.replace(/^\s+|\s+$/g,"")
+        if (!word) {
+          EventBus.$emit(Constants.EventBus.showToast, {
+            message: '不能为空'
+          });
+          return;
+        }
         let data = {
           key_word:word
         }

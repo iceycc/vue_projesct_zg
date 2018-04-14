@@ -1,7 +1,14 @@
 <template>
   <div class="content">
     <!--标题 问题详情-->
-    <app-bar :title="title"></app-bar>
+    <!--<app-bar :title="title"></app-bar>-->
+    <mu-appbar title="问答详情" v-if="showAppBar">
+      <mu-icon-button icon="arrow_back" slot="left" @click="goBack"></mu-icon-button>
+      <!--<template slot="right" v-if="this.mode !== 'test'">-->
+        <!--&lt;!&ndash;<mu-icon-button v-if="showSearch" icon="search" slot="right" @click="goSearch"></mu-icon-button>&ndash;&gt;-->
+        <!--<slot name="right"></slot>-->
+      <!--</template>-->
+    </mu-appbar>
     <!--顶部问题详情-->
     <div class="card shadow" v-if="question">
       <!--用户头像 名称 赏金-->
@@ -61,8 +68,8 @@
                   </div>
                   <div class="date">{{item.atime | my_time}}</div>
                 </div>
-                <!--采纳-->
-                <div class="accept" v-if="isOwner && question.q_adoption == 0" @click.once.stop="accept(index)">采纳</div>
+                <!--采纳@click.once.stop="accept(index)"   && item.uid !== question.uid-->
+                <div class="accept" v-if="isOwner && question.q_adoption == 0 && item.uid !== question.uid" @click.stop="open(index)">采纳</div>
 
                 <div class="accepted" v-if="question.q_adoption ==item.id"><img src="../assets/img/accepted@2x.png"
                                                                                 alt=""></div>
@@ -106,12 +113,45 @@
         <img-wrapper :url="icon1" classStyle="icon"></img-wrapper>
         去回答
       </div>
-      <div @click="gotoAsk" v-if="role ==0 ">
+      <div @click="gotoAsk1" v-if="role ==0 ">
         <img-wrapper :url="icon2" classStyle="icon"></img-wrapper>
         去提问
       </div>
     </div>
+    <mu-dialog :open="dialog" title="提示" @close="close">
+      确定采纳该回答吗？
+      <mu-flat-button slot="actions" @click="close" primary label="取消"/>
+      <mu-flat-button slot="actions" primary @click="accept()" label="确定"/>
+    </mu-dialog>
+
+
+    <div class="mask" v-if="showAsk">
+      <div class="btn-view">
+        <keep-alive>
+          <div class="icon-view" @click="gotoAsk(0)">
+            <div style="visibility: hidden">
+              <div>更快更多更优质回答</div>
+              <div>查看更多<a href="">专属权利</a></div>
+            </div>
+            <img-wrapper :url="icon_a" classStyle="icon"></img-wrapper>
+            <div class="name">免费提问</div>
+          </div>
+        </keep-alive>
+        <keep-alive>
+          <div class="icon-view" @click="gotoAsk(1)">
+            <div class="msg-infos">
+              <div>更快更多更优质回答</div>
+              <div>查看更多<a href="javascript:;" @click.stop="webpage" style="text-decoration: underline;color:#328afb">专属权利</a></div>
+            </div>
+            <img-wrapper :url="icon_b" classStyle="icon"></img-wrapper>
+            <div class="name">悬赏提问</div>
+          </div>
+        </keep-alive>
+      </div>
+      <div class="close" @click="toggleAsk">X</div>
+    </div>
   </div>
+
 </template>
 
 <script>
@@ -143,7 +183,14 @@
     },
     data() {
       return {
+        q_adoption_index:null,
+        showAsk:false,
+        dialog: false,
+        ifGoHome:false,
+        icon_back:'',
         text_lable:['哈哈','hhe1'],
+        icon_a: require('../assets/img/icon_ask_free.png'),
+        icon_b: require('../assets/img/icon_ask.png'),
         icon1: require('../assets/img/icon_detail_response.svg'),
         icon2: require('../assets/img/icon_detail_ask.svg'),
         icon3: require('../assets/img/icon_detail_like.svg'),
@@ -185,6 +232,9 @@
         console.log('wx success');
       });
 
+      this.ifGoHome = this.$route.query.go_home || false
+      console.log(this.ifGoHome)
+
       let newTime = new Date()
       let timeChuo1 = Date.parse(newTime)
       let timeChuo2 = newTime.valueOf()
@@ -201,14 +251,37 @@
         return year + '-' + month + '-' + date + ' ' + hour + ':' + minute + ':' + second;
       }
 
-
-
-
-
+      /**
+       * 如果是微信内,则不显示appBar
+       * @type {boolean}
+       */
+      this.showAppBar = !/MicroMessenger/.test(navigator.userAgent);
     },
     activated() {
     },
     methods: {
+      open (index) {
+        this.dialog = true
+        this.q_adoption_index =index
+      },
+      close () {
+        this.dialog = false
+      },
+      goBack(){
+        if(this.ifGoHome ){
+          this.$router.go(-2)
+        }else{
+          this.$router.go(-1)
+        }
+      },
+      gotoAsk(type) {
+        this.pushPage({
+          name: Constants.PageName.qaAsk,
+          params: {
+            type
+          }
+        });
+      },
       showBigImg(src,pics){
         wx.previewImage({
           current: src, // 当前显示图片的http链接
@@ -293,15 +366,51 @@
           }
         });
       },
-      gotoAsk() {
-        this.pushPage({
-          name: Constants.PageName.qaAsk,
-          qarams: {
-            type: 1
-          }
-        });
-      },
+      gotoAsk1() {
+        // this.pushPage({
+        //   name: Constants.PageName.qaAsk,
+        //   qarams: {
+        //     type: 1
+        //   }
+        // });
+        // EventBus.$emit('showTotal','true')
+        this.handleChange(2)
 
+      },
+      handleChange(value) {
+        if (value == 2) {
+          if(this.role==0){
+            this.toggleAsk();
+          }
+          if(this.role == 1){
+            EventBus.$emit(Constants.EventBus.showToast, {
+              message: '管家没有提问权限'
+            });
+          }
+        } else {
+          let name = '';
+          switch (parseInt(value)) {
+            case 0:
+              name = Constants.PageName.qaIndex;
+              break;
+            case 1:
+              name = Constants.PageName.qaknowledge;
+              break;
+            case 3:
+              name = Constants.PageName.qaNotice;
+
+              break;
+            case 4:
+              name = Constants.PageName.qaUser;
+              break;
+          }
+
+          this.bottomNav = value;
+          this.pushPage({
+            name: name
+          });
+        }
+      },
       like(index, liked) {
         if(timer){
           clearTimeout(timer)
@@ -358,7 +467,9 @@
           }
         }
       },
-
+      toggleAsk() {
+        this.showAsk = !this.showAsk;
+      },
       collect() {
 
         if(timer){
@@ -402,14 +513,16 @@
 
 
       },
-      accept(index) {
+      accept() {
         console.log('采纳')
+        let index = this.q_adoption_index
         let data = {
           q_id: this.$route.query.id,
           a_id: this.answer_list[index].id,
         };
 
         this.doRequest(Constants.Method.adoption, data, (result) => {
+          this.dialog = false
           EventBus.$emit(Constants.EventBus.showToast, {
             message: '已采纳'
           });
@@ -654,6 +767,55 @@
       width: px2rem(15);
       height: px2rem(15);
       margin-right: px2rem(10);
+    }
+  }
+  .mask {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.79);
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+    .btn-view {
+      display: flex;
+      flex-direction: row;
+
+      .icon-view {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        .msg-infos{
+          // todo 添加背景图片 替换
+          background: yellow;
+
+        }
+      }
+
+      .icon-view:nth-child(1) {
+        margin-right: px2rem(30);
+      }
+
+      .icon {
+        width: px2rem(60);
+        height: px2rem(60);
+        margin: px2rem(20);
+      }
+      .name {
+        font-size: px2rem(16);
+        text-align: center;
+      }
+    }
+    .close {
+      position: absolute;
+      bottom: 0;
+      padding: px2rem(20) 0;
+      width: 100%;
+      font-size: px2rem(20);
+      text-align: center;
+      border-top: px2rem(1) solid $fontcolor_gray;
     }
   }
 

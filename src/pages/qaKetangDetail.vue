@@ -1,10 +1,8 @@
 <template>
   <div class="content">
     <app-bar :title="title"></app-bar>
-
     <div class="scroll-view">
-
-
+      <mu-list style="height:100%">
       <a class="card" v-for="item,index in data_list" :key="index" :href="item.url">
         <div class="card-img">
           <img :src="item.thumb" alt="">
@@ -14,12 +12,15 @@
           <div class="card-content">{{item.remark}}</div>
         </div>
       </a>
-      <div v-if="!data_list || data_list.length == 0" class="no-data">
-        没有数据
+      <div v-if="data_list && data_list.length == 0" class="no-data">
+          {{infoMsg}}
       </div>
-      <mu-infinite-scroll :scroller="scroller" :loading="loading" @load="loadMore"
-                          loadingText="数据加载中..."/>
+      </mu-list>
     </div>
+    <!--todo 下拉刷新得紧挨者滑动部分 并且要在最外层 要抽离滑动模板 -->
+    <mu-infinite-scroll :scroller="scroller" :loading="loading" @load="loadMore" v-if="isMore"
+                        loadingText="数据加载中..."/>
+
   </div>
 
 </template>
@@ -32,7 +33,7 @@
   import ImgWrapper from "../components/ImgWrapper";
   import AppBar from "../components/AppBar.vue";
 
-
+  const defaultStartPage = 1;
   export default {
     components: {
       ImgWrapper,
@@ -43,6 +44,7 @@
     name: Constants.PageName.qaknowledge,
     data() {
       return {
+        infoMsg:'正在努力加载数据...',
         isFirst:true,
         url: '',
         category_index: 0,
@@ -59,8 +61,9 @@
         picsTitle:[],
         data_list:[],
         loading: false,
-        scroller: null
-
+        scroller: null,
+        isMore:true,
+        page:defaultStartPage
       };
     },
     filters:{
@@ -68,47 +71,46 @@
         return val[index]
       }
     },
-    mounted(){
+    computed: {
+    },
+    mounted () {
       this.scroller = this.$el
     },
-    computed: {},
+
     created() {
-      let id = this.$route.query.cid || 0;
       this.title = this.$route.query.title || '课堂'
       // console.log(id);
-      this.getList(id)
+      this.getList()
 
     },
     methods: {
       loadMore () {
+        // todo 做分页
+        // 1  请求数据中判断数据是否为空
+        console.log(11)
         this.loading = true
         setTimeout(() => {
-          for (let i = this.num; i < this.num + 10; i++) {
-            this.list.push('item' + (i + 1))
-          }
-          this.num += 10
+          this.getList()
           this.loading = false
         }, 2000)
       },
-      getList(id) {
-        // this.url = 'http://bang.uzhuang.com/index.php?m=bangV2&f=ketang&v=nodeList'+'&cid=' + id;
-        // this.flag = this.url;
-        // this.isFirst = true
+      getList() {
+        let id = this.$route.query.cid || 0;
         let url = 'http://bang.uzhuang.com/index.php?m=bangV2&f=ketang&v=nodeList';
-        axios.get(url,{params:{cid:id,page:1}})
+        axios.get(url,{params:{cid:id,page:this.page}})
           .then((result)=>{
-            this.data_list = result.data.data
-            // console.log(this.data_list)
+            this.data_list = this.data_list.concat(result.data.data)
+            // 判断数据是否存在且是否为空 控制加载是否继续
+            if(result.data.data && result.data.data.length == 0 ){
+              this.infoMsg = '没有数据......'
+              this.isMore = false
+            }else{
+              this.page = this.page + 1;
+            }
           })
       },
       onItemClick(item) {
         window.location.href = item.url;
-        /*this.pushPage({
-            name: Constants.PageName.qaDetail,
-            query: {
-                id: item.id
-            }
-        });*/
       },
 
       gotoSearch() {

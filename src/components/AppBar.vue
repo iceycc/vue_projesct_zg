@@ -34,7 +34,7 @@
             };
         },
         created() {
-            document.title = this.title;
+            // document.title = this.title;
             //alert(navigator.userAgent);
             switch (this.mode) {
                 case 'page':
