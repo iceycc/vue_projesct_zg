@@ -128,23 +128,28 @@
     <div class="mask" v-if="showAsk">
       <div class="btn-view">
         <keep-alive>
-          <div class="icon-view" @click="gotoAsk(0)">
+          <div class="icon-view">
             <div style="visibility: hidden">
               <div>更快更多更优质回答</div>
               <div>查看更多<a href="">专属权利</a></div>
             </div>
-            <img-wrapper :url="icon_a" classStyle="icon"></img-wrapper>
-            <div class="name">免费提问</div>
+            <div @click="gotoAsk(0)">
+              <img-wrapper :url="icon_a" classStyle="icon"></img-wrapper>
+              <div class="name">免费提问</div>
+            </div>
           </div>
         </keep-alive>
         <keep-alive>
-          <div class="icon-view" @click="gotoAsk(1)">
+          <div class="icon-view">
             <div class="msg-infos">
               <div>更快更多更优质回答</div>
               <div>查看更多<a href="javascript:;" @click.stop="webpage" style="text-decoration: underline;color:#328afb">专属权利</a></div>
             </div>
-            <img-wrapper :url="icon_b" classStyle="icon"></img-wrapper>
-            <div class="name">悬赏提问</div>
+            <div @click="gotoAsk(1)">
+              <img-wrapper :url="icon_b" classStyle="icon"></img-wrapper>
+              <div class="name">悬赏提问</div>
+            </div>
+
           </div>
         </keep-alive>
       </div>
@@ -300,6 +305,9 @@
             message: "删除成功"
           });
         })
+      },
+      webpage(){
+        this.$router.push({name:Constants.PageName.qaDoc,params:{type:2}})
       },
       fenXiang() {
         let url = window.location.href

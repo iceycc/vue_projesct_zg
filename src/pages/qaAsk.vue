@@ -53,8 +53,6 @@
       <div class="btn" @click="toggleMask">去提问</div>
       <div class="tip4">付费提问前请阅读<a href="javascript:;" @click.stop="goDoc" class="answer_text"> 提问须知</a></div>
     </div>
-
-
   </div>
 
 </template>
