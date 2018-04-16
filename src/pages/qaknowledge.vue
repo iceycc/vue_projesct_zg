@@ -112,7 +112,7 @@
         this.isFirst = false
         this.loading = true
         this.picsTitle = picsTitle
-        // todo 这里用的原生axios啊1111
+        // todo 原生ajax
         axios.get(url,{params:{type : type}})
           .then((res)=>{
             let urls = res.data.data
@@ -161,17 +161,19 @@
 
   .content {
     background-color: $divider;
-    padding-bottom:px2rem(60);
-
+    padding-top: px2rem(60);
     height: 100%;
   }
   .hot_word_view {
+    position:fixed;
+    top:0;
+    width: 100%;
     display: flex;
     flex-direction: row;
     align-items: center;
     overflow-y: auto;
     background-color: white;
-
+    z-index: 100;
     .hot_word {
       color: #333;
       flex-grow: 1;

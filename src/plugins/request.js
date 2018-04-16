@@ -79,6 +79,9 @@ class Request {
                 });
               }
                 console.error('接口异常', error.data);
+              EventBus.$emit(Constants.EventBus.showToast, {
+                message:error.data
+              });
             } else {
                 // console.error('请求异常', error);
               console.log(error)

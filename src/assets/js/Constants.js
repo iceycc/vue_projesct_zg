@@ -67,7 +67,10 @@ export const Method = {
     // 未回答 get_question_unanswered   uid page
     get_question_unanswered: BASE_URL + "f=question_list&v=get_question_unanswered",
     // 回答  get_question_answered   uid page
-    get_question_answered: BASE_URL + "f=question_list&v=get_question_answered"
+    get_question_answered: BASE_URL + "f=question_list&v=get_question_answered",
+
+    // 账户绑定
+    bind_account: BASE_URL + "f=operation&v=bind_account"
 
 
 

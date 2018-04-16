@@ -1,23 +1,26 @@
 <template>
-  <div class="content">
-    <app-bar :title="title"></app-bar>
-    <div class="scroll-view">
+  <div class="scroll-view">
+    <mu-refresh-control :refreshing="refreshing" :trigger="trigger" @refresh="refresh"/>
+    <!--<app-bar :title="title" class="app-bar"></app-bar>-->
       <mu-list style="height:100%">
-      <a class="card" v-for="item,index in data_list" :key="index" :href="item.url">
-        <div class="card-img">
-          <img :src="item.thumb" alt="">
-        </div>
-        <div class="title-view">
-          <div class="title">{{item.title}}</div>
-          <div class="card-content">{{item.remark}}</div>
-        </div>
-      </a>
-      <div v-if="data_list && data_list.length == 0" class="no-data">
+        <a v-for="item,index in data_list" :key="index" :href="item.url">
+          <mu-list-item>
+            <div class="card">
+              <div class="card-img">
+                <img :src="item.thumb" alt="">
+              </div>
+              <div class="title-view">
+                <div class="title">{{item.title}}</div>
+                <div class="card-content">{{item.remark}}</div>
+              </div>
+            </div>
+          </mu-list-item>
+        </a>
+        <div v-if="data_list && data_list.length == 0" class="no-data">
           {{infoMsg}}
-      </div>
+        </div>
       </mu-list>
-    </div>
-    <!--todo 下拉刷新得紧挨者滑动部分 并且要在最外层 要抽离滑动模板 -->
+    <!--t 下拉刷新得紧挨者滑动部分 并且要在最外层 要抽离滑动模板 -->
     <mu-infinite-scroll :scroller="scroller" :loading="loading" @load="loadMore" v-if="isMore"
                         loadingText="数据加载中..."/>
 
@@ -44,8 +47,8 @@
     name: Constants.PageName.qaknowledge,
     data() {
       return {
-        infoMsg:'正在努力加载数据...',
-        isFirst:true,
+        infoMsg: '正在努力加载数据...',
+        isFirst: true,
         url: '',
         category_index: 0,
         categorys: [{
@@ -57,23 +60,25 @@
         }, {
           name: '装修后',
         }],
-        title:'',
-        picsTitle:[],
-        data_list:[],
+        title: '',
+        picsTitle: [],
+        data_list: [],
         loading: false,
         scroller: null,
-        isMore:true,
-        page:defaultStartPage
+        isMore: true,
+        page: defaultStartPage,
+        refreshing: false,
+        trigger: null
       };
     },
-    filters:{
-      forPicsTitle:(val,index) => {
+    filters: {
+      forPicsTitle: (val, index) => {
         return val[index]
       }
     },
-    computed: {
-    },
-    mounted () {
+    computed: {},
+    mounted() {
+      this.trigger = this.$el;
       this.scroller = this.$el
     },
 
@@ -84,8 +89,14 @@
 
     },
     methods: {
-      loadMore () {
-        // todo 做分页
+      refresh () {
+        this.refreshing = true
+        setTimeout(() => {
+          this.getList()
+          this.refreshing = false
+        }, 2000)
+      },
+      loadMore() {
         // 1  请求数据中判断数据是否为空
         console.log(11)
         this.loading = true
@@ -97,17 +108,17 @@
       getList() {
         let id = this.$route.query.cid || 0;
         let url = 'http://bang.uzhuang.com/index.php?m=bangV2&f=ketang&v=nodeList';
-        axios.get(url,{params:{cid:id,page:this.page}})
-          .then((result)=>{
-            this.data_list = this.data_list.concat(result.data.data)
-            // 判断数据是否存在且是否为空 控制加载是否继续
-            if(result.data.data && result.data.data.length == 0 ){
-              this.infoMsg = '没有数据......'
-              this.isMore = false
-            }else{
-              this.page = this.page + 1;
-            }
-          })
+        axios.get(url, {params: {cid: id, page: this.page}})
+            .then((result) => {
+              this.data_list = this.data_list.concat(result.data.data)
+              // 判断数据是否存在且是否为空 控制加载是否继续
+              if (result.data.data && result.data.data.length == 0) {
+                this.infoMsg = '没有数据......'
+                this.isMore = false
+              } else {
+                this.page = this.page + 1;
+              }
+            })
       },
       onItemClick(item) {
         window.location.href = item.url;
@@ -128,20 +139,29 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
   @import "../assets/scss/px2rem";
-.scroll-view{
-  padding: px2rem(10) px2rem(6) px2rem(50);
-  height: 100%;
-  overflow: scroll;
-  background: #f2f2f2;
-}
-  .no-data{
+
+  .scroll-view {
+    /*padding-bottom: px2rem(50);*/
+    height: 100%;
+    overflow: scroll;
+    background: #f2f2f2;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+  .app-bar{
+    position: fixed;
+    top: 0;
+  }
+  .no-data {
     text-align: center;
     margin-top: px2rem(50);
   }
+
   .content {
     background-color: $divider;
     height: 100%;
   }
+
   .hot_word_view {
     display: flex;
     flex-direction: row;
@@ -166,31 +186,33 @@
       border-bottom: px2rem(2) solid $mainColor;
     }
   }
+
   /*11*/
-  .ketang_imgs{
+  .ketang_imgs {
     display: flex;
-    flex-wrap:wrap;
-    .ketang_img{
-      position:relative;
+    flex-wrap: wrap;
+    .ketang_img {
+      position: relative;
       padding: px2rem(10);
       display: inline-block;
       width: 50%;
       height: px2rem(120);
 
-      img{
+      img {
         width: 100%;
       }
-      .title{
+      .title {
         position: absolute;
         padding: px2rem(6);
         font-size: px2rem(16);
-        white-space:nowrap;
+        white-space: nowrap;
         text-overflow: ellipsis;
         color: #fff;
       }
 
     }
   }
+
   .card {
     display: block;
     background-color: white;
@@ -200,13 +222,13 @@
     display: flex;
     margin-bottom: px2rem(10);
     /*1211111111*/
-    .card-img{
+    .card-img {
       display: block;
       box-sizing: border-box;
       width: px2rem(80);
       height: px2rem(60);
       background: #ccc;
-      img{
+      img {
         width: 100%;
         height: 100%;
       }

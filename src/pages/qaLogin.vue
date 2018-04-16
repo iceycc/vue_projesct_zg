@@ -42,7 +42,7 @@
       if (id) {
         this.gotoMain(id);
       }
-      // 用于测试！！todo
+      // 用于测试！！
       // else {this.gotoMain(26270);} // 管家aaa
       // else {this.gotoMain(26319);} // 假如时光倒流
       // else {this.gotoMain(49685);} //晓雅

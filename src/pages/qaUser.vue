@@ -34,7 +34,8 @@
         <div class="divider"></div>
         <div class="item" @click="gotoAccount">
           <img-wrapper :url="icon_acont" classStyle="icon"></img-wrapper>
-          <div class="name">账号绑定</div>
+          <div class="name" v-if="data.role == 0">账号绑定</div>
+          <div class="name" v-else>更换绑定</div>
           <div class="num" style="visibility: hidden"></div>
           <div class="arrow"></div>
         </div>

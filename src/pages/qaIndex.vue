@@ -4,6 +4,7 @@
     <div class="hot_word_view">
       <div class="tags">
         <template v-for="item,index in hot_words">
+
           <div class="hot_word" v-bind:class="{'hot_word_select' :hot_words_index === index}"
                @click="selectHotWord(index)">
             {{item.name}}
@@ -191,6 +192,7 @@
     position: relative;
     background-color: $divider;
     height: 100%;
+    padding-top: px2rem(60);
   }
   .scroll-view{
     padding-bottom:px2rem(70);
@@ -208,15 +210,18 @@
   }
 
   .hot_word_view {
-
+    position: fixed;
     display: flex;
+    top: 0;
+    width: 100%;
     flex-direction: row;
     align-items: center;
-    overflow-y: auto;
+    overflow-x: auto;
+    z-index: 100;
     margin-right: px2rem(25);
     background-color: white;
     .go_search {
-      position: absolute;
+      position: fixed;
       right: 0;
       background: #fff;
       padding: px2rem(13) 0;
@@ -229,9 +234,9 @@
 
     .hot_word {
       color: #333;
-      padding: px2rem(15) 0;
-      margin: 0 px2rem(15);
+      padding: px2rem(15);
       font-size: px2rem(13);
+      box-sizing: border-box;
       white-space: nowrap;
       transition: font-size, color 0.2s, 0.2s;
     }

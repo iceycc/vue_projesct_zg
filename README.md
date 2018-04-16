@@ -2,7 +2,9 @@ vue 项目--》
 
 // 接口地址 ： http://api.uzhuang.com/workspace/myWorkspace.do?projectId=4#41
 // 
-
+#### vue项目中使用md5加密  
+    1- npm install --save js-md5
+    2- import md5 from 'js-md5'; 
 
 ### 接口地址
 - http://api.uzhuang.com/workspace/myWorkspace.do?projectId=4#39

@@ -222,9 +222,11 @@
 
   .page {
     background: #f2f2f2;
+    padding-bottom: px2rem(70);
   }
   .mu-bottom-nav{
-    position: relative;
+    position: fixed;
+    bottom: 0;
 
   }
   .sub-page {
@@ -264,19 +266,26 @@
     .btn-view {
       display: flex;
       flex-direction: row;
-
       .icon-view {
+        // 注意 qaDetail也有相同的样式
+        padding-top: px2rem(60);
+        position:relative;
         display: flex;
         flex-direction: column;
         align-items: center;
         .msg-infos{
-          // 注意 qaDetail也有相同的样式
-          width: px2rem(130);
+          position: absolute;
+          top: px2rem(-10);
+          left: px2rem(20);
+          width: px2rem(140);
           height: px2rem(80);
+          font-size: px2rem(13);
+          box-sizing: border-box;
           padding-top: px2rem(10);
-          padding-left: px2rem(10);
+          padding-left: px2rem(5);
           background: url("../assets/img/bg_text_box.png") no-repeat 0 0;
-          background-size: cover;
+          background-size: px2rem(140) px2rem(80);
+          background-origin:border-box ;
         }
       }
 

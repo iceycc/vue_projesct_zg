@@ -11,6 +11,8 @@
 
 <script>
   import AppBar from '../components/AppBar.vue'
+  import md5 from 'js-md5';
+  import axios from 'axios';
   import {Constants, EventBus, mixins} from '../assets/js/index';
   export default {
     name: "",
@@ -29,7 +31,6 @@
     ,
     methods:{
       goBindAccount(){
-
         this.username = this.username.replace(/^\s+|\s+$/g,"")
         this.password = this.password.replace(/^\s+|\s+$/g,"")
         if(this.username == ""){
@@ -42,6 +43,34 @@
             message: '密码不能为空'
           });
         }
+        // let data = {
+        //   username:this.username,
+        //   password:md5(this.password),
+        //   uid:window.localStorage.getItem('uid')
+        // }
+        axios.get(Constants.Method.bind_account,{params:{
+            username:this.username,
+            password:md5(this.password),
+            uid:window.localStorage.getItem('uid')
+          }})
+            .then((result)=>{
+              console.log(result)
+              if(result.data.code == 0){
+                EventBus.$emit(Constants.EventBus.showToast, {
+                  message: '绑定成功,需要重新登陆'
+                });
+                setTimeout(()=>{
+                  window.localStorage.clear()
+                  this.$router.push({
+                    name:Constants.PageName.qaLogin
+                  })
+                },1000)
+              }else {
+                EventBus.$emit(Constants.EventBus.showToast, {
+                  message: '账户密码错误请重新输入'
+                });
+              }
+            })
       }
     }
   }

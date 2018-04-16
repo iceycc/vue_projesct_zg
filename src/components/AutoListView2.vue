@@ -1,5 +1,6 @@
 <template>
   <div class="scroll-view">
+    <mu-refresh-control :refreshing="refreshing" :trigger="trigger" @refresh="refresh"/>
     <mu-list>
       <div class="no-data" v-if="answered_list && answered_list.length == 0">
         {{infoMsg}}
@@ -49,7 +50,9 @@
         answered_list:[],
         loading: false,
         scroller: null,
-        isMore:true
+        isMore:true,
+        refreshing: false,
+        trigger: null
       }
     },
     created() {
@@ -59,6 +62,7 @@
       this.getDate(this.url)
     },
     mounted () {
+      this.trigger = this.$el;
       this.scroller = this.$el
     },
     methods: {
@@ -91,6 +95,13 @@
           this.getDate(this.url);
           this.loading = false
         }, 2000)
+      },
+      refresh () {
+        this.refreshing = true
+        setTimeout(() => {
+          this.getDate(this.url);
+          this.refreshing = false
+        }, 1000)
       }
     }
   }
@@ -115,6 +126,8 @@
   .scroll-view {
     height: 100%;
     overflow: scroll;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
     .no-data {
       text-align: center;
       margin-top: px2rem(40);

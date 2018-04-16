@@ -36,10 +36,10 @@
                 <!--<img-wrapper classStyle="avatar" :url="item.a_avatar"></img-wrapper>-->
                 <div class="vertical-view">
                   <div class="name huifu-name">
-                    <!--todo 如果是管家用户名 进入管家详情 但是管家不能访问管家-->
-                    <span @click="ifGoDetail(item.from_user_id,answer.role,answer.aname)">{{item.from_user}} </span>
+                    <!--如果是管家用户名 进入管家详情 但是管家不能访问管家-->
+                    <span @click="ifGoDetail(item.from_user_id,item.role)">{{item.from_user}} </span>
                     <span class="huifu-text"> 回复 </span>
-                    <span>{{item.to_user ? item.to_user : answer.aname + " ："}}</span>
+                    <span>{{item.to_user ? item.to_user + " ：": answer.aname + " ："}}</span>
                   </div>
 
                 </div>
@@ -156,15 +156,20 @@
       this.getComment();
     },
     methods: {
-      ifGoDetail(uid,role,aname){
+      ifGoDetail(uid,role){
         // 这里通过判断返回的role是否时管是家 自己是管家的话点不开其他管家的详情 匿名用户不能打开 管家看管家也是显示匿名用户
-        if(!(role == '管家' || role == '金牌管家') || (aname=='匿名用户' || '')){
+        let my_role = window.localStorage.getItem('role')
+        let my_uid = window.localStorage.getItem('uid')
+        console.log(role == my_role);
+        console.log(uid != my_uid);
+        if(role == my_role && uid !== my_uid ){
           return
         }else{
           this.goGujian(uid,1)
         }
       },
       goGujian(uid,role){
+        console.log(421)
         let uid_this = uid || window.localStorage.getItem('uid')
         let role_this = role || window.localStorage.getItem('role')
         if(role_this == 1){

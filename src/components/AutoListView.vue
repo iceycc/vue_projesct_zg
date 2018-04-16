@@ -1,5 +1,6 @@
 <template>
   <div class="scroll-view">
+    <mu-refresh-control :refreshing="refreshing" :trigger="trigger" @refresh="refresh"/>
     <!---->
     <mu-list v-if="type == 'list'">
       <template v-for="item, index in data">
@@ -29,7 +30,6 @@
     <div class="empty-view" v-if="data.length <= 0 && !loading">
       <div class="empty-message">{{emptyMsg}}</div>
     </div>
-    <!--TODO:下拉加载先取消吧-->
     <!--<mu-infinite-scroll :scroller="scroller" :loading="loading" @load="loadMore" v-if="isMore"/>-->
     <mu-infinite-scroll v-if="isMore" :scroller="scroller" :loading="loading" @load="loadMore"
                         loadingText="数据加载中..."/>
@@ -84,7 +84,9 @@
         page: defaultStartPage,
         loading: false,
         isMore: true,
-        data: []
+        data: [],
+        refreshing: false,
+        trigger: null
       };
     },
     watch: {
@@ -97,6 +99,7 @@
       },
     },
     mounted() {
+      this.trigger = this.$el;
       this.scroller = this.$el;
       this.scroller.onscroll = () => {
         this.scrollTop = this.scroller.scrollTop;
@@ -187,6 +190,13 @@
             this.loading = false
           }, 2000)
         }
+      },
+      refresh () {
+        this.refreshing = true
+        setTimeout(() => {
+          this.getdata();
+          this.refreshing = false
+        }, 2000)
       }
     }
   };

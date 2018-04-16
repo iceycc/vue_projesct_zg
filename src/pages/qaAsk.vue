@@ -96,6 +96,7 @@
         let height = 40;
         let size = 60;
         return {
+          total_img:9,
           insert_id:'',
           direction: "horizontal",
           width: "100%",// 组件宽度
@@ -140,7 +141,7 @@
         console.log(this.title)
         // console.log(this.goBack)
         if(this.showMask && this.title =='悬赏提问' && this.goBack){
-          // todo
+          // todo 难题
           console.log("给浏览器自带按钮返回注册时间")
           // this.lisBack()
         }
@@ -210,21 +211,15 @@
           });
           return;
         }
-        if(this.qa.title.length >50 ||this.qa.title.length <= 5){
+        if(this.qa.title.length >150 ||this.qa.title.length <= 5){
           EventBus.$emit(Constants.EventBus.showToast, {
-            message: '标题字数请输入5~50字'
+            message: '标题字数请输入5~150字'
           });
           return;
         }
         if(this.qa.content.length > 1000){
           EventBus.$emit(Constants.EventBus.showToast, {
             message: '标题长度不能大于1000个字符'
-          });
-          return;
-        }
-        if(this.serverIds && this.serverIds.length > 9){
-          EventBus.$emit(Constants.EventBus.showToast, {
-            message: '最多只能上传9张图片'
           });
           return;
         }
@@ -293,9 +288,20 @@
         });
       },
       chooseImage() {
+        // 获取当前的
+        let pic_num = this.localIds.length;
+        if(pic_num > 9){
+          EventBus.$emit(Constants.EventBus.showToast, {
+            message: '只能选择9张图片',
+          });
+          return;
+        }
+        let last_num = 9 - pic_num;
+        // todo 测试选择图片数量的啊
+        console.log(last_num)
         let that = this;
         wx.chooseImage({
-          count: 9, // 默认9
+          count: last_num, // 默认9
           sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
           sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
           success: function (res) {
