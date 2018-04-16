@@ -32,7 +32,7 @@
           <div class="arrow"></div>
         </div>
         <div class="divider"></div>
-        <div class="item" @click="gotoWallet">
+        <div class="item" @click="gotoAccount">
           <img-wrapper :url="icon_acont" classStyle="icon"></img-wrapper>
           <div class="name">账号绑定</div>
           <div class="num" style="visibility: hidden"></div>
@@ -147,6 +147,11 @@
       gotoWallet() {
         this.pushPage({
           name: Constants.PageName.qaWallet
+        });
+      },
+      gotoAccount(){
+        this.pushPage({
+          name: Constants.PageName.qaBindAccount
         });
       }
     }

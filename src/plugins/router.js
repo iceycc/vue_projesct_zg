@@ -81,6 +81,7 @@ addRouter(Constants.PageName.qaWallet, {keepAlive: false, title: '钱包'});
 addRouter(Constants.PageName.qaWithdraw, {keepAlive: false, title: '提现'});
 addRouter(Constants.PageName.qaKetangDetail, {keepAlive: false, title: '课堂'});
 addRouter(Constants.PageName.qaDoc, {keepAlive: false, title: ''});
+addRouter(Constants.PageName.qaBindAccount, {keepAlive: false, title: '账号绑定'});
 
 // addRouter(Constants.PageName.qaknowledge, {title: '课堂'});
 // addRouter(Constants.PageName.qaNotice, {title: '通知'});// 新增notice

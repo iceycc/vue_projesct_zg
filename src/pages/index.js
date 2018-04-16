@@ -20,6 +20,7 @@ page[Constants.PageName.qaNotice] = resolve => require(['./qaNotice.vue'], resol
 page[Constants.PageName.qaGuanJiaList] = resolve => require(['./qaGuanJiaList.vue'], resolve);//新增qaGuanJiaUser
 page[Constants.PageName.qaKetangDetail] = resolve => require(['./qaKetangDetail.vue'], resolve);//新增qaKetangDetail
 page[Constants.PageName.qaDoc] = resolve => require(['./qaDoc.vue'], resolve);//新增qaUserAgreement
+page[Constants.PageName.qaBindAccount] = resolve => require(['./qaBindAccount.vue'], resolve);//qaBindAccount
 
 
 export default page;

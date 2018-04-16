@@ -97,7 +97,8 @@ export const PageName = {
   qaNotice: 'qanotice',
   qaGuanJiaList: 'qaguanjialist',
   qaKetangDetail:'qaketangdetail',
-  qaDoc:'qadoc'
+  qaDoc:'qadoc',
+  qaBindAccount:'qabindaccount'
 };
 
 //用于管理router中页面名称
