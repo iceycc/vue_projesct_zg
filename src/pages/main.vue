@@ -24,12 +24,15 @@
       <mu-bottom-nav-item value="4" title="我的">
         <img-wrapper :url="bottomNav == 4 ? tab4[1] : tab4[0]" class="tabicon"></img-wrapper>
       </mu-bottom-nav-item>
+      <div class="btn_ask" @click="handleChange(2)" v-if="!$route.meta.isShowTab">
+        <img-wrapper :url="tab2[1]" class="askicon"></img-wrapper>
+      </div>
     </mu-bottom-nav>
     <div class="mask" v-if="showAsk">
       <div class="btn-view">
         <keep-alive>
           <div class="icon-view">
-            <div style="visibility: hidden">
+            <div style="visibility: hidden" class="msg-infos">
               <div>更快更多更优质回答</div>
               <div>查看更多<a href="">专属权利</a></div>
             </div>
@@ -54,9 +57,7 @@
       </div>
       <div class="close" @click="toggleAsk">X</div>
     </div>
-    <div class="btn_ask" @click="handleChange(2)" v-if="!$route.meta.isShowTab">
-      <img-wrapper :url="tab2[1]" class="askicon"></img-wrapper>
-    </div>
+
   </div>
 </template>
 
@@ -177,6 +178,7 @@
         });
       },
       handleChange(value) {
+        console.log('value:2')
         if (value == 2) {
           if(this.role==0){
             this.toggleAsk();
@@ -221,7 +223,10 @@
   .page {
     background: #f2f2f2;
   }
+  .mu-bottom-nav{
+    position: relative;
 
+  }
   .sub-page {
     flex-grow: 1;
     /*padding-bottom: px2rem(120);*/
@@ -233,7 +238,7 @@
   }
 
   .btn_ask {
-    position: fixed;
+    position: absolute;
     width: 40px;
     bottom: 15px;
     left: 0;
@@ -265,9 +270,13 @@
         flex-direction: column;
         align-items: center;
         .msg-infos{
-          // todo 添加背景图片 替换
-          background: yellow;
-
+          // 注意 qaDetail也有相同的样式
+          width: px2rem(130);
+          height: px2rem(80);
+          padding-top: px2rem(10);
+          padding-left: px2rem(10);
+          background: url("../assets/img/bg_text_box.png") no-repeat 0 0;
+          background-size: cover;
         }
       }
 

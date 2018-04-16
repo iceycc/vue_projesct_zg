@@ -13,7 +13,7 @@
     <div class="card shadow" v-if="question">
       <!--用户头像 名称 赏金-->
       <div class="view1">
-        <img-wrapper :url="question.avatar" classStyle="avatar"></img-wrapper>
+        <img-wrapper :url="question.avatar" classStyle="avatar" @onClick="ifGoDetail(question.uid,unll,null)"></img-wrapper>
         <div class="username">{{question.aname}}</div>
         <span class="reward shadow"
               v-if="parseFloat(question.q_reward) > 0"> 悬赏金额 ¥{{question.q_reward}}</span>
@@ -58,10 +58,14 @@
             <div class="card-re">
               <!--评论 人 头像 名称 用户等级 是否采纳 11-->
               <div class="view1 horizontal-view">
-                <img-wrapper :url=" item.a_avatar == 'http://m.uzhuang.com/res/images/userface.png' ? a_avatar : item.a_avatar " classStyle="avatar"></img-wrapper>
+                <img-wrapper
+                  :url=" item.a_avatar == 'http://m.uzhuang.com/res/images/userface.png' ? a_avatar : item.a_avatar "
+                  classStyle="avatar"
+                  @onClick="ifGoDetail(item.uid,item.role,item.aname)"
+                ></img-wrapper>
 
                 <div class="vertical-view">
-                  <div class="name">{{item.aname ? item.aname : '匿名用户'}}
+                  <div class="name" @click.stop="ifGoDetail(item.uid,item.role,item.aname)">{{item.aname ? item.aname : '匿名用户'}}
                     <!--显示颜色从组件内根据角色名匹配的-->
                     <uz-lable v-if="question.q_reward > 0" :role="item.uid === question.uid ? '赏金发起人' : item.role"></uz-lable>
                     <uz-lable v-else :role="item.uid ===question.uid ? '问题发起人' : item.role"></uz-lable>
@@ -129,7 +133,7 @@
       <div class="btn-view">
         <keep-alive>
           <div class="icon-view">
-            <div style="visibility: hidden">
+            <div style="visibility: hidden" class="msg-infos">
               <div>更快更多更优质回答</div>
               <div>查看更多<a href="">专属权利</a></div>
             </div>
@@ -265,6 +269,23 @@
     activated() {
     },
     methods: {
+      ifGoDetail(uid,role,aname){
+        // 这里通过判断返回的role是否时管是家 自己是管家的话点不开其他管家的详情 匿名用户不能打开 管家看管家也是显示匿名用户
+        if(!(role == '管家' || role == '金牌管家') || (aname=='匿名用户' || '')){
+          return
+        }else{
+          this.goGujian(uid,1)
+        }
+      },
+      goGujian(uid,role){
+        let uid_this = uid || window.localStorage.getItem('uid')
+        let role_this = role || window.localStorage.getItem('role')
+        if(role_this == 1){
+          window.location.href = `http://m.uzhuang.com/mobile-m_butler_details.html?id=M%E7%AB%99-%E5%B7%A5%E5%9C%B0%E7%9B%B4%E6%92%AD&butlerid=${uid_this}`
+        }else{
+          return
+        }
+      },
       open (index) {
         this.dialog = true
         this.q_adoption_index =index
@@ -796,8 +817,13 @@
         flex-direction: column;
         align-items: center;
         .msg-infos{
-          // todo 添加背景图片 替换
-          background: yellow;
+          width: px2rem(130);
+          height: px2rem(80);
+          padding-top: px2rem(10);
+          padding-left: px2rem(10);
+          background: url("../assets/img/bg_text_box.png") no-repeat 0 0;
+          background-size: cover;
+
 
         }
       }

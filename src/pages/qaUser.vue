@@ -5,7 +5,7 @@
     <div>
       <div class="user-view">
         <img-wrapper :url="data.avatar"
-                     classStyle="avatar"></img-wrapper>
+                     classStyle="avatar" @onClick="ifGoDetail(null,null)"></img-wrapper>
         <div class="username">{{data.username}}</div>
       </div>
       <div class="menu">
@@ -100,6 +100,19 @@
       },
       isTab(){
 
+      },
+      ifGoDetail(uid,role){
+      console.log('ifGoDetail:true')
+        this.goGujian(uid,role)
+      },
+      goGujian(uid,role){
+        let uid_this = uid || window.localStorage.getItem('uid')
+        let role_this = role || window.localStorage.getItem('role')
+        if(role_this == 1){
+          window.location.href = `http://m.uzhuang.com/mobile-m_butler_details.html?id=M%E7%AB%99-%E5%B7%A5%E5%9C%B0%E7%9B%B4%E6%92%AD&butlerid=${uid_this}`
+        }else{
+          return
+        }
       },
       gotoList(type) {
         // this.role = 1

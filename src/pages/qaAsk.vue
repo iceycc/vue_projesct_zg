@@ -210,9 +210,9 @@
           });
           return;
         }
-        if(this.qa.title.length >50){
+        if(this.qa.title.length >50 ||this.qa.title.length <= 5){
           EventBus.$emit(Constants.EventBus.showToast, {
-            message: '标题长度不能大于50个字符'
+            message: '标题字数请输入5~50字'
           });
           return;
         }
@@ -222,7 +222,7 @@
           });
           return;
         }
-        if(this.serverIds.length > 9){
+        if(this.serverIds && this.serverIds.length > 9){
           EventBus.$emit(Constants.EventBus.showToast, {
             message: '最多只能上传9张图片'
           });

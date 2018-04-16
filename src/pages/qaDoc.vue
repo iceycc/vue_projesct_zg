@@ -148,12 +148,15 @@
       switch (this.view){
         case 1:
           this.title = '诸葛装修用户协议';
+          window.document.title = '诸葛装修用户协议'
           break;
         case  2:
           this.title = '专属权利';
+          window.document.title = '专属权利'
           break;
         case 3:
           this.title = '提问须知';
+          window.document.title = '提问须知'
           break;
         default:
           this.title = ''

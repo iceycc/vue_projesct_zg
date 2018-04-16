@@ -22,6 +22,8 @@
       </swiper-slide>
     </swiper>
     <!--  -->
+    <!--{{text}}-->
+
     <auto-list-view
       :url="url"
       :flag="flag"
@@ -82,6 +84,7 @@
     name: Constants.PageName.qaIndex,
     data() {
       return {
+        text:"1111",
         swiperOption: {
           autoplay: 3000
         },
@@ -185,6 +188,7 @@
   @import "../assets/scss/px2rem";
 
   .content {
+    position: relative;
     background-color: $divider;
     height: 100%;
   }
@@ -204,7 +208,7 @@
   }
 
   .hot_word_view {
-    /*position: relative;*/
+
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -212,7 +216,7 @@
     margin-right: px2rem(25);
     background-color: white;
     .go_search {
-      position: fixed;
+      position: absolute;
       right: 0;
       background: #fff;
       padding: px2rem(13) 0;

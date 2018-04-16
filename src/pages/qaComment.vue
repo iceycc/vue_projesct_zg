@@ -3,9 +3,9 @@
     <app-bar :title="title"></app-bar>
     <div class="card shadow" v-if="answer">
       <div class="view1 horizontal-view">
-        <img-wrapper :url="answer.a_avatar" classStyle="avatar"></img-wrapper>
+        <img-wrapper :url="answer.a_avatar" classStyle="avatar" @onClick="ifGoDetail(answer.uid,answer.role,answer.aname)"></img-wrapper>
         <div class="vertical-view">
-          <div class="name">{{answer.aname}}
+          <div class="name" @click="ifGoDetail(answer.uid,answer.role,answer.aname)">{{answer.aname}}
             <uz-lable v-if="answer.role" :role="answer.role"></uz-lable>
           </div>
           <div class="date">{{answer.atime}}</div>
@@ -35,8 +35,11 @@
 
                 <!--<img-wrapper classStyle="avatar" :url="item.a_avatar"></img-wrapper>-->
                 <div class="vertical-view">
-                  <div class="name huifu-name">{{item.from_user}} <span class="huifu-text"> 回复 </span> {{item.to_user ?
-                    item.to_user : answer.aname + " ："}}
+                  <div class="name huifu-name">
+                    <!--todo 如果是管家用户名 进入管家详情 但是管家不能访问管家-->
+                    <span @click="ifGoDetail(item.from_user_id,answer.role,answer.aname)">{{item.from_user}} </span>
+                    <span class="huifu-text"> 回复 </span>
+                    <span>{{item.to_user ? item.to_user : answer.aname + " ："}}</span>
                   </div>
 
                 </div>
@@ -52,7 +55,7 @@
               <div class="context">{{item.content}}</div>
               <div style="display: flex">
                 <span class="left">{{item.addtime}}</span>
-                <span class="right" @click="delCommentHandle(item.cid)">删除</span>
+                <span class="right" @click="delCommentHandle(item.cid)" v-if="item.from_user_id == my_uid">删除</span>
                 <span class="right" @click="onItemClick(item.from_user,item.cid)">回复</span>
               </div>
               <!--<div class="small-recomment">-->
@@ -108,6 +111,7 @@
         icon3: require('../assets/img/icon_detail_like.svg'),
         icon4: require('../assets/img/icon_detail_liked.svg'),
         uid: 0,
+        my_uid:'',
         answer: {},
         comments: [],
         recomment: '',
@@ -143,12 +147,32 @@
     },
     computed: {},
     created() {
+      let my_uid = window.localStorage.getItem('uid')
+      this.my_uid = my_uid
+
     },
     activated() {
       this.getData();
       this.getComment();
     },
     methods: {
+      ifGoDetail(uid,role,aname){
+        // 这里通过判断返回的role是否时管是家 自己是管家的话点不开其他管家的详情 匿名用户不能打开 管家看管家也是显示匿名用户
+        if(!(role == '管家' || role == '金牌管家') || (aname=='匿名用户' || '')){
+          return
+        }else{
+          this.goGujian(uid,1)
+        }
+      },
+      goGujian(uid,role){
+        let uid_this = uid || window.localStorage.getItem('uid')
+        let role_this = role || window.localStorage.getItem('role')
+        if(role_this == 1){
+          window.location.href = `http://m.uzhuang.com/mobile-m_butler_details.html?id=M%E7%AB%99-%E5%B7%A5%E5%9C%B0%E7%9B%B4%E6%92%AD&butlerid=${uid_this}`
+        }else{
+          return
+        }
+      },
       getData() {
         let data = {
           q_id: this.$route.query.q_id,
