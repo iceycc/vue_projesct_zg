@@ -1,5 +1,5 @@
 /**
- * Created by zhangweiwei on 2017/2/27.
+ * Created
  */
 import Qs from 'qs';
 

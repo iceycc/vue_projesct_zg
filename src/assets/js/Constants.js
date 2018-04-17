@@ -53,6 +53,9 @@ export const Method = {
     ketang_commend: 'http://bang.uzhuang.com/index.php?m=bangV2&f=ketang&v=commend',
     // 装修前 中 后
     ketang_commend_qzh: 'http://bang.uzhuang.com/index.php?m=bangV2&f=ketang&v=nodeListThumb',
+    // 装修前中后展示详情
+
+    ketang_nodeList: 'http://bang.uzhuang.com/index.php?m=bangV2&f=ketang&v=nodeList',
     // 通知的
     // http://m.uzhuang.com/index.php?m=wenda&f=question_list&v=get_answer&q_id=7&a_id=16&uid=25416
     // 删除操作的接口
@@ -71,11 +74,6 @@ export const Method = {
 
     // 账户绑定
     bind_account: BASE_URL + "f=operation&v=bind_account"
-
-
-
-
-
   }
 ;
 

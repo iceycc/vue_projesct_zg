@@ -1,10 +1,6 @@
 vue 项目--》
 
 // 接口地址 ： http://api.uzhuang.com/workspace/myWorkspace.do?projectId=4#41
-// 
-#### vue项目中使用md5加密  
-    1- npm install --save js-md5
-    2- import md5 from 'js-md5'; 
 
 ### 接口地址
 - http://api.uzhuang.com/workspace/myWorkspace.do?projectId=4#39
@@ -78,7 +74,14 @@ vue 项目--》
 ## 其他问题
 - 移动应用抓包调试利器Charles  https://www.jianshu.com/p/68684780c1b0
 - 微信开发者工具
-- 移动端手势操作 vue-touch  https://github.com/vuejs/vue-touch/tree/next
+- 移动端手势操作 vue-touch  https://github.com/vuejs/vue-touch/tree/next  
+- md5加密  
+    1- `npm install --save js-md5`  
+    2- `import md5 from 'js-md5'`  
+    3- `md5(value)`  
+- 前端校验  
+- 下拉刷新 上拉加载 分页功能  
+
  
 ``` bash
 # install dependencies

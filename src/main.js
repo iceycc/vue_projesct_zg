@@ -12,7 +12,7 @@ import {} from './plugins/loadComponent';
 // localstorage
 import {} from './plugins/localstorage';
 
-//  这个干啥呢
+//  混合器
 
 import {} from './assets/js/mixins/mixins-base';
 import {} from './assets/js/mixins/mixins-request';

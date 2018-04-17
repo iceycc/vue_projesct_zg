@@ -1,5 +1,5 @@
 /**
- * Created by zhangweiwei on 2017/2/28.
+ * Created by
  */
 
 import Vue from 'vue'

@@ -2,7 +2,7 @@
   "name": "uzhuang-zhuge",
   "version": "0.0.1",
   "description": "A Vue.js project",
-  "author": "诗人的咸鱼 <willnewii@gmail.com>",
+  "author": "冰洋 <w@icey.cc>",
   "private": true,
   "scripts": {
     "dev": "node build/dev-server.js",
