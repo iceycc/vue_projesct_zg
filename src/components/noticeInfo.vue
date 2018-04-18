@@ -8,14 +8,14 @@
            :class="{isread:item.isread != '1'}"
       >
         <!--问题指向11-->
-        <p v-if="item.type === '1'"><span class="username">{{item.from_user}}</span> 回答了您的问题</p>
-        <p v-if="item.type === '2'"><span class="username">{{item.from_user}}</span> 采纳了您的问题</p>
-        <p v-if="item.type === '3'"><span class="username">{{item.from_user}}</span> 点赞了你的问答</p>
-        <p v-if="item.type === '4'"><span class="username">{{item.from_user}}</span> 点赞了你的评论</p>
-        <p v-if="item.type === '5'"><span class="username">{{item.from_user}}</span> 评论了你的问答</p>
-        <p v-if="item.type === '6'"><span class="username">{{item.from_user}}</span> 评论了你的评论</p>
+        <!--1 回答 2采纳 3点赞回答 4点赞评论 5评论回答 6评论评论-->
+        <p>
+          <span class="username">{{item.from_user}}</span>
+          <span class="notice_infos">{{notice_infos[item.type]}}</span>
+          <span class="no-date">{{item.addtime | crtTime }}</span>
+        </p>
         <div class="infos-text">{{item.content}}</div>
-        <div><span class="no-date">{{item.addtime | crtTime }}</span></div>
+        <!--<div></div>-->
       </div>
     </mu-list>
     <mu-infinite-scroll v-if="isMore" :scroller="scroller" :loading="loading" @load="loadMore"
@@ -27,6 +27,7 @@
   import minixs_request from '../assets/js/mixins/mixins-request';
 
   import {Constants, EventBus, mixins} from '../assets/js/index';
+
   const defaultStartPage = 1;
 
   export default {
@@ -44,7 +45,9 @@
     },
     data() {
       return {
-        datas:[],
+        // 1 回答 2采纳 3点赞回答 4点赞评论 5评论回答 6评论评论
+        notice_infos: ['0',' 回答了您的问题',' 采纳了您的问题',' 点赞了你的回答',' 点赞了你的评论',' 评论了你的回答',' 评论了你的评论'],
+        datas: [],
         title: '',
         isReadNum: 0,
         scroller: null,
@@ -141,35 +144,35 @@
       getData() {
         var data = {
           uid: Constants.LocalStorage.uid,
-          page:this.page
+          page: this.page
         }
         this.doRequest(Constants.Method.get_notice_list, data, (result) => {
           this.getRedNum(result)
           this.datas = this.datas.concat(result)
           //1 如果新请求的数据存在但是result.length为0  取消加载
-          if(result && result.length == 0){
+          if (result && result.length == 0) {
             this.isMore = false
-          }else{
+          } else {
             this.page = this.page + 1
           }
         });
       },
 
-      getRedNum(result){
+      getRedNum(result) {
         var count = 0;
-        result.forEach(function (item,value) {
-          if(item.isread == "0"){
-            count ++
+        result.forEach(function (item, value) {
+          if (item.isread == "0") {
+            count++
           }
         })
         // console.log(count) 1
-        window.localStorage.setItem("notice_isread_num",count)
+        window.localStorage.setItem("notice_isread_num", count)
 
 
       },
       loadMore() {
         console.log(this.isMore)
-        if(this.isMore){
+        if (this.isMore) {
           this.loading = true
           setTimeout(() => {
             this.getData();
@@ -177,7 +180,7 @@
           }, 2000)
         }
       },
-      refresh () {
+      refresh() {
         this.refreshing = true
         setTimeout(() => {
           this.getData();
@@ -211,16 +214,36 @@
     color: #333;
     background: #fff;
     p {
+      display: flex;
       margin: 0;
       padding: px2rem(10) 0;
-    }
-    .infos-text {
-      color: #999;
-      padding: px2rem(4) 0 px2rem(15);
-
+      font-weight: 500;
+      font-size: 0;
+      vertical-align: top;
     }
     .username {
       color: #1bd4bb;
+      font-size:px2rem(13);
+      vertical-align: top;
+
+    }
+    .notice_infos{
+      font-size: px2rem(13);
+      vertical-align: top;
+      padding-left: px2rem(2);
+
+    }
+    .no-date{
+      flex: 1;
+      text-align: right;
+      font-size: px2rem(10);
+      color:#999
+    }
+    .infos-text {
+      color: #666;
+      font-size:px2rem(12);
+      padding: px2rem(4) 0 px2rem(20);
+
     }
   }
 </style>

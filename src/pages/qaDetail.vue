@@ -157,7 +157,9 @@
           </div>
         </keep-alive>
       </div>
-      <div class="close" @click="toggleAsk">X</div>
+      <div class="ask-close">
+        <img-wrapper classStyle="close" @onClick="toggleAsk" :url="icon_ask_close"></img-wrapper>
+      </div>
     </div>
   </div>
 
@@ -206,6 +208,7 @@
         icon4: require('../assets/img/icon_detail_liked.svg'),
         icon5: require('../assets/img/accepted.svg'),
         icon6: require('../assets/img/accept.svg'),
+        icon_ask_close:require('../assets/img/icon_ask_close.svg'),
         role:0,
         a_avatar:require('../assets/img/icon_slider.png'),
         uid: 0,
@@ -801,19 +804,18 @@
   .mask {
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 255, 255, 0.79);
+    background-color: rgba(255, 255, 255, 0.90);
     position: absolute;
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    z-index: 2;
+    z-index: 100;
     .btn-view {
       display: flex;
       flex-direction: row;
-
       .icon-view {
-        // 注意 main.vue 也有相同的样式
+        // 注意 qaDetail也有相同的样式
         padding-top: px2rem(60);
         position:relative;
         display: flex;
@@ -821,14 +823,14 @@
         align-items: center;
         .msg-infos{
           position: absolute;
-          top: px2rem(-10);
+          top: px2rem(-8);
           left: px2rem(20);
           width: px2rem(140);
           height: px2rem(80);
           font-size: px2rem(13);
           box-sizing: border-box;
           padding-top: px2rem(10);
-          padding-left: px2rem(5);
+          padding-left: px2rem(9);
           background: url("../assets/img/bg_text_box.png") no-repeat 0 0;
           background-size: px2rem(140) px2rem(80);
           background-origin:border-box ;
@@ -849,14 +851,25 @@
         text-align: center;
       }
     }
-    .close {
+    .ask-close{
       position: absolute;
       bottom: 0;
-      padding: px2rem(20) 0;
       width: 100%;
-      font-size: px2rem(20);
-      text-align: center;
-      border-top: px2rem(1) solid $fontcolor_gray;
+      height: px2rem(55);
+      border-top: 1px solid #ccc;
+      text-align:center;
+      font-size: 0;
+      &:after{
+        display: inline-block;
+        vertical-align: middle;
+        content:'';
+        height:100%;
+      }
+    }
+    .close {
+      vertical-align: middle;
+      width: px2rem(30);
+      height: px2rem(30);
     }
   }
 

@@ -13,7 +13,7 @@
           <img-wrapper :url="icon_fav" classStyle="icon"></img-wrapper>
           <div class="name">我的收藏</div>
           <div class="num">{{collect_num}}</div>
-          <div class="arrow"></div>
+          <img-wrapper :url="icon_user_arrow" classStyle="icon_arrow"></img-wrapper>
         </div>
         <div class="divider"></div>
         <div class="item" @click="gotoList(2)">
@@ -22,14 +22,14 @@
           <div class="num" v-bind:class="{'red-point':data.red_dot > 0}">
             {{my_question}}
           </div>
-          <div class="arrow"></div>
+          <img-wrapper :url="icon_user_arrow" classStyle="icon_arrow"></img-wrapper>
         </div>
         <div class="divider"></div>
         <div class="item" @click="gotoWallet">
           <img-wrapper :url="icon_wallet" classStyle="icon"></img-wrapper>
           <div class="name">我的钱包 <span class="desc">赏金都在这里哦~</span></div>
           <div class="num" style="visibility: hidden"></div>
-          <div class="arrow"></div>
+          <img-wrapper :url="icon_user_arrow" classStyle="icon_arrow"></img-wrapper>
         </div>
         <div class="divider"></div>
         <div class="item" @click="gotoAccount">
@@ -37,7 +37,7 @@
           <div class="name" v-if="data.role == 0">账号绑定</div>
           <div class="name" v-else>更换绑定</div>
           <div class="num" style="visibility: hidden"></div>
-          <div class="arrow"></div>
+          <img-wrapper :url="icon_user_arrow" classStyle="icon_arrow"></img-wrapper>
         </div>
       </div>
     </div>
@@ -66,6 +66,7 @@
         icon_qu: require('../assets/img/icon_user_qu.svg'),
         icon_fav: require('../assets/img/icon_user_fav.svg'),
         icon_acont: require('../assets/img/icon_acont.svg'),
+        icon_user_arrow:require('../assets/img/icon_user_arrow.svg'),
         data: {},
         my_question:0,
         collect_num:0,
@@ -94,6 +95,23 @@
 
 
     activated() {
+      console.log("user组件激活")
+      this.doRequest(Constants.Method.profile, null, (result) => {
+        this.data = result;
+        // console.log(result);
+        this.collect_num = this.data.collect_num
+        this.my_question = this.data.my_question_num
+
+        // 有待优化 监听 ask页面我得问题数量的变化 1
+        EventBus.$on('my_question_num',content => {
+          this.my_question = content || this.my_question
+        })
+        // 有待优化 监听 ask页面我得问题数量的变化 1
+        EventBus.$on('collect_num',content => {
+          this.collect_num = content || this.collect_num
+        })
+        window.localStorage.setItem('collect_num',this.collect_num)
+      });
     },
     methods: {
       getUserData(){
@@ -228,17 +246,18 @@
         margin-right: px2rem(10);
       }
 
-      .arrow:before {
-        content: '>';
-        color: #ccc;
-        font-weight: bold;
+      .icon_arrow {
+        width: px2rem(8);
         margin-left: px2rem(10);
+        margin-right:px2rem(15) ;
+        color: #ccc;
+        vertical-align: middle;
       }
     ;
     }
     .divider {
       height: px2rem(1);
-      background-color: #CCC;
+      background-color: #e6e6e6;
     }
   }
 </style>

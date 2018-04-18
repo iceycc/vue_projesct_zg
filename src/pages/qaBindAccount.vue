@@ -2,8 +2,8 @@
   <div>
     <app-bar :title="title"></app-bar>
     <div class="form">
-        <mu-text-field fullWidth :underlineShow="false" v-model="username" hintText="请输入用户名"/>
-        <mu-text-field fullWidth :underlineShow="false" v-model="password" hintText="请输入密码" type="password"/>
+        <mu-text-field fullWidth :underlineShow="false" v-model="username" hintText="管家端账号"/>
+        <mu-text-field fullWidth :underlineShow="false" v-model="password" hintText="管家端密码" type="password"/>
         <div class="submit" @click="goBindAccount">确认绑定</div>
     </div>
   </div>
@@ -37,11 +37,13 @@
           EventBus.$emit(Constants.EventBus.showToast, {
             message: '用户名不能为空'
           });
+          return
         }
         if(this.password==""){
           EventBus.$emit(Constants.EventBus.showToast, {
             message: '密码不能为空'
           });
+          return
         }
         // let data = {
         //   username:this.username,
@@ -55,7 +57,7 @@
           }})
             .then((result)=>{
               console.log(result)
-              if(result.data.code == 0){
+              if(result.data.code == 0 && result.data.message == '绑定成功'){
                 EventBus.$emit(Constants.EventBus.showToast, {
                   message: '绑定成功,需要重新登陆'
                 });

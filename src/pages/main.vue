@@ -55,7 +55,9 @@
           </div>
         </keep-alive>
       </div>
-      <div class="close" @click="toggleAsk">X</div>
+      <div class="ask-close">
+        <img-wrapper classStyle="close" @onClick="toggleAsk" :url="icon_ask_close"></img-wrapper>
+      </div>
     </div>
 
   </div>
@@ -87,6 +89,7 @@
         tab2: [require('../assets/img/icon_tab_ask.svg'), require('../assets/img/icon_tab_ask.svg')],
         tab3: [require('../assets/img/icon_tab_notifi.svg'), require('../assets/img/icon_tab_notifi_ed.svg')],
         tab4: [require('../assets/img/icon_tab_user.svg'), require('../assets/img/icon_tab_user_ed.svg')],
+        icon_ask_close:require('../assets/img/icon_ask_close.svg'),
         showAsk: false,
         style: {},
         notice_isread_num: 0,
@@ -142,19 +145,12 @@
         //   document.title = '问答';
         // }
         this.showAsk = false
-        this.doRequest(Constants.Method.profile, null, (result) => {
-          this.collect_num = this.collect_num || this.data.collect_num
-          // this.my_question = this.data.my_question_num
-          // 有待优化 监听 ask页面我得问题数量的变化 1
-          // EventBus.$on('my_question_num',content => {
-          //   console.log('my_question_num:' +content)
-          //   this.my_question = content || this.my_question
-          // })
-          window.localStorage.setItem('collect_num',this.collect_num)
-          // console.log("==========collect_num====1111==========")
-          // console.log(this.collect_num )
-          // console.log("===========================")
-        });
+        // this.doRequest(Constants.Method.profile, null, (result) => {
+        //   this.collect_num = this.collect_num || this.data.collect_num
+        //
+        //   window.localStorage.setItem('collect_num',this.collect_num)
+        //
+        // });
       },
       isReadShow() {
         this.notice_isread_num = window.localStorage.getItem("notice_isread_num")
@@ -256,13 +252,13 @@
   .mask {
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 255, 255, 0.79);
+    background-color: rgba(255, 255, 255, 0.90);
     position: absolute;
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    z-index: 2;
+    z-index: 100;
     .btn-view {
       display: flex;
       flex-direction: row;
@@ -275,14 +271,14 @@
         align-items: center;
         .msg-infos{
           position: absolute;
-          top: px2rem(-10);
+          top: px2rem(-8);
           left: px2rem(20);
           width: px2rem(140);
           height: px2rem(80);
           font-size: px2rem(13);
           box-sizing: border-box;
           padding-top: px2rem(10);
-          padding-left: px2rem(5);
+          padding-left: px2rem(9);
           background: url("../assets/img/bg_text_box.png") no-repeat 0 0;
           background-size: px2rem(140) px2rem(80);
           background-origin:border-box ;
@@ -303,14 +299,25 @@
         text-align: center;
       }
     }
-    .close {
+    .ask-close{
       position: absolute;
       bottom: 0;
-      padding: px2rem(20) 0;
       width: 100%;
-      font-size: px2rem(20);
-      text-align: center;
-      border-top: px2rem(1) solid $fontcolor_gray;
+      height: px2rem(55);
+      border-top: 1px solid #ccc;
+      text-align:center;
+      font-size: 0;
+      &:after{
+        display: inline-block;
+        vertical-align: middle;
+        content:'';
+        height:100%;
+      }
+    }
+    .close {
+      vertical-align: middle;
+      width: px2rem(30);
+      height: px2rem(30);
     }
   }
 

@@ -10,18 +10,15 @@
             {{item.name}}
           </div>
         </template>
+        <div class="hot_word_empty"></div>
       </div>
       <div @click="gotoSearch" class="go_search">
-        <img-wrapper :url="icon_search"></img-wrapper>
+        <img-wrapper :url="icon_search" classStyle="search_style"></img-wrapper>
       </div>
     </div>
     <!---->
-    <swiper :options="swiperOption" ref="mySwiper" class="banner" v-if="hot_words_index === 0">
-      <swiper-slide v-for="item,index in banners" :key="index">
-        <img-wrapper :url="item.img_name" @onClick="openWeb(item.activity_url)"
-                     classStyle="banner_img"></img-wrapper>
-      </swiper-slide>
-    </swiper>
+
+
     <!--  -->
     <!--{{text}}-->
 
@@ -36,12 +33,21 @@
       <!--@SwipeRight="onSwipeRight"-->
       <!--@SwipeDown="onSwipeDown"-->
       <!--@SwipeUp="onSwipeUp"-->
+      <template slot="swiper">
+        <swiper :options="swiperOption" ref="mySwiper" class="banner" v-if="hot_words_index === 0">
+          <swiper-slide v-for="item,index in banners" :key="index">
+            <img-wrapper :url="item.img_name" @onClick="openWeb(item.activity_url)"
+                         classStyle="banner_img"></img-wrapper>
+          </swiper-slide>
+        </swiper>
+      </template>
       <template slot="item" slot-scope="props">
         <!--<v-touch-->
         <!--v-on:swipeleft="onSwipeLeft"-->
         <!--v-on:swiperight="onSwipeRight"-->
         <!--v-on:swiperdown="onSwipeDown"-->
         <!--:style="{width:'100%'}">-->
+
         <div class="card">
           <!--标题-->
           <div class="title-view">
@@ -93,7 +99,7 @@
         banners: [],
         hot_words: [],
         hot_words_index: 0,
-        icon_search: require('../assets/img/icon_search.svg'),
+        icon_search: require('../assets/img/icon_search2.svg'),
         flag: null,
         version: process.env.APP_VERSION,
         localValue: this.$ls.get(Constants.LocalStorage.test, '-1'),
@@ -197,11 +203,11 @@
   .scroll-view{
     padding-bottom:px2rem(70);
     &.isIndex0{
-      padding-bottom:px2rem(170);
+      padding-bottom:px2rem(0);
     }
   }
   .banner {
-    height: px2rem(100);
+    height: px2rem(154);
     background-color: white;
     .banner_img {
       height: 100%;
@@ -223,8 +229,12 @@
     .go_search {
       position: fixed;
       right: 0;
+      top: 0;
+      width: px2rem(50);
+      height: px2rem(50);
       background: #fff;
-      padding: px2rem(13) 0;
+      text-align: center;
+      padding-top: px2rem(10);
     }
     .tags {
       display: flex;
@@ -239,6 +249,9 @@
       box-sizing: border-box;
       white-space: nowrap;
       transition: font-size, color 0.2s, 0.2s;
+    }
+    .hot_word_empty{
+      width: px2rem(50);
     }
     .hot_word_select {
       color: $mainColor;
@@ -261,6 +274,9 @@
       .title {
         font-size: px2rem(16);
         flex-grow: 1;
+        overflow: hidden;
+        text-overflow:ellipsis;
+        white-space:nowrap;
       }
       .reward {
         font-size: px2rem(12);

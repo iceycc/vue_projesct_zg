@@ -112,7 +112,7 @@
         this.isFirst = false
         this.loading = true
         this.picsTitle = picsTitle
-        // todo 原生ajax
+        // todo axios
         axios.get(url,{params:{type : type}})
           .then((res)=>{
             let urls = res.data.data
@@ -233,6 +233,7 @@
     .title-view {
       display: inline-block;
       box-sizing: border-box;
+      padding-left: px2rem(10);
       vertical-align: top;
       width: 65%;
       .title {
@@ -262,7 +263,6 @@
       color: #666666;
       font-size: px2rem(14);
       padding: px2rem(10) 0;
-      border-bottom: px2rem(1) solid $divider;
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;

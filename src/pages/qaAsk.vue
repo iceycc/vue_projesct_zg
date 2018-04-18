@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <!--<app-bar :title="title"></app-bar>-->
-    <mu-appbar :title="title" v-if="">
+    <mu-appbar :title="title" v-if="showAppBar">
       <mu-icon-button icon="arrow_back" slot="left" @click="goBack"></mu-icon-button>
       <!--<template slot="right" v-if="this.mode !== 'test'">-->
       <!--&lt;!&ndash;<mu-icon-button v-if="showSearch" icon="search" slot="right" @click="goSearch"></mu-icon-button>&ndash;&gt;-->
@@ -9,7 +9,7 @@
       <!--</template>-->
     </mu-appbar>
     <div class="form">
-      <mu-text-field fullWidth :underlineShow="false" v-model="qa.title" hintText="请输入标题"/>
+      <mu-text-field fullWidth :underlineShow="false" v-model="qa.title" hintText="请输入标题 5~150字"/>
 
       <div class="line"></div>
 
@@ -78,7 +78,6 @@
     name: Constants.PageName.qaIndex,
     data() {
       return {
-
         type: 0,//1付费
         qa: {
           title: '',
@@ -96,6 +95,7 @@
         let height = 40;
         let size = 60;
         return {
+          showAppBar:true,
           total_img:9,
           insert_id:'',
           direction: "horizontal",
@@ -104,7 +104,6 @@
           min: 1,
           max: 10,
           sliderStyle: {
-            //"backgroundColor": "#f05b72",
             "backgroundImage": 'url(' + require('../assets/img/icon_slider.png') + ')',
             "background-position": "center",
             "background-size": "cover",
@@ -124,15 +123,23 @@
       }
     },
     created() {
-
       this.initWX(() => {
         console.log('wx success');
       });
+
+      console.log('ask')
+      /**
+       * 如果是微信内,则不显示appBar
+       * @type {boolean}
+       */
+      this.showAppBar = !/MicroMessenger/.test(navigator.userAgent);
     },
     activated() {  // 组件激活时
+
       if (this.$route.params && this.$route.params.type) {
         this.type = this.$route.params.type;
       }
+      console.log(this.type);
       if (this.type === 1) {
         this.title = '悬赏提问';
         window.document.title = '悬赏提问';//修改网页标题
@@ -142,7 +149,7 @@
         // console.log(this.goBack)
         if(this.showMask && this.title =='悬赏提问' && this.goBack){
           // todo 难题
-          console.log("给浏览器自带按钮返回注册时间")
+          console.log("给浏览器自带按钮返回注册事件")
           // this.lisBack()
         }
       }
@@ -180,6 +187,7 @@
         }
       },
       goBack(){
+        console.log(11)
         if(this.title == '免费提问' || this.showMask ){
           this.$router.go(-1)
         }
@@ -211,7 +219,7 @@
           });
           return;
         }
-        if(this.qa.title.length >150 ||this.qa.title.length <= 5){
+        if(this.qa.title.length >150 ||this.qa.title.length < 5){
           EventBus.$emit(Constants.EventBus.showToast, {
             message: '标题字数请输入5~150字'
           });
@@ -229,9 +237,6 @@
             content: this.qa.content,
             attach: this.serverIds
           };
-          // console.log('======attach=======')
-          // console.log(this.serverIds.toString())
-          // console.log('=======================')
           if (this.type === 0) {
             data.reward = 0;
           } else {
@@ -344,8 +349,24 @@
     },
     deactivated(){  //success 组件停用时调用！！！
       this.type=0  //
+      console.log('组件停用')
+      // 清除数据
+      this.qa = {
+        title: '',
+        content: '',
+        reward: 5,
+      }
     },
+    // activated(){
+    //   console.log('组件激活')
+    // },
+    // beforeEach(){
+    //   console.log('离开组件')
+    //   this.type=0  //
+    // },
     beforeRouteLeave(to, from, next){
+
+      // todo 这里不是很合理  离开组件时 添加自己的问题数
       this.doRequest(Constants.Method.profile, null, (result) => {
         EventBus.$emit('my_question_num',result.my_question_num)
       });

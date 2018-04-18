@@ -44,7 +44,8 @@ export const Method = {
     wallet: BASE_URL + "f=question_list&v=wallet",
     //钱包明细
     wallet_detail: BASE_URL + "f=question_list&v=wallet_detail",
-    wxpay: 'http://m.uzhuang.com/wxpay/pay/Weixin/H5/wxpay.php',
+    // wxpay: 'http://m.uzhuang.com/wxpay/pay/Weixin/H5/wxpay.php',
+    wxpay: 'http://m.uzhuang.com/wxpay/sendWallet/payuser.php',
     //wxpay: 'http://m.uzhuang.com/wxpay/pay/Weixin/h5_wx/example/jsapi.php',
     //wx_jssdk 配置信息
     get_wx_config_info: BASE_URL + "f=question_list&v=get_wx_config_info",

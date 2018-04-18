@@ -31,7 +31,8 @@ _axios.interceptors.response.use((response) => {
         });
     }
 }, (error) => {
-    if (error.message === 'Network Error') {//网络异常
+  console.dir(error);
+  if (error.message === 'Network Error') {//网络异常
         return Promise.reject({
             msg: 'Network Error',
             data: '请检查网络连接是否正常.'

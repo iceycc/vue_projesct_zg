@@ -211,7 +211,6 @@
   }
 
   .card {
-    display: block;
     background-color: white;
     width: 100%;
     padding: px2rem(10);
@@ -247,7 +246,6 @@
       color: #666666;
       font-size: px2rem(13);
       padding: px2rem(10) 0;
-      border-bottom: px2rem(1) solid $divider;
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;

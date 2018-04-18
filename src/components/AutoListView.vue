@@ -2,7 +2,9 @@
   <div class="scroll-view">
     <mu-refresh-control :refreshing="refreshing" :trigger="trigger" @refresh="refresh"/>
     <!---->
+
     <mu-list v-if="type == 'list'">
+      <slot name="swiper"></slot>
       <template v-for="item, index in data">
         <mu-list-item @click="onItemClick(index)">
           <div class="item">
@@ -72,13 +74,14 @@
         type: Boolean,
         default: true
       },
-      emptyMsg: {
-        type: String,
-        default: '没有数据'
-      }
+      // emptyMsg: {
+      //   type: String,
+      //   default: '正在加载中...'
+      // }
     },
     data() {
       return {
+        emptyMsg:'正在加载中...',
         scroller: null,
         scrollTop: 0,
         page: defaultStartPage,
@@ -165,6 +168,7 @@
           // console.log('============================')
           if (result && result.length === 0) {
             this.isMore = false;
+            this.emptyMsg = '没有数据'
           } else {
             this.page = this.page + 1;
           }
@@ -196,7 +200,7 @@
         setTimeout(() => {
           this.getdata();
           this.refreshing = false
-        }, 2000)
+        }, 1000)
       }
     }
   };
