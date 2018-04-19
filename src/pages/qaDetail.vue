@@ -22,8 +22,8 @@
       <div class="card-title">{{question.title}}</div>
       <!--问题描述-->
       <div class="card-content">{{question.content}}
+        <!--图片展示-->
          <div class="card-img" v-if="question.attach && question.attach.length !==0 ">
-           <!--<div class="card-img">-->
            <div v-for="item,index in question.attach" :key="index" v-if=" item != ''" class="cc-img">
              <img :src="item" alt="" @click="showBigImg(item,question.attach)" >
            </div>
@@ -103,7 +103,12 @@
                   {{item.like_num}}
 
                 </button>
-                <div @click.once.stop="deleteHandle(index)" v-if="item.uid == current_uid && question.q_adoption !=item.id"> 删除</div>
+                <div @click.once.stop="clickDel" v-if="item.uid == current_uid && question.q_adoption !=item.id"> 删除</div>
+                <mu-dialog :open="dialog2" title="提示" @close="close">
+                  确定要删除该条回答吗
+                  <mu-flat-button slot="actions" @click="close" primary label="取消"/>
+                  <mu-flat-button slot="actions" primary @click="deleteHandle(index)" label="确定"/>
+                </mu-dialog>
 
               </div>
             </div>
@@ -196,6 +201,7 @@
       return {
         q_adoption_index:null,
         showAsk:false,
+        dialog2:false,
         dialog: false,
         ifGoHome:false,
         icon_back:'',
@@ -289,6 +295,7 @@
           return
         }
       },
+
       open (index) {
         this.dialog = true
         this.q_adoption_index =index
@@ -317,6 +324,12 @@
           urls:pics // 需要预览的图片http链接列表
         });
       },
+      clickDel(){
+        this.dialog2 = true
+      },
+      close () {
+        this.dialog2 = false
+      },
       deleteHandle(index){
 
         let data = {
@@ -325,6 +338,7 @@
         }
         this.doRequest(Constants.Method.del_answer,data,(result) => {
           this.getData()
+          this.dialog2 = false
           EventBus.$emit(Constants.EventBus.showToast, {
             message: "删除成功"
           });
@@ -675,7 +689,7 @@
       font-size: px2rem(12);
       .tag {
         color: $fontcolor_gray;
-        border: px2rem(1) solid $fontcolor_gray;
+        border: 1px solid #dedede;
         padding: px2rem(2) px2rem(5);
         margin-bottom: px2rem(4);
         font-size: px2rem(12);
@@ -778,11 +792,11 @@
   .footer {
     width: 100%;
     padding: px2rem(15) 0;
-    font-size: px2rem(12);
+    font-size: px2rem(15);
     color: #333333;
     background-color: white;
     display: -webkit-box;
-    border-top: px2rem(1) solid $fontcolor_gray;
+    border-top: px2rem(1) solid $fontcolor_gray_line;
     div {
       flex-grow: 1;
       text-align: center;
@@ -793,7 +807,7 @@
       align-items: center;
     }
     > div:nth-child(2) {
-      border-left: px2rem(1) solid $fontcolor_gray;
+      border-left: px2rem(1) solid $fontcolor_gray_line;
     }
     .icon {
       width: px2rem(15);

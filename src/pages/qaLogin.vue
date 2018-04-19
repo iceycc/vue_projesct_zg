@@ -5,7 +5,7 @@
         <img src="../assets/img/zhuge-logo.png" alt="">
         <span>诸葛装修</span>
       </div>
-      <p class="app-text">立即登陆，解锁全部功能</p>
+      <p class="app-text">立即登录，解锁全部功能</p>
     </div>
     <div class="btn-view">
       <div class="btn-submit" @click="gotoLogin"><img src="../assets/img/icon_login_wechat.svg" alt="">
@@ -44,12 +44,13 @@
       }
       // 用于测试！！
       // else {this.gotoMain(26270);} // 管家aaa
-      else {this.gotoMain(26319);} // 假如时光倒流
+      // else {this.gotoMain(26319);} // 假如时光倒流
       // else {this.gotoMain(49766 );} //晓雅
       // else {this.gotoMain(25416);} //
 
 
     },
+
     methods: {
       gotoLogin() {
         let url = 'https://open.weixin.qq.com/connect/oauth2/authorize?';

@@ -28,6 +28,7 @@
       @onItemClick="onItemClick"
       :isNeedDivider="false"
       :class="{isIndex0:hot_words_index === 0}"
+      :isTab = "isTab"
     >
       <!--@SwipeLeft="onSwipeLeft"-->
       <!--@SwipeRight="onSwipeRight"-->
@@ -103,7 +104,8 @@
         flag: null,
         version: process.env.APP_VERSION,
         localValue: this.$ls.get(Constants.LocalStorage.test, '-1'),
-        swiper_i: 0
+        swiper_i: 0,
+        isTab:false
       };
     },
     filter:{
@@ -162,8 +164,9 @@
       onSwipeUp() {
 
       },
-      getList() {
+      getList(isTab) {
         this.url = Constants.Method.get_homepage + '&hot_words_id=' + this.hot_words[this.hot_words_index].id;
+        this.isTab = isTab || false
         this.flag = this.url;
       },
       onItemClick(item) {
@@ -176,7 +179,7 @@
       },
       selectHotWord(index) {
         this.hot_words_index = index;
-        this.getList();
+        this.getList(true);
       },
       gotoSearch() {
         this.pushPage({

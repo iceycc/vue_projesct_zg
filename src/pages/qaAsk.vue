@@ -9,11 +9,12 @@
       <!--</template>-->
     </mu-appbar>
     <div class="form">
-      <mu-text-field fullWidth :underlineShow="false" v-model="qa.title" hintText="请输入标题 5~150字"/>
+      <mu-text-field class="field_title" fullWidth :underlineShow="false" v-model="qa.title" hintText="请输入标题 5~150字"/>
 
       <div class="line"></div>
 
-      <mu-text-field fullWidth :underlineShow="false" v-model="qa.content" hintText="请描述您的问题（非必填）" fullWidth
+      <mu-text-field class="field_textarea" fullWidth :underlineShow="false" v-model="qa.content"
+                     hintText="请描述您的问题（非必填）" fullWidth
                      multiLine :rows="6"/>
 
       <upload-view @upload="chooseImage" @remove="remove" :localIds="localIds"></upload-view>
@@ -29,15 +30,15 @@
 
       <div class="slider" v-if="slider">
         <vue-slider-component
-          v-model="qa.reward"
-          :direction="slider.direction"
-          :height="slider.height"
-          :min="slider.min"
-          :max="slider.max"
-          :tooltip="false"
-          :processStyle="slider.processStyle"
-          :sliderStyle="slider.sliderStyle"
-          :bgStyle="slider.bgStyle"
+            v-model="qa.reward"
+            :direction="slider.direction"
+            :height="slider.height"
+            :min="slider.min"
+            :max="slider.max"
+            :tooltip="false"
+            :processStyle="slider.processStyle"
+            :sliderStyle="slider.sliderStyle"
+            :bgStyle="slider.bgStyle"
         ></vue-slider-component>
       </div>
       <div class="tip2">
@@ -95,9 +96,9 @@
         let height = 40;
         let size = 60;
         return {
-          showAppBar:true,
-          total_img:9,
-          insert_id:'',
+          showAppBar: true,
+          total_img: 9,
+          insert_id: '',
           direction: "horizontal",
           width: "100%",// 组件宽度
           height: height,
@@ -107,10 +108,11 @@
             "backgroundImage": 'url(' + require('../assets/img/icon_slider.png') + ')',
             "background-position": "center",
             "background-size": "cover",
+            "background-color":"RGBA(1,1,1,0.1)",
             "width": size + "px",
             "height": size + "px",
             "top": (height - size) / 2 + "px",
-            "left": 0 + "px",
+            "left": -10 + "px",
           },
           processStyle: {
             "backgroundImage": "linear-gradient(to top, #11cdcd, #12ddca)",
@@ -147,13 +149,13 @@
         console.log(!this.showMask)
         console.log(this.title)
         // console.log(this.goBack)
-        if(this.showMask && this.title =='悬赏提问' && this.goBack){
+        if (this.showMask && this.title == '悬赏提问' && this.goBack) {
           // todo 难题
           console.log("给浏览器自带按钮返回注册事件")
           // this.lisBack()
         }
       }
-      if(this.type === 0) {
+      if (this.type === 0) {
         this.title = '免费提问';
         window.document.title = '免费提问';
         this.showMask = false;
@@ -161,23 +163,24 @@
 
     },
     methods: {
-      lisBack(){
+      lisBack() {
         // 监听 浏览器返回
         pushHistory();
         var _this = this
-        window.addEventListener("popstate", function(e) {
+        window.addEventListener("popstate", function (e) {
           _this.goBack && _this.goBack()
           console.log('goBack')
-          if(window.event){
+          if (window.event) {
             //IE中阻止函数器默认动作的方式
             window.event.returnValue = false;
           }
-          else{
+          else {
             //阻止默认浏览器动作(W3C)
             e.preventDefault();
           }
 
         }, false);
+
         function pushHistory() {
           var state = {
             title: "title",
@@ -186,18 +189,18 @@
           window.history.pushState(state, "title", "#");
         }
       },
-      goBack(){
+      goBack() {
         console.log(11)
-        if(this.title == '免费提问' || this.showMask ){
+        if (this.title == '免费提问' || this.showMask) {
           this.$router.go(-1)
         }
-        if(!this.showMask && this.title == '悬赏提问'){
-          this.showMask =true
+        if (!this.showMask && this.title == '悬赏提问') {
+          this.showMask = true
         }
 
       },
-      goDoc(){
-        this.$router.push({name:Constants.PageName.qaDoc,params:{type:3}})
+      goDoc() {
+        this.$router.push({name: Constants.PageName.qaDoc, params: {type: 3}})
       },
       toggleMask() {
         this.showMask = !this.showMask;
@@ -210,22 +213,22 @@
           }
         });
       },
-      submit: function() {
+      submit: function () {
         // 去除前后空格
-        this.qa.title=this.qa.title.replace(/^\s+|\s+$/g,"");
+        this.qa.title = this.qa.title.replace(/^\s+|\s+$/g, "");
         if (!this.qa.title) {
           EventBus.$emit(Constants.EventBus.showToast, {
             message: '标题不能为空'
           });
           return;
         }
-        if(this.qa.title.length >150 ||this.qa.title.length < 5){
+        if (this.qa.title.length > 150 || this.qa.title.length < 5) {
           EventBus.$emit(Constants.EventBus.showToast, {
             message: '标题字数请输入5~150字'
           });
           return;
         }
-        if(this.qa.content.length > 1000){
+        if (this.qa.content.length > 1000) {
           EventBus.$emit(Constants.EventBus.showToast, {
             message: '标题长度不能大于1000个字符'
           });
@@ -246,11 +249,11 @@
             EventBus.$emit(Constants.EventBus.showToast, {
               message: '发布成功',
             });
-            this.insert_id=result.insert_id
+            this.insert_id = result.insert_id
 
             if (data.reward > 0) {//付费问题  微信支付改怎么办呢
-
-             window.location.href = `http://m.uzhuang.com/wxpay/pay/Weixin/h5_wx/example/jsapi.php?question_id=${result.insert_id}&pay_type=h5_wx&uid=${localStorage.getItem('uid')}`;
+              // todo 钱包支付 和 微信支付 不同看看啊
+              window.location.href = `http://m.uzhuang.com/wxpay/pay/Weixin/h5_wx/example/jsapi.php?question_id=${result.insert_id}&pay_type=h5_wx&uid=${localStorage.getItem('uid')}`;
               // this.doRequestGet(Constants.Method.wxpay, {
               //     question_id: result.insert_id,
               //     pay_type: 'h5_wx',
@@ -284,7 +287,7 @@
                 name: Constants.PageName.qaDetail,
                 query: {
                   id: this.insert_id,
-                  go_home:true
+                  go_home: true
                 }
               });
             }, 2000);
@@ -295,7 +298,7 @@
       chooseImage() {
         // 获取当前的
         let pic_num = this.localIds.length;
-        if(pic_num > 9){
+        if (pic_num > 9) {
           EventBus.$emit(Constants.EventBus.showToast, {
             message: '只能选择9张图片',
           });
@@ -313,8 +316,8 @@
             that.localIds = that.localIds.concat(res.localIds);
           }
         });
-        },
-      previewImage(){
+      },
+      previewImage() {
         wx.previewImage({
           current: '', // 当前显示图片的http链接
           urls: [] // 需要预览的图片http链接列表
@@ -337,7 +340,7 @@
             isShowProgressTips: 1, // 默认为1，显示进度提示
             success: function (res) {
               that.serverIds.push(res.serverId);
-              window.localStorage.setItem("wx_img",res.serverId)
+              window.localStorage.setItem("wx_img", res.serverId)
               // console.log(that.serverIds)
               that.upload(callback);
             }
@@ -347,8 +350,8 @@
         }
       }
     },
-    deactivated(){  //success 组件停用时调用！！！
-      this.type=0  //
+    deactivated() {  //success 组件停用时调用！！！
+      this.type = 0  //
       console.log('组件停用')
       // 清除数据
       this.qa = {
@@ -364,11 +367,11 @@
     //   console.log('离开组件')
     //   this.type=0  //
     // },
-    beforeRouteLeave(to, from, next){
+    beforeRouteLeave(to, from, next) {
 
       // todo 这里不是很合理  离开组件时 添加自己的问题数
       this.doRequest(Constants.Method.profile, null, (result) => {
-        EventBus.$emit('my_question_num',result.my_question_num)
+        EventBus.$emit('my_question_num', result.my_question_num)
       });
       next()
     },
@@ -385,12 +388,14 @@
     display: flex;
     flex-direction: column;
   }
-  .slider{
-    padding:0 px2rem(25) !important;
+
+  .slider {
+    padding: 0 px2rem(25) !important;
 
     box-sizing: border-box;
 
   }
+
   .form {
     background-color: white;
     padding: px2rem(10);
@@ -467,9 +472,17 @@
       margin-top: px2rem(20);
     }
   }
-  .answer_text{
+
+  .answer_text {
     color: #000;
     text-decoration: underline;
   }
 
+  .field_textarea {
+    font-size: px2rem(13) !important;
+  }
+
+  .field_title {
+    font-size: px2rem(15) !important;
+  }
 </style>

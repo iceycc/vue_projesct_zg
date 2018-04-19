@@ -28,6 +28,9 @@
     },
     created(){
     },
+    actived(){
+
+    },
     methods: {
       goDetail(index) {
         this.$router.push({

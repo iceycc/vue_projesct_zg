@@ -99,6 +99,7 @@
       };
     },
     updated() {
+      console.log('updated')
       this.isReadShow()
     },
 
@@ -153,14 +154,16 @@
         // });
       },
       isReadShow() {
-        this.notice_isread_num = window.localStorage.getItem("notice_isread_num")
-        if (this.notice_isread_num > 0) {
-          this.isreadShow = true
-        }
+        EventBus.$on('notice_isread_num',(count)=>{
+          if (count > 0) {
+            this.isreadShow = true
+          }
 
-        if (this.notice_isread_num === 0) {
-          this.isreadShow = false
-        }
+          if (count == 0) {
+            this.isreadShow = false
+          }
+        })
+
       },
       toggleAsk() {
         this.showAsk = !this.showAsk;
@@ -234,15 +237,17 @@
     width: 25px;
     height: 25px;
   }
-
+  $ask_with:55px;
   .btn_ask {
     position: absolute;
-    width: 40px;
-    bottom: 15px;
-    left: 0;
-    right: 0;
-    margin-left: auto;
-    margin-right: auto;
+    width: $ask_with;
+    height: $ask_with;
+    bottom: 20px;
+    left: 50%;
+    margin-left: -$ask_with/2;
+    padding-top:($ask_with - 40px)/2;
+    background: #fff;
+    border-radius:$ask_with/2;
     .askicon {
       width: 40px;
       height: 40px;

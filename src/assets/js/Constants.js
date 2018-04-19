@@ -103,7 +103,7 @@ export const PageName = {
   qaBindAccount:'qabindaccount'
 };
 
-//用于管理router中页面名称
+//
 export const LocalStorage = {
   test: 'test',
   uid: 'uid',

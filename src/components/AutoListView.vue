@@ -74,6 +74,10 @@
         type: Boolean,
         default: true
       },
+      isTab:{
+        type: Boolean,
+        default: false
+      }
       // emptyMsg: {
       //   type: String,
       //   default: '正在加载中...'
@@ -149,9 +153,13 @@
       },
       getdata() {
         this.loading = true;
+        if(this.isTab == true){
+          this.init()
+        }
         let param = {
           page: this.page
         };
+
         if (this.$parent.handleParam) {
           param = Object.assign(this.$parent.handleParam(), param);
         }
@@ -161,10 +169,11 @@
           if ('handleResult' in this.$parent) {
             result = this.$parent.handleResult(result);
           }
-          this.data = this.data.concat(result);
+
+            this.data = this.data.concat(result);
           // console.log('==================列表=========')
-          // console.log(this.url)
-          // console.log(result)
+          console.log(this.url)
+          console.log(result)
           // console.log('============================')
           if (result && result.length === 0) {
             this.isMore = false;
@@ -200,7 +209,7 @@
         setTimeout(() => {
           this.getdata();
           this.refreshing = false
-        }, 1000)
+        }, 500)
       }
     }
   };

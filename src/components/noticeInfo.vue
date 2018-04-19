@@ -4,7 +4,7 @@
     <mu-list>
       <div class="info-box"
            v-for="(item,index) in datas" :key="index"
-           @click="goDetail(item.type,index,item.question_id,item.answer_id)"
+           @click="goDetail(item.type,index,item.question_id,item.answer_id,item.id)"
            :class="{isread:item.isread != '1'}"
       >
         <!--问题指向11-->
@@ -46,7 +46,7 @@
     data() {
       return {
         // 1 回答 2采纳 3点赞回答 4点赞评论 5评论回答 6评论评论
-        notice_infos: ['0',' 回答了您的问题',' 采纳了您的问题',' 点赞了你的回答',' 点赞了你的评论',' 评论了你的回答',' 评论了你的评论'],
+        notice_infos: ['0', ' 回答了您的问题', ' 采纳了您的问题', ' 点赞了你的回答', ' 点赞了你的评论', ' 评论了你的回答', ' 评论了你的评论'],
         datas: [],
         title: '',
         isReadNum: 0,
@@ -61,7 +61,9 @@
       }
     },
     created() {
-      this.getData()
+      if (!this.datas) {
+        this.getData()
+      }
     },
 
     mounted() {
@@ -69,18 +71,26 @@
       this.scroller = this.$el;
 
     },
+    activated() {// 组件激活
+      this.datas = []
+      this.page = defaultStartPage
+      console.log('activated')
+      this.getData()
+    },
+
     methods: {
       // 1 先确定是什么类型的请求11111
       // type: 1 回答 2采纳 3点赞回答 4点赞评论 5评论回答 6评论评论
       // 2 获取父组件传递的参数
       // 3 点击进入详情
-      goDetail(type, index, q_id, a_id) {
+      goDetail(type, index, q_id, a_id, id) {
         this.$router.push({
           name: Constants.PageName.qaComment,
           query: {
             q_id: q_id,
             a_id: a_id,
-            c_id: 0
+            c_id: 0,
+            inform_id: id
           }
         });
         // switch (type){
@@ -148,6 +158,7 @@
         }
         this.doRequest(Constants.Method.get_notice_list, data, (result) => {
           this.getRedNum(result)
+          console.log(result)
           this.datas = this.datas.concat(result)
           //1 如果新请求的数据存在但是result.length为0  取消加载
           if (result && result.length == 0) {
@@ -166,7 +177,8 @@
           }
         })
         // console.log(count) 1
-        window.localStorage.setItem("notice_isread_num", count)
+        EventBus.$emit('notice_isread_num',count)
+        // window.localStorage.setItem("notice_isread_num", count)
 
 
       },
@@ -223,25 +235,25 @@
     }
     .username {
       color: #1bd4bb;
-      font-size:px2rem(13);
+      font-size: px2rem(13);
       vertical-align: top;
 
     }
-    .notice_infos{
+    .notice_infos {
       font-size: px2rem(13);
       vertical-align: top;
       padding-left: px2rem(2);
 
     }
-    .no-date{
+    .no-date {
       flex: 1;
       text-align: right;
       font-size: px2rem(10);
-      color:#999
+      color: #999
     }
     .infos-text {
       color: #666;
-      font-size:px2rem(12);
+      font-size: px2rem(12);
       padding: px2rem(4) 0 px2rem(20);
 
     }

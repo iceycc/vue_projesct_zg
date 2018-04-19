@@ -55,8 +55,13 @@
               <div class="context">{{item.content}}</div>
               <div style="display: flex">
                 <span class="left">{{item.addtime}}</span>
-                <span class="right" @click="delCommentHandle(item.cid)" v-if="item.from_user_id == my_uid">删除</span>
+                <span class="right" @click="clickDel" v-if="item.from_user_id == my_uid">删除</span>
                 <span class="right" @click="onItemClick(item.from_user,item.cid)">回复</span>
+                <mu-dialog :open="dialog1" title="提示" @close="close">
+                  确定要删除该条评论吗
+                  <mu-flat-button slot="actions" @click="close" primary label="取消"/>
+                  <mu-flat-button slot="actions" primary @click="delCommentHandle(item.cid)" label="确定"/>
+                </mu-dialog>
               </div>
               <!--<div class="small-recomment">-->
               <!--<p class="recomment-p"-->
@@ -80,6 +85,7 @@
                      inputClass="text-field-content"></mu-text-field>
       <div class="btn" @click="submit">发布</div>
     </div>
+
   </div>
 </template>
 
@@ -106,6 +112,7 @@
     name: Constants.PageName.qaDetail,
     data() {
       return {
+        dialog1: false,
         icon1: require('../assets/img/icon_detail_response.svg'),
         icon2: require('../assets/img/icon_detail_ask.svg'),
         icon3: require('../assets/img/icon_detail_like.svg'),
@@ -182,30 +189,29 @@
         let data = {
           q_id: this.$route.query.q_id,
           a_id: this.$route.query.a_id,
+          inform_id:this.$route.query.inform_id || 0
         };
 
         this.doRequest(Constants.Method.get_answer, data, (result) => {
           this.answer = result
-          // console.log("============get_answer===============")
-          // console.log(this.answer.is_liked)
-          // console.log(this.answer)
-          // console.log("=======================================")
+          if(this.answer ==null){
+            EventBus.$emit(Constants.EventBus.showToast,{message: '该条动态已被删除'})
+            setTimeout(()=>{
+              this.$router.go(-1)
+            },1500)
+          }
         });
       },
       getComment() {
         let data = {
           q_id: this.$route.query.q_id,
           a_id: this.$route.query.a_id,
-          c_id: this.c_id
+          c_id: this.c_id,
+          inform_id:this.$route.query.inform_id || 0
         };
 
         this.doRequest(Constants.Method.get_comment_list, data, (result) => {
           this.comments = result;
-          // console.log("================get_comment_list=======================")
-          // console.log(result);
-          // console.log("=======================================")
-
-
           if (this.comments && this.comments.length > 0) {
             this.title = `${this.comments.length}条回复`;
           } else {
@@ -216,12 +222,20 @@
       getRoleClass(role) {
 
       },
+      clickDel(){
+        this.dialog1 = true
+       // this.delCommentHandle(item.cid)
+      },
+      close () {
+        this.dialog1 = false
+      },
       delCommentHandle(cid){
         let data = {
           cid:cid
         }
         this.doRequest(Constants.Method.del_comment,data,(result) => {
           this.getComment()
+          this.dialog1 = false
         })
       },
       onItemClick(name, c_id) {
@@ -407,7 +421,7 @@
       margin-top: px2rem(6);
       padding-top: px2rem(2);
       text-align: left;
-      font-size: px2rem(14);
+      font-size: px2rem(12);
       color: #ccc
     }
     .right {
@@ -417,9 +431,7 @@
       color: #aaa;
       margin-top: px2rem(6);
       padding: px2rem(1) px2rem(4);
-      border: px2rem(1) solid #ccc;
       border-radius: px2rem(5);
-
     }
   }
 

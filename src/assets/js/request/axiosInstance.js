@@ -14,7 +14,7 @@ _axios.interceptors.response.use((response) => {
         result = JSON.parse(result);
     }
     if (result && 'code' in result) {//&& 'data' in result
-        if (result.code === 0 || result.code === 200 || result.code === '400') {
+        if (result.code === 0 || result.code === 200 || result.code === '400' || result.code === 1) {
             return result;
         }else {
             return Promise.reject({

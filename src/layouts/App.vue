@@ -14,9 +14,8 @@
         第一时间收到回答提醒<br>
         更多悬赏问题推送, 助你拿取赏金
       </div>
-      <!--<mu-flat-button label="确定" slot="actions" primary @click="login = false"/>-->
+      <mu-flat-button label="确定" slot="actions" primary @click="login = false"/>
     </mu-dialog>
-    <div class="no-use"></div>
   </div>
 </template>
 
@@ -37,9 +36,8 @@
           Timer: null
         },
         login: false,
+
         isReadArrNum: 0,
-
-
       };
     },
     updated() {
@@ -55,35 +53,45 @@
     //   }
     // },
     mounted() {
-      document.addEventListener('touch', (e) => {
-        var e = e || window.event;
-        var target = e.target || e.srcElement;
-        var _tar = document.querySelector('.mu-dialog')//获取你的目标元素
-        //1. 点击事件的对象不是目标区域本身
-        //2. 事件对象同时也不是目标区域的子元素
-        if (!(target == _tar) && !_tar.contains(target)) {
-          //你的功能
-          this.login = false;
-          console.log('touch')
+      // let {} = this.EventUtil
+      console.log('mounted')
+      var muDialogWrapper = document.querySelector('.mu-dialog-wrapper') || document
+      var _tar = document.querySelector('.mu-dialog')//获取你的目标元素
+      if(muDialogWrapper && _tar){
 
-        } else {
-          //你的功能
-        }
-      })
-      document.addEventListener('click', (e) => {
-        var e = e || window.event;
-        var target = e.target || e.srcElement;
-        var _tar = document.querySelector('.mu-dialog')//获取你的目标元素
-        //1. 点击事件的对象不是目标区域本身
-        //2. 事件对象同时也不是目标区域的子元素
-        if (!(target == _tar) && !_tar.contains(target)) {
-          //你的功能
-          console.log('onclick')
-          this.login = false;
-        } else {
-          //你的功能
-        }
-      })
+        this.EventUtil().addHandler(muDialogWrapper,'click', (e) => {
+          var e = e || window.event;
+          var target = e.target || e.srcElement;
+          //1. 点击事件的对象不是目标区域本身
+          //2. 事件对象同时也不是目标区域的子元素
+          if (!(target == _tar) && !_tar.contains(target)) {
+            //你的功能
+            this.login = false;
+            console.log('click')
+            // this.EventUtil().removeHandler(muDialogWrapper,'click')
+
+          } else {
+            //你的功能
+            console.log('_tar')
+          }
+        })
+        this.EventUtil().addHandler(muDialogWrapper,'touch', (e) => {
+          var e = e || window.event;
+          var target = e.target || e.srcElement;
+          //1. 点击事件的对象不是目标区域本身
+          //2. 事件对象同时也不是目标区域的子元素
+          if (!(target == _tar) && !_tar.contains(target)) {
+            //你的功能
+            this.login = false;
+            console.log('touch')
+            // this.EventUtil().removeHandler(muDialogWrapper,'touch')
+          } else {
+            //你的功能
+            console.log('_tar')
+          }
+        })
+      }
+
     },
 
     created() {
@@ -95,26 +103,44 @@
         this.login = true;
       });
 
-
     },
-    beforeRouteUpdate(to, from, next) {
-      // 在当前路由改变，但是该组件被复用时调用
-      // 举例来说，对于一个带有动态参数的路径 /foo/:id，在 /foo/1 和 /foo/2 之间跳转的时候，
-      // 由于会渲染同样的 Foo 组件，因此组件实例会被复用。而这个钩子就会在这个情况下被调用。
-      // 可以访问组件实例 `this`
-      // console.log(to)
-      // if(to.name == 'qauser'){
-      //   this.doRequest(Constants.Method.profile, null, (result) => {
-      //     console.log("======beforeRouteLeave qauser qqqqq=========")
-      //     EventBus.$emit('my_question_num',result.my_question_num)
-      //   });
-      // }
-      // if(to.mame == 'qaindex'){
-      //   document.title = '问答';
-      // }
+    beforeRouteUpdate(from,to,next){
+      console.log('beforeRouteUpdate')
+      if(to.name =='qaindex' && from.name == 'login'){
+        console.log('login to qaindex')
+      }
       next()
     },
     methods: {
+      EventUtil(){
+        return{
+          /*检测绑定事件*/
+          addHandler:(element,type,handler)=>{
+            if(element.addEventListener){
+              element.addEventListener(type,handler,false);
+            }
+            else if(element.attachEvent){
+              element.attachEvent('on'+type,handler);
+            }
+            else{
+              element["on"+type]=handler /*直接赋给事件*/
+            }
+
+          },
+          /*通过removeHandler*/
+          removeHandler:(element,type,handler) =>{   /*Chrome*/
+            if (element.removeEventListener)
+              element.removeEventListener(type, handler, false);
+            else if (element.deattachEvent) {               /*IE*/
+              element.deattachEvent('on' + type, handler);
+            }
+            else {
+              element["on" + type] = null;
+              /*直接赋给事件*/
+            }
+          }
+        }
+      },
       showMessage(value) {
         this.toast.show = true;
         this.toast.message = value.message;
@@ -159,6 +185,5 @@
   }
 
   .mu-dialog-body {
-    padding-bottom: px2rem(30) !important;
   }
 </style>
