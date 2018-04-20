@@ -141,7 +141,7 @@
       if (this.$route.params && this.$route.params.type) {
         this.type = this.$route.params.type;
       }
-      console.log(this.type);
+      // 判断下是 钱包明细来的 还是 提问悬赏来的
       if (this.type === 1) {
         this.title = '悬赏提问';
         window.document.title = '悬赏提问';//修改网页标题
@@ -215,6 +215,12 @@
       },
       submit: function () {
         // 去除前后空格
+
+        if(this.$route.params){
+          var is_wallet = this.$route.params.is_wallet
+          var money_sum = this.$route.params.money_sum
+        }
+        console.log(this.$route.params)
         this.qa.title = this.qa.title.replace(/^\s+|\s+$/g, "");
         if (!this.qa.title) {
           EventBus.$emit(Constants.EventBus.showToast, {
@@ -234,6 +240,12 @@
           });
           return;
         }
+        if(money_sum && this.qa.reward >money_sum){
+          EventBus.$emit(Constants.EventBus.showToast, {
+            message: '您的钱包余额不足'
+          });
+          return;
+        }
         this.upload(() => {
           let data = {
             title: this.qa.title,
@@ -245,35 +257,15 @@
           } else {
             data.reward = this.qa.reward;
           }
+
           this.doRequest(Constants.Method.ask_question, data, (result) => {
             EventBus.$emit(Constants.EventBus.showToast, {
               message: '发布成功',
             });
             this.insert_id = result.insert_id
-
-            if (data.reward > 0) {//付费问题  微信支付改怎么办呢
+            if (data.reward > 0 && !is_wallet) {//
               // todo 钱包支付 和 微信支付 不同看看啊
               window.location.href = `http://m.uzhuang.com/wxpay/pay/Weixin/h5_wx/example/jsapi.php?question_id=${result.insert_id}&pay_type=h5_wx&uid=${localStorage.getItem('uid')}`;
-              // this.doRequestGet(Constants.Method.wxpay, {
-              //     question_id: result.insert_id,
-              //     pay_type: 'h5_wx',
-              //   uid:localStorage.getItem('uid')
-              // }, (result) => {
-              //     console.log(result);
-              //     // wx.chooseWXPay({
-              //     //     timestamp: result.time_stamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
-              //     //     nonceStr: result.nonceStr, // 支付签名随机串，不长于 32 位
-              //     //     package: 'prepay_id=' + result.prepay_id, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
-              //     //     signType: result.sign_type, // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
-              //     //     paySign: result.sign, // 支付签名
-              //     //     success: function (res) {
-              //     //         console.log(res.err_msg);
-              //     //     },
-              //     //     error: function (err) {
-              //     //         console.log(err);
-              //     //     }
-              //     // });
-              // });
             }
 
             this.qa.title = '';

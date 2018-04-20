@@ -14,7 +14,7 @@
         第一时间收到回答提醒<br>
         更多悬赏问题推送, 助你拿取赏金
       </div>
-      <mu-flat-button label="确定" slot="actions" primary @click="login = false"/>
+      <!--<mu-flat-button label="确定" slot="actions" primary @click="login = false"/>-->
     </mu-dialog>
   </div>
 </template>
@@ -36,7 +36,6 @@
           Timer: null
         },
         login: false,
-
         isReadArrNum: 0,
       };
     },
@@ -101,6 +100,9 @@
 
       EventBus.$on(Constants.EventBus.login, value => {
         this.login = true;
+        setTimeout(()=>{
+          this.login = false;
+        },2000)
       });
 
     },
@@ -174,6 +176,7 @@
     margin: 0 0 !important;
     height: px2rem(80);
     padding-top: px2rem(30);
+    padding-bottom: px2rem(30);
     letter-spacing: px2rem(3) !important
   }
 

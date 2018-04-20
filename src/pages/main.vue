@@ -44,7 +44,7 @@
         </keep-alive>
         <keep-alive>
           <div class="icon-view">
-            <div class="msg-infos">
+            <div style="visibility: hidden" class="msg-infos">
               <div>更快更多更优质回答</div>
               <div>查看更多<a href="javascript:;" @click.stop="webpage" style="text-decoration: underline;color:#328afb">专属权利</a></div>
             </div>

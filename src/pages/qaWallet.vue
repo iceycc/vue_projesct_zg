@@ -35,7 +35,8 @@
     data() {
       return {
         result: {},
-        role:0
+        role:0,
+        money:0
       };
     },
     computed: {},
@@ -44,6 +45,7 @@
       this.role = window.localStorage.getItem('role')
       this.doRequest(Constants.Method.wallet, null, (result) => {
         this.result = result;
+        this.money = result.money
       });
     },
     methods: {
@@ -61,7 +63,10 @@
         this.pushPage({
           name: Constants.PageName.qaAsk,
           params: {
-            type
+            type,
+            is_wallet:true,
+            money_sum:this.money || 0
+
           }
         });
       },

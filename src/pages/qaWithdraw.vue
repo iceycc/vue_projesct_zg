@@ -45,15 +45,21 @@
     },
     computed: {},
     created() {
-      this.doRequest(Constants.Method.wallet, null, (result) => {
-        this.data.money = result.money;
-      });
-      this.doRequest(Constants.Method.profile, null, (result) => {
-        this.data.username = result.username;
-        this.data.avatar = result.avatar;
-      });
+      this.getData()
+    },
+    activated() {
+      this.getData()
     },
     methods: {
+      getData() {
+        this.doRequest(Constants.Method.wallet, null, (result) => {
+          this.data.money = result.money;
+        });
+        this.doRequest(Constants.Method.profile, null, (result) => {
+          this.data.username = result.username;
+          this.data.avatar = result.avatar;
+        });
+      },
       gotoWithdraw() {
         let data = {
           uid: localStorage.getItem('uid'),
@@ -63,14 +69,14 @@
             .then((result) => {
               console.log(result.data);
 
-              if(result.data.code === 0){
+              if (result.data.code === 0) {
                 EventBus.$emit(Constants.EventBus.showToast, {
-                  message:'提现成功'
+                  message: '提现成功'
                 });
-                this.$router.replace({name:Constants.PageName.qaWithdraw})
-              }else{
+                this.$router.replace({name: Constants.PageName.qaWithdraw})
+              } else {
                 EventBus.$emit(Constants.EventBus.showToast, {
-                  message:'提现失败'
+                  message: '提现失败'
                 });
               }
             })

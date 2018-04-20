@@ -23,12 +23,12 @@
     <!--{{text}}-->
 
     <auto-list-view
-      :url="url"
-      :flag="flag"
-      @onItemClick="onItemClick"
-      :isNeedDivider="false"
-      :class="{isIndex0:hot_words_index === 0}"
-      :isTab = "isTab"
+        :url="url"
+        :flag="flag"
+        @onItemClick="onItemClick"
+        :isNeedDivider="false"
+        :class="{isIndex0:hot_words_index === 0}"
+        :isTab="isTab"
     >
       <!--@SwipeLeft="onSwipeLeft"-->
       <!--@SwipeRight="onSwipeRight"-->
@@ -55,7 +55,7 @@
             <div class="title">{{props.item.title}}</div>
             <!--金额 如果有的话显示-->
             <span class="reward shadow"
-                  v-if="parseFloat(props.item.q_reward) > 0">悬赏金额 ￥{{props.item.q_reward}}</span>
+                  v-if="parseFloat(props.item.q_reward) > 0">￥{{props.item.q_reward}}</span>
           </div>
           <!--内容-->
           <div class="card-content">{{props.item.content}}</div>
@@ -92,7 +92,7 @@
     name: Constants.PageName.qaIndex,
     data() {
       return {
-        text:"1111",
+        text: "1111",
         swiperOption: {
           autoplay: 3000
         },
@@ -105,12 +105,10 @@
         version: process.env.APP_VERSION,
         localValue: this.$ls.get(Constants.LocalStorage.test, '-1'),
         swiper_i: 0,
-        isTab:false
+        isTab: false
       };
     },
-    filter:{
-
-    },
+    filter: {},
     computed: {
       swiper() {
         return this.$refs.mySwiper.swiper
@@ -140,6 +138,11 @@
         // console.log(this.hot_words)
         this.getList();
       });
+    },
+    updated(){
+      EventBus.$on('isTab',()=>{
+        this.isTab = false
+      })
     },
     methods: {
       onSwipeLeft() {
@@ -203,12 +206,14 @@
     height: 100%;
     padding-top: px2rem(60);
   }
-  .scroll-view{
-    padding-bottom:px2rem(70);
-    &.isIndex0{
-      padding-bottom:px2rem(0);
+
+  .scroll-view {
+    padding-bottom: px2rem(70);
+    &.isIndex0 {
+      padding-bottom: px2rem(0);
     }
   }
+
   .banner {
     height: px2rem(154);
     background-color: white;
@@ -253,7 +258,7 @@
       white-space: nowrap;
       transition: font-size, color 0.2s, 0.2s;
     }
-    .hot_word_empty{
+    .hot_word_empty {
       width: px2rem(50);
     }
     .hot_word_select {
@@ -278,8 +283,8 @@
         font-size: px2rem(16);
         flex-grow: 1;
         overflow: hidden;
-        text-overflow:ellipsis;
-        white-space:nowrap;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
       .reward {
         font-size: px2rem(12);
@@ -315,7 +320,7 @@
         flex-grow: 1;
         vertical-align: middle;
 
-        text{
+        text {
           height: 100%;
           vertical-align: middle;
         }

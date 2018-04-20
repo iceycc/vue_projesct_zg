@@ -5,15 +5,16 @@
     <mu-appbar title="问答详情" v-if="showAppBar">
       <mu-icon-button icon="arrow_back" slot="left" @click="goBack"></mu-icon-button>
       <!--<template slot="right" v-if="this.mode !== 'test'">-->
-        <!--&lt;!&ndash;<mu-icon-button v-if="showSearch" icon="search" slot="right" @click="goSearch"></mu-icon-button>&ndash;&gt;-->
-        <!--<slot name="right"></slot>-->
+      <!--&lt;!&ndash;<mu-icon-button v-if="showSearch" icon="search" slot="right" @click="goSearch"></mu-icon-button>&ndash;&gt;-->
+      <!--<slot name="right"></slot>-->
       <!--</template>-->
     </mu-appbar>
     <!--顶部问题详情-->
     <div class="card shadow" v-if="question">
       <!--用户头像 名称 赏金-->
       <div class="view1">
-        <img-wrapper :url="question.avatar" classStyle="avatar" @onClick="ifGoDetail(question.uid,unll,null)"></img-wrapper>
+        <img-wrapper :url="question.avatar" classStyle="avatar"
+                     @onClick="ifGoDetail(question.uid,unll,null)"></img-wrapper>
         <div class="username">{{question.aname}}</div>
         <span class="reward shadow"
               v-if="parseFloat(question.q_reward) > 0"> 悬赏金额 ¥{{question.q_reward}}</span>
@@ -23,12 +24,12 @@
       <!--问题描述-->
       <div class="card-content">{{question.content}}
         <!--图片展示-->
-         <div class="card-img" v-if="question.attach && question.attach.length !==0 ">
-           <div v-for="item,index in question.attach" :key="index" v-if=" item != ''" class="cc-img">
-             <img :src="item" alt="" @click="showBigImg(item,question.attach)" >
-           </div>
+        <div class="card-img" v-if="question.attach && question.attach.length !==0 ">
+          <div v-for="item,index in question.attach" :key="index" v-if=" item != ''" class="cc-img">
+            <img :src="item" alt="" @click="showBigImg(item,question.attach)">
+          </div>
 
-       </div>
+        </div>
       </div>
       <!--展示 浏览数 回答数 收藏 时间-->
       <div class="view2">
@@ -36,8 +37,11 @@
         <div>{{question.answer_num}}回答</div>
         <!--收藏 -->
 
-        <button @click.stop="collect" class="collect-icon" :disabled="disabled" style="border: none;background: transparent;outline:none">
-          <img-wrapper :url="question.is_collect ?  icon5 : icon6 " classStyle="icon"></img-wrapper>
+        <button @click.stop="collect" class="collect-icon" :class="question.is_collect ? 'collected' : 'collect'"
+                :disabled="disabled"
+                style="border: none;background: transparent;outline:none">
+          <!--<img-wrapper :url="question.is_collect ?  icon5 : icon6 " classStyle="icon"></img-wrapper>-->
+          {{question.is_collect? '已收藏': '收藏'}}
         </button>
 
         <div>{{ question.qtime | my_time }}</div>
@@ -59,26 +63,30 @@
               <!--评论 人 头像 名称 用户等级 是否采纳 11-->
               <div class="view1 horizontal-view">
                 <img-wrapper
-                  :url=" item.a_avatar == 'http://m.uzhuang.com/res/images/userface.png' ? a_avatar : item.a_avatar "
-                  classStyle="avatar"
-                  @onClick="ifGoDetail(item.uid,item.role,item.aname)"
+                    :url=" item.a_avatar == 'http://m.uzhuang.com/res/images/userface.png' ? a_avatar : item.a_avatar "
+                    classStyle="avatar"
+                    @onClick="ifGoDetail(item.uid,item.role,item.aname)"
                 ></img-wrapper>
 
                 <div class="vertical-view">
-                  <div class="name" @click.stop="ifGoDetail(item.uid,item.role,item.aname)">{{item.aname ? item.aname : '匿名用户'}}
+                  <div class="name" @click.stop="ifGoDetail(item.uid,item.role,item.aname)">{{item.aname ? item.aname :
+                    '匿名用户'}}
                     <!--显示颜色从组件内根据角色名匹配的-->
-                    <uz-lable v-if="question.q_reward > 0" :role="item.uid === question.uid ? '赏金发起人' : item.role"></uz-lable>
+                    <uz-lable v-if="question.q_reward > 0"
+                              :role="item.uid === question.uid ? '赏金发起人' : item.role"></uz-lable>
                     <uz-lable v-else :role="item.uid ===question.uid ? '问题发起人' : item.role"></uz-lable>
                   </div>
                   <div class="date">{{item.atime | my_time}}</div>
                 </div>
                 <!--采纳@click.once.stop="accept(index)"   && item.uid !== question.uid-->
-                <div class="accept" v-if="isOwner && question.q_adoption == 0 && item.uid !== question.uid" @click.stop="open(index)">采纳</div>
+                <div class="accept" v-if="isOwner && question.q_adoption == 0 && item.uid !== question.uid"
+                     @click.stop="open(index)">采纳
+                </div>
 
                 <div class="accepted" v-if="question.q_adoption ==item.id"><img src="../assets/img/accepted@2x.png"
                                                                                 alt=""></div>
                 <div class="get_reward" v-if="question.q_adoption ==item.id && question.q_reward > 0"><img
-                  src="../assets/img/get_reward.png" alt=""></div>
+                    src="../assets/img/get_reward.png" alt=""></div>
               </div>
               <!--评论内容-->
               <div class="context">{{item.content}}</div>
@@ -92,10 +100,20 @@
               </div>
               <!--底部信息展示-->
               <div class="view2 horizontal-view">
+                <!--编辑功能-->
+                <button class="like"
+                        @click.stop="editHandle(item.id,item.uid)"
+                        style="border: none;background: transparent;outline: none"
+                        :disabled="disabled"
+                >
+                  <img-wrapper :url="icon_edit"
+                               classStyle="icon"></img-wrapper>
+                  编辑
+                </button>
                 <!--点赞功能-->
                 <button class="like" v-bind:class="item.liked == 1 ? 'liked' : ''"
-                     @click.stop="like(index,item.liked)"
-                    style="border: none;background: transparent;outline: none"
+                        @click.stop="like(index,item.liked)"
+                        style="border: none;background: transparent;outline: none"
                         :disabled="disabled"
                 >
                   <img-wrapper :url="item.liked == 1 ? icon4 : icon3 "
@@ -103,7 +121,8 @@
                   {{item.like_num}}
 
                 </button>
-                <div @click.once.stop="clickDel" v-if="item.uid == current_uid && question.q_adoption !=item.id"> 删除</div>
+                <div @click.once.stop="clickDel" v-if="item.uid == current_uid && question.q_adoption !=item.id"> 删除
+                </div>
                 <mu-dialog :open="dialog2" title="提示" @close="close">
                   确定要删除该条回答吗
                   <mu-flat-button slot="actions" @click="close" primary label="取消"/>
@@ -150,9 +169,10 @@
         </keep-alive>
         <keep-alive>
           <div class="icon-view">
-            <div class="msg-infos">
+            <div style="visibility: hidden" class="msg-infos">
               <div>更快更多更优质回答</div>
-              <div>查看更多<a href="javascript:;" @click.stop="webpage" style="text-decoration: underline;color:#328afb">专属权利</a></div>
+              <div>查看更多<a href="javascript:;" @click.stop="webpage" style="text-decoration: underline;color:#328afb">专属权利</a>
+              </div>
             </div>
             <div @click="gotoAsk(1)">
               <img-wrapper :url="icon_b" classStyle="icon"></img-wrapper>
@@ -199,13 +219,13 @@
     },
     data() {
       return {
-        q_adoption_index:null,
-        showAsk:false,
-        dialog2:false,
+        q_adoption_index: null,
+        showAsk: false,
+        dialog2: false,
         dialog: false,
-        ifGoHome:false,
-        icon_back:'',
-        text_lable:['哈哈','hhe1'],
+        ifGoHome: false,
+        icon_back: '',
+        text_lable: ['哈哈', 'hhe1'],
         icon_a: require('../assets/img/icon_ask_free.png'),
         icon_b: require('../assets/img/icon_ask.png'),
         icon1: require('../assets/img/icon_detail_response.svg'),
@@ -214,28 +234,29 @@
         icon4: require('../assets/img/icon_detail_liked.svg'),
         icon5: require('../assets/img/accepted.svg'),
         icon6: require('../assets/img/accept.svg'),
-        icon_ask_close:require('../assets/img/icon_ask_close.svg'),
-        role:0,
-        a_avatar:require('../assets/img/icon_slider.png'),
+        icon_ask_close: require('../assets/img/icon_ask_close.svg'),
+        icon_edit: require('../assets/img/icon_edit.svg'),
+        role: 0,
+        a_avatar: require('../assets/img/icon_slider.png'),
         uid: 0,
         question: {},
         answer_list: [],
         flag: null,
         version: process.env.APP_VERSION,
         localValue: this.$ls.get(Constants.LocalStorage.test, '-1'),
-        disabled:false,
-        current_uid:null,
-        attach:[// text
-          'http://pic40.nipic.com/20140412/11857649_170524977000_2.jpg',
-          'http://pic34.photophoto.cn/20150202/0005018384491898_b.jpg' ,
+        disabled: false,
+        current_uid: null,
+        attach: [// text
           'http://pic40.nipic.com/20140412/11857649_170524977000_2.jpg',
           'http://pic34.photophoto.cn/20150202/0005018384491898_b.jpg',
           'http://pic40.nipic.com/20140412/11857649_170524977000_2.jpg',
-          'http://pic34.photophoto.cn/20150202/0005018384491898_b.jpg' ,
+          'http://pic34.photophoto.cn/20150202/0005018384491898_b.jpg',
           'http://pic40.nipic.com/20140412/11857649_170524977000_2.jpg',
           'http://pic34.photophoto.cn/20150202/0005018384491898_b.jpg',
           'http://pic40.nipic.com/20140412/11857649_170524977000_2.jpg',
-          'http://pic34.photophoto.cn/20150202/0005018384491898_b.jpg' ,
+          'http://pic34.photophoto.cn/20150202/0005018384491898_b.jpg',
+          'http://pic40.nipic.com/20140412/11857649_170524977000_2.jpg',
+          'http://pic34.photophoto.cn/20150202/0005018384491898_b.jpg',
           'http://pic40.nipic.com/20140412/11857649_170524977000_2.jpg',
           'http://pic34.photophoto.cn/20150202/0005018384491898_b.jpg',
         ]
@@ -257,15 +278,16 @@
       let timeChuo1 = Date.parse(newTime)
       let timeChuo2 = newTime.valueOf()
       let timeChuo3 = newTime.getTime()
+
       // console.log(formData(newTime));
-      function formData(now){
+      function formData(now) {
         var
-          year = now.getFullYear(),
-          month = now.getMonth() + 1,
-          date = now.getDate(),
-          hour = now.getHours(),
-          minute = now.getMinutes(),
-          second = now.getSeconds();
+            year = now.getFullYear(),
+            month = now.getMonth() + 1,
+            date = now.getDate(),
+            hour = now.getHours(),
+            minute = now.getMinutes(),
+            second = now.getSeconds();
         return year + '-' + month + '-' + date + ' ' + hour + ':' + minute + ':' + second;
       }
 
@@ -278,35 +300,35 @@
     activated() {
     },
     methods: {
-      ifGoDetail(uid,role,aname){
+      ifGoDetail(uid, role, aname) {
         // 这里通过判断返回的role是否时管是家 自己是管家的话点不开其他管家的详情 匿名用户不能打开 管家看管家也是显示匿名用户
-        if(!(role == '管家' || role == '金牌管家') || (aname=='匿名用户' || '')){
+        if (!(role == '管家' || role == '金牌管家') || (aname == '匿名用户' || '')) {
           return
-        }else{
-          this.goGujian(uid,1)
+        } else {
+          this.goGujian(uid, 1)
         }
       },
-      goGujian(uid,role){
+      goGujian(uid, role) {
         let uid_this = uid || window.localStorage.getItem('uid')
         let role_this = role || window.localStorage.getItem('role')
-        if(role_this == 1){
+        if (role_this == 1) {
           window.location.href = `http://m.uzhuang.com/mobile-m_butler_details.html?id=M%E7%AB%99-%E5%B7%A5%E5%9C%B0%E7%9B%B4%E6%92%AD&butlerid=${uid_this}`
-        }else{
+        } else {
           return
         }
       },
 
-      open (index) {
+      open(index) {
         this.dialog = true
-        this.q_adoption_index =index
+        this.q_adoption_index = index
       },
-      close () {
+      close() {
         this.dialog = false
       },
-      goBack(){
-        if(this.ifGoHome ){
+      goBack() {
+        if (this.ifGoHome) {
           this.$router.go(-2)
-        }else{
+        } else {
           this.$router.go(-1)
         }
       },
@@ -318,25 +340,25 @@
           }
         });
       },
-      showBigImg(src,pics){
+      showBigImg(src, pics) {
         wx.previewImage({
           current: src, // 当前显示图片的http链接
-          urls:pics // 需要预览的图片http链接列表
+          urls: pics // 需要预览的图片http链接列表
         });
       },
-      clickDel(){
+      clickDel() {
         this.dialog2 = true
       },
-      close () {
+      close() {
         this.dialog2 = false
       },
-      deleteHandle(index){
+      deleteHandle(index) {
 
         let data = {
           // u_id:window.localStorage.getItem('uid'),
-          aid:this.answer_list[index].id
+          aid: this.answer_list[index].id
         }
-        this.doRequest(Constants.Method.del_answer,data,(result) => {
+        this.doRequest(Constants.Method.del_answer, data, (result) => {
           this.getData()
           this.dialog2 = false
           EventBus.$emit(Constants.EventBus.showToast, {
@@ -344,8 +366,8 @@
           });
         })
       },
-      webpage(){
-        this.$router.push({name:Constants.PageName.qaDoc,params:{type:2}})
+      webpage() {
+        this.$router.push({name: Constants.PageName.qaDoc, params: {type: 2}})
       },
       fenXiang() {
         let url = window.location.href
@@ -425,10 +447,10 @@
       },
       handleChange(value) {
         if (value == 2) {
-          if(this.role==0){
+          if (this.role == 0) {
             this.toggleAsk();
           }
-          if(this.role == 1){
+          if (this.role == 1) {
             EventBus.$emit(Constants.EventBus.showToast, {
               message: '管家没有提问权限'
             });
@@ -457,12 +479,35 @@
           });
         }
       },
+      editHandle(aid, uid) {
+        let data = {
+          a_id: aid,
+          uid: uid
+        }
+        this.doRequest(Constants.Method.get_answer_edit, data, (result) => {
+          // console.log(result);
+          console.log(11)
+          this.$router.push({
+            name:Constants.PageName.qaResponse,
+            params:{
+              content:result.content,
+              is_edit:true,
+              data:data
+            }
+          })
+        })
+        // console.log(11)
+        // params: {content: result.content}
+        // this.$router.push(
+        //     {name: Constants.Method.qaResponse}
+        // )
+      },
       like(index, liked) {
-        if(timer){
+        if (timer) {
           clearTimeout(timer)
         }
         this.disabled = true
-        let timer ;
+        let timer;
         let data = {
           q_id: this.$route.query.id,
           a_id: this.answer_list[index].id,
@@ -472,25 +517,25 @@
           case 1:
             this.doRequest(Constants.Method.un_like, data, (result) => {
               this.getData();
-              timer = setTimeout(()=>{
+              timer = setTimeout(() => {
                 this.disabled = false
-              },1000)
+              }, 1000)
             })
             break;
           case 0:
             this.doRequest(Constants.Method.like, data, (result) => {
               this.getData();
-              timer = setTimeout(()=>{
+              timer = setTimeout(() => {
                 this.disabled = false
-              },1000)
+              }, 1000)
             })
             break;
           default:
             console.log('操作太快')
         }
       },
-      toLiked(index, liked){
-        this.debounce(this.like(index, liked),1000)
+      toLiked(index, liked) {
+        this.debounce(this.like(index, liked), 1000)
 
       },
       debounce(fn, delay) {
@@ -504,12 +549,12 @@
           // 4 进来的时候清除之前的定时器
           // 5
 
-          if((current - last)>delay){
-            timer = setTimeout(fn,delay)
+          if ((current - last) > delay) {
+            timer = setTimeout(fn, delay)
             last = current
-          } else{
+          } else {
             // 当前是2秒以内重复触发
-            timer = setTimeout(fn,delay)
+            timer = setTimeout(fn, delay)
           }
         }
       },
@@ -518,7 +563,7 @@
       },
       collect() {
 
-        if(timer){
+        if (timer) {
           clearTimeout(timer)
         }
         this.disabled = true
@@ -530,30 +575,30 @@
             q_id: this.$route.query.id,
           };
           this.doRequest(Constants.Method.un_favourites, data, (result) => {
-            count --;
-            EventBus.$emit('collect_num',count)
+            count--;
+            EventBus.$emit('collect_num', count)
             this.getData();
             EventBus.$emit(Constants.EventBus.showToast, {
               message: '取消收藏'
             });
-            timer = setTimeout( () => {
+            timer = setTimeout(() => {
               this.disabled = false
-            },1000)
+            }, 1000)
           });
         } else {
           let data = {
             q_id: this.$route.query.id,
           };
           this.doRequest(Constants.Method.favourites, data, (result) => {
-            count ++;
-            EventBus.$emit('collect_num',count)
+            count++;
+            EventBus.$emit('collect_num', count)
             this.getData();
             EventBus.$emit(Constants.EventBus.showToast, {
               message: '收藏成功'
             });
-            timer = setTimeout( () => {
+            timer = setTimeout(() => {
               this.disabled = false
-            },2000)
+            }, 2000)
           });
         }
 
@@ -612,16 +657,16 @@
     padding: px2rem(10) px2rem(20);
     z-index: 1;
 
-    .card-img{
+    .card-img {
       display: flex;
       overflow-x: scroll;
       margin-top: px2rem(20);
       height: px2rem(60);
       font-size: 0;
-      .cc-img{
+      .cc-img {
         margin-right: px2rem(20);
       }
-      img{
+      img {
         width: px2rem(80);
         height: px2rem(60);
       }
@@ -659,7 +704,6 @@
 
     .view2 {
       position: relative;
-
       color: $fontcolor_gray;
       display: flex;
       flex-direction: row;
@@ -667,6 +711,12 @@
       padding: px2rem(10) 0;
       border-bottom: px2rem(1) solid $divider;
       font-size: px2rem(12);
+      .collect {
+        color: #aaa;
+      }
+      .collected {
+        color: #31ddaa
+      }
       div:nth-child(1):after {
         content: '•';
         padding: 0 px2rem(5);
@@ -675,8 +725,9 @@
         content: '•';
         padding: 0 px2rem(5);
       }
-      div:nth-child(3) {
+      div:nth-child(4) {
         flex-grow: 1;
+        text-align: right;
       }
     }
 
@@ -753,8 +804,8 @@
       font-size: px2rem(12);
       justify-content: flex-end;
       /*11111*/
-      .collect-icon{
-        .icon{
+      .collect-icon {
+        .icon {
           display: inline-block;
           width: px2rem(10);
           height: px2rem(10);
@@ -815,6 +866,7 @@
       margin-right: px2rem(10);
     }
   }
+
   .mask {
     width: 100%;
     height: 100%;
@@ -831,11 +883,11 @@
       .icon-view {
         // 注意 qaDetail也有相同的样式
         padding-top: px2rem(60);
-        position:relative;
+        position: relative;
         display: flex;
         flex-direction: column;
         align-items: center;
-        .msg-infos{
+        .msg-infos {
           position: absolute;
           top: px2rem(-8);
           left: px2rem(20);
@@ -847,7 +899,7 @@
           padding-left: px2rem(9);
           background: url("../assets/img/bg_text_box.png") no-repeat 0 0;
           background-size: px2rem(140) px2rem(80);
-          background-origin:border-box ;
+          background-origin: border-box;
         }
       }
 
@@ -865,19 +917,19 @@
         text-align: center;
       }
     }
-    .ask-close{
+    .ask-close {
       position: absolute;
       bottom: 0;
       width: 100%;
       height: px2rem(55);
       border-top: 1px solid #ccc;
-      text-align:center;
+      text-align: center;
       font-size: 0;
-      &:after{
+      &:after {
         display: inline-block;
         vertical-align: middle;
-        content:'';
-        height:100%;
+        content: '';
+        height: 100%;
       }
     }
     .close {

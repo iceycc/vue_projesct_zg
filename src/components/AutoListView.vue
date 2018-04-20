@@ -40,6 +40,7 @@
 
 <script>
   import minixs_request from '../assets/js/mixins/mixins-request';
+  import {EventBus} from "../assets/js/index";
   // import minixs_request from '../assets/js/mixins/mixins-request';
 
   const defaultStartPage = 1;
@@ -74,8 +75,8 @@
         type: Boolean,
         default: true
       },
-      isTab:{
-        type: Boolean,
+      isTab: {
+        type: [String, Number, Boolean,Function,Object,Array,Symbol],
         default: false
       }
       // emptyMsg: {
@@ -85,7 +86,7 @@
     },
     data() {
       return {
-        emptyMsg:'正在加载中...',
+        emptyMsg: '正在加载中...',
         scroller: null,
         scrollTop: 0,
         page: defaultStartPage,
@@ -93,7 +94,7 @@
         isMore: true,
         data: [],
         refreshing: false,
-        trigger: null
+        trigger: null,
       };
     },
     watch: {
@@ -153,50 +154,51 @@
       },
       getdata() {
         this.loading = true;
-        if(this.isTab == true){
+        // 注意判断完成切换类型是点击顶部栏还是下拉触发的方式
+        if (this.isTab == true) {
           this.init()
         }
         let param = {
           page: this.page
         };
-
         if (this.$parent.handleParam) {
           param = Object.assign(this.$parent.handleParam(), param);
         }
 
         this.doRequest(this.url, param,
-          (result) => {
-          if ('handleResult' in this.$parent) {
-            result = this.$parent.handleResult(result);
-          }
+            (result) => {
+              if ('handleResult' in this.$parent) {
+                result = this.$parent.handleResult(result);
+              }
+              EventBus.$emit('isTab')
 
-            this.data = this.data.concat(result);
-          // console.log('==================列表=========')
-          console.log(this.url)
-          console.log(result)
-          // console.log('============================')
-          if (result && result.length === 0) {
-            this.isMore = false;
-            this.emptyMsg = '没有数据'
-          } else {
-            this.page = this.page + 1;
-          }
+              this.data = this.data.concat(result);
+              // console.log('==================列表=========')
+              console.log(this.url)
+              console.log(result)
+              // console.log('============================')
+              if (result && result.length === 0) {
+                this.isMore = false;
+                this.emptyMsg = '没有数据'
+              } else {
+                this.page = this.page + 1;
+              }
 
-          if (!this.isNeedLoadMore) {
-            this.isMore = false;
-          }
-        }, null, () => {
-          this.loading = false;
-        },()=>{
-          console.log('fail')
-          },()=>{
-          console.log('finish')
-          });
+              if (!this.isNeedLoadMore) {
+                this.isMore = false;
+              }
+            }, null, () => {
+              this.loading = false;
+            }, () => {
+              console.log('fail')
+            }, () => {
+              console.log('finish')
+            });
 
       },
       loadMore() {
         console.log(this.isMore)
-        if(this.isMore){
+        if (this.isMore) {
           this.loading = true
           setTimeout(() => {
             this.getdata();
@@ -204,7 +206,7 @@
           }, 2000)
         }
       },
-      refresh () {
+      refresh() {
         this.refreshing = true
         setTimeout(() => {
           this.getdata();
