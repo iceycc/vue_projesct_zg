@@ -12,15 +12,14 @@
 <script>
   import AppBar from '../components/AppBar.vue'
   import md5 from 'js-md5';
-  import axios from 'axios';
-  import {Constants, EventBus, mixins} from '../assets/js/index';
+  import {Constants, EventBus, mixins,API} from '../config/index';
   export default {
     name: "",
     components:{
       AppBar
     },
     // 混入对象
-    mixins: [mixins.base, mixins.request],
+    mixins: [mixins.base, mixins.wx],
     data(){
       return{
         title:'账号绑定',
@@ -45,16 +44,12 @@
           });
           return
         }
-        // let data = {
-        //   username:this.username,
-        //   password:md5(this.password),
-        //   uid:window.localStorage.getItem('uid')
-        // }
-        axios.get(Constants.Method.bind_account,{params:{
-            username:this.username,
-            password:md5(this.password),
-            uid:window.localStorage.getItem('uid')
-          }})
+        let data = {
+          username:this.username,
+          password:md5(this.password),
+          uid:window.localStorage.getItem('uid')
+        }
+        API.get(Constants.Method.bind_account,{params:data})
             .then((result)=>{
               console.log(result)
               if(result.data.code == 0 && result.data.message == '绑定成功'){

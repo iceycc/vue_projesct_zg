@@ -6,16 +6,15 @@
 </template>
 
 <script>
-  import {Constants, EventBus, mixins} from '../assets/js/index';
+  import {Constants, EventBus, mixins,API} from '../config/index';
   import noticeInfo from "../components/noticeInfo";
   import AppBar from "../components/AppBar.vue";
-
   export default {
     components: {
       noticeInfo,
       AppBar
     },
-    mixins: [mixins.base, mixins.request],
+    mixins: [mixins.base, mixins.wx],
     name: Constants.PageName.qaknowledge,
     data() {
       return {
@@ -27,18 +26,20 @@
     mounted(){
     },
     created(){
+
     },
     actived(){
 
     },
     methods: {
       goDetail(index) {
-        this.$router.push({
-          name: Constants.PageName.qaDetail,
-          query: {
-            id: this.datas[index].question_id
-          }
-        })
+        console.log(this.datas[index])
+        // this.$router.push({
+        //   name: Constants.PageName.qaDetail,
+        //   query: {
+        //     id: this.datas[index].question_id
+        //   }
+        // })
       },
     }
   }

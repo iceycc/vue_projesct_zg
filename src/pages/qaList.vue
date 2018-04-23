@@ -25,7 +25,7 @@
 </template>
 
 <script>
-    import {Constants, EventBus, mixins} from '../assets/js/index';
+    import {Constants, EventBus, mixins,API} from '../config/index';
 
     import AppBar from "../components/AppBar.vue";
     import ComponentTemplate from "../components/template";
@@ -38,7 +38,7 @@
             AppBar,
             AutoListView
         },
-        mixins: [mixins.base, mixins.request],
+        mixins: [mixins.base, mixins.wx],
         name: Constants.PageName.qaList,
         data() {
             return {

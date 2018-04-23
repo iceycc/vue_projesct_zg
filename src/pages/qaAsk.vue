@@ -3,10 +3,6 @@
     <!--<app-bar :title="title"></app-bar>-->
     <mu-appbar :title="title" v-if="showAppBar">
       <mu-icon-button icon="arrow_back" slot="left" @click="goBack"></mu-icon-button>
-      <!--<template slot="right" v-if="this.mode !== 'test'">-->
-      <!--&lt;!&ndash;<mu-icon-button v-if="showSearch" icon="search" slot="right" @click="goSearch"></mu-icon-button>&ndash;&gt;-->
-      <!--<slot name="right"></slot>-->
-      <!--</template>-->
     </mu-appbar>
     <div class="form">
       <mu-text-field class="field_title" fullWidth :underlineShow="false" v-model="qa.title" hintText="请输入标题 5~150字"/>
@@ -17,7 +13,7 @@
                      hintText="请描述您的问题（非必填）" fullWidth
                      multiLine :rows="6"/>
 
-      <upload-view @upload="chooseImage" @remove="remove" :localIds="localIds"></upload-view>
+      <upload-view @upload="chooseImage" @remove="remove" :localIds="localIds" v-if="last_num > 0"></upload-view>
 
     </div>
 
@@ -60,13 +56,14 @@
 
 <script>
 
-  import {Constants, EventBus, mixins} from '../assets/js/index';
+  import {Constants, EventBus, mixins, API} from '../config/index';
 
   import AppBar from "../components/AppBar.vue";
   import MuDivider from "../../node_modules/muse-ui/src/divider/divider.vue";
   import VueSliderComponent from "../../node_modules/vue-slider-component/src/vue2-slider.vue";
   import UploadView from "../components/UploadView";
 
+  const img_max = 9
   export default {
     components: {
       UploadView,
@@ -75,7 +72,7 @@
       AppBar,
     },
     // 混入对象
-    mixins: [mixins.base, mixins.request],
+    mixins: [mixins.base, mixins.wx],
     name: Constants.PageName.qaIndex,
     data() {
       return {
@@ -88,7 +85,9 @@
         localIds: [],
         localIdIndex: 0,
         serverIds: [],
-        showMask: false
+        showMask: false,
+        last_num: img_max,
+        current_uid:null,
       };
     },
     computed: {
@@ -108,7 +107,7 @@
             "backgroundImage": 'url(' + require('../assets/img/icon_slider.png') + ')',
             "background-position": "center",
             "background-size": "cover",
-            "background-color":"RGBA(1,1,1,0.1)",
+            "background-color": "RGBA(1,1,1,0.1)",
             "width": size + "px",
             "height": size + "px",
             "top": (height - size) / 2 + "px",
@@ -125,11 +124,11 @@
       }
     },
     created() {
+      this.current_uid = window.localStorage.getItem('uid')
       this.initWX(() => {
         console.log('wx success');
       });
 
-      console.log('ask')
       /**
        * 如果是微信内,则不显示appBar
        * @type {boolean}
@@ -149,11 +148,11 @@
         console.log(!this.showMask)
         console.log(this.title)
         // console.log(this.goBack)
-        if (this.showMask && this.title == '悬赏提问' && this.goBack) {
-          // todo 难题
-          console.log("给浏览器自带按钮返回注册事件")
-          // this.lisBack()
-        }
+        // if (this.showMask && this.title == '悬赏提问' && this.goBack) {
+        //   // todo 难题
+        //   console.log("给浏览器自带按钮返回注册事件")
+        //   // this.lisBack()
+        // }
       }
       if (this.type === 0) {
         this.title = '免费提问';
@@ -163,41 +162,14 @@
 
     },
     methods: {
-      lisBack() {
-        // 监听 浏览器返回
-        pushHistory();
-        var _this = this
-        window.addEventListener("popstate", function (e) {
-          _this.goBack && _this.goBack()
-          console.log('goBack')
-          if (window.event) {
-            //IE中阻止函数器默认动作的方式
-            window.event.returnValue = false;
-          }
-          else {
-            //阻止默认浏览器动作(W3C)
-            e.preventDefault();
-          }
-
-        }, false);
-
-        function pushHistory() {
-          var state = {
-            title: "title",
-            url: "#"
-          };
-          window.history.pushState(state, "title", "#");
-        }
-      },
       goBack() {
-        console.log(11)
-        if (this.title == '免费提问' || this.showMask) {
+
+        if (this.title == '免费提问' || this.showMask || this.title == '提问') {
           this.$router.go(-1)
         }
         if (!this.showMask && this.title == '悬赏提问') {
           this.showMask = true
         }
-
       },
       goDoc() {
         this.$router.push({name: Constants.PageName.qaDoc, params: {type: 3}})
@@ -216,7 +188,7 @@
       submit: function () {
         // 去除前后空格
 
-        if(this.$route.params){
+        if (this.$route.params) {
           var is_wallet = this.$route.params.is_wallet
           var money_sum = this.$route.params.money_sum
         }
@@ -240,7 +212,7 @@
           });
           return;
         }
-        if(money_sum && this.qa.reward >money_sum){
+        if (money_sum && this.qa.reward > money_sum) {
           EventBus.$emit(Constants.EventBus.showToast, {
             message: '您的钱包余额不足'
           });
@@ -250,7 +222,8 @@
           let data = {
             title: this.qa.title,
             content: this.qa.content,
-            attach: this.serverIds
+            attach: this.serverIds,
+            uid:this.current_uid
           };
           if (this.type === 0) {
             data.reward = 0;
@@ -258,50 +231,55 @@
             data.reward = this.qa.reward;
           }
 
-          this.doRequest(Constants.Method.ask_question, data, (result) => {
-            EventBus.$emit(Constants.EventBus.showToast, {
-              message: '发布成功',
-            });
-            this.insert_id = result.insert_id
-            if (data.reward > 0 && !is_wallet) {//
-              // todo 钱包支付 和 微信支付 不同看看啊
-              window.location.href = `http://m.uzhuang.com/wxpay/pay/Weixin/h5_wx/example/jsapi.php?question_id=${result.insert_id}&pay_type=h5_wx&uid=${localStorage.getItem('uid')}`;
-            }
+          API.post(Constants.Method.ask_question, data)
+              .then((result) => {
+                    EventBus.$emit(Constants.EventBus.showToast, {
+                      message: '发布成功',
+                    });
+                    result = result.data
+                    this.insert_id = result.insert_id
+                    if (data.reward > 0 && !is_wallet) {//
+                      // todo 钱包支付 和 微信支付 不同看看啊
+                      window.location.href = `http://m.uzhuang.com/wxpay/pay/Weixin/h5_wx/example/jsapi.php?question_id=${result.insert_id}&pay_type=h5_wx&uid=${localStorage.getItem('uid')}`;
+                    }
 
-            this.qa.title = '';
-            this.qa.content = '';
-            this.qa.reward = 5;
-            this.localIds = [];
-            this.serverIds = [];
-            //  获取问题id
-            setTimeout(() => {
-              this.pushPage({
-                name: Constants.PageName.qaDetail,
-                query: {
-                  id: this.insert_id,
-                  go_home: true
-                }
+                    this.qa.title = '';
+                    this.qa.content = '';
+                    this.qa.reward = 5;
+                    this.localIds = [];
+                    this.serverIds = [];
+                    //  获取问题id
+                    setTimeout(() => {
+                      this.pushPage({
+                        name: Constants.PageName.qaDetail,
+                        query: {
+                          id: this.insert_id,
+                          go_home: true
+                        }
+                      });
+                    }, 2000);
+                  })
+              .catch((err)=>{
+                console.log(err);
               });
-            }, 2000);
-
-          });
         });
       },
       chooseImage() {
         // 获取当前的
         let pic_num = this.localIds.length;
-        if (pic_num > 9) {
+        if (pic_num > img_max) {
           EventBus.$emit(Constants.EventBus.showToast, {
-            message: '只能选择9张图片',
+            message: `只能选择${img_max}张图片`,
           });
           return;
         }
-        let last_num = 9 - pic_num;
+        // 剩余的
+        this.last_num = img_max - pic_num;
         // todo 测试选择图片数量的啊
-        console.log(last_num)
+        console.log(this.last_num)
         let that = this;
         wx.chooseImage({
-          count: last_num, // 默认9
+          count: this.last_num, // 默认9
           sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
           sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
           success: function (res) {
@@ -362,9 +340,13 @@
     beforeRouteLeave(to, from, next) {
 
       // todo 这里不是很合理  离开组件时 添加自己的问题数
-      this.doRequest(Constants.Method.profile, null, (result) => {
-        EventBus.$emit('my_question_num', result.my_question_num)
-      });
+      API.post(Constants.Method.profile, {uid:this.current_uid})
+          .then((result) => {
+            EventBus.$emit('my_question_num', result.my_question_num)
+          })
+          .catch((err)=>{
+            console.log(err);
+          });
       next()
     },
   };

@@ -36,49 +36,54 @@
 </template>
 
 <script>
-  import {Constants, EventBus, mixins} from '../assets/js/index';
+  import {Constants, EventBus, API, mixins} from '../config/index';
+  // import API from '../request/index';
   const defaultStartPage = 1;
   export default {
     name: "auto-list-view2",
     props: ['url'],
-    mixins: [mixins.base, mixins.request],
+    mixins: [mixins.base, mixins.wx],
     data() {
       return {
         // answered_list:[]
-        infoMsg:'正在努力加载数据...',
-        page:defaultStartPage,
-        answered_list:[],
+        infoMsg: '正在努力加载数据...',
+        page: defaultStartPage,
+        answered_list: [],
         loading: false,
         scroller: null,
-        isMore:true,
+        isMore: true,
         refreshing: false,
         trigger: null
       }
     },
     created() {
-      // let url = this.$route.query.url
-      // console.log(this.url)
-      // this.getDate(url)
       this.getDate(this.url)
     },
-    mounted () {
+    mounted() {
       this.trigger = this.$el;
       this.scroller = this.$el
     },
     methods: {
       getDate(url) {
         let data = {
-          page:this.page
+          page: this.page,
+          uid:window.localStorage.getItem('uid')
         }
-        this.doRequest(url, data, (result) => {
-          this.answered_list = this.answered_list.concat(result.question_list)
-          if(result.question_list && result.question_list.length ===0){
-            this.infoMsg = '没有数据......'
-            this.isMore = false
-          }else{
-            this.page = this.page + 1;
-          }
-        })
+        API.get(url, {params: data})
+            .then((result) => {
+              result = result.data;
+              console.log(result)
+              this.answered_list = this.answered_list.concat(result.question_list)
+              if (result.question_list && result.question_list.length === 0) {
+                this.infoMsg = '没有数据......'
+                this.isMore = false
+              } else {
+                this.page = this.page + 1;
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            })
       },
       goQuestionDetail(item) {
         this.pushPage({
@@ -88,15 +93,14 @@
           }
         });
       },
-      loadMore () {
-        // console.log(this.page)
+      loadMore() {
         this.loading = true
         setTimeout(() => {
           this.getDate(this.url);
           this.loading = false
         }, 2000)
       },
-      refresh () {
+      refresh() {
         this.refreshing = true
         setTimeout(() => {
           this.getDate(this.url);

@@ -11,15 +11,15 @@
       <li class="active question-tab-li" @click="toList(1)">未回答（{{unanswer_num}}）</li>
       <li class="question-tab-li" @click="toList(2)">已回答（{{answer_num}}）</li>
     </ul>
-      <auto-list-view2 v-show="isShow" :url="url1" :answered_list="answered_list_1"></auto-list-view2>
+    <auto-list-view2 v-show="isShow" :url="url1" :answered_list="answered_list_1"></auto-list-view2>
 
-      <auto-list-view2 v-show="!isShow" :url="url2" :answered_list="answered_list_2"></auto-list-view2>
+    <auto-list-view2 v-show="!isShow" :url="url2" :answered_list="answered_list_2"></auto-list-view2>
     <!--<router-view</router-view>-->
   </div>
 </template>
 
 <script>
-  import {Constants, EventBus, mixins} from '../assets/js/index';
+  import {Constants, mixins, API,EventBus} from '../config/index';
   import AppBar from "../components/AppBar.vue";
   import ImgWrapper from "../components/ImgWrapper.vue";
   import AutoListView2 from "../components/AutoListView2"
@@ -31,7 +31,7 @@
       ImgWrapper,
       AutoListView2
     },
-    mixins: [mixins.base, mixins.request],
+    mixins: [mixins.base, mixins.wx],
     data() {
       return {
         title: '我得问题 管家版',
@@ -39,13 +39,13 @@
         answered_list: [],
         unanswer_num: 0,
         answer_num: 0,
-        search_word:'',
+        search_word: '',
         answered_list_1: [],
         answered_list_2: [],
-        url:'',
-        isShow:true,
-        url1:'',
-        url2:'',
+        url: '',
+        isShow: true,
+        url1: '',
+        url2: '',
       }
     },
     created() {
@@ -60,13 +60,13 @@
       this.cicikTabs()
     },
     methods: {
-      toList(type){
-        if(type==1){
+      toList(type) {
+        if (type == 1) {
           this.isShow = true
           this.url1 = Constants.Method.get_question_unanswered
-            // this.$router.push({name:'gjlist',query:{url:Constants.Method.get_question_unanswered}})
+          // this.$router.push({name:'gjlist',query:{url:Constants.Method.get_question_unanswered}})
         }
-        if(type==2){
+        if (type == 2) {
           this.isShow = false
           this.url2 = Constants.Method.get_question_answered
           // this.$router.push({name:'gjlist',query:{url:Constants.Method.get_question_answered}})
@@ -75,11 +75,11 @@
 
       //11
       cicikTabs() {
-        var _this=this
+        var _this = this
         let tapslis = document.querySelectorAll('.question-tab-li')
         for (let i = 0; i < tapslis.length; i++) {
           tapslis[i].index = i
-          tapslis[i].addEventListener('click', function(e){
+          tapslis[i].addEventListener('click', function (e) {
             for (var i = 0; i < tapslis.length; i++) {
               tapslis[i].classList.remove('active')
               // _this.getData(i, () => {
@@ -98,42 +98,64 @@
       },
       getData(type, fn) {
         //  未回答
+        let uid = window.localStorage.getItem('uid')
+        let options = {
+          params: {
+            uid: uid
+          }
+        }
         if (type == 1) {
-          this.doRequest(Constants.Method.get_question_unanswered, null, (result) => {
-            // console.log(result)
-            this.unanswer_num = result.total
-            fn && fn()
-          })
+          API.get(Constants.Method.get_question_unanswered, options)
+              .then((result) => {
+                this.unanswer_num = result.data.total
+                fn && fn()
+              })
+              .catch((err) => {
+                console.log(err);
+              })
         }
         // 已回答
         if (type == 2) {
-          this.doRequest(Constants.Method.get_question_answered, null, (result) => {
-            // console.log(result)
-            this.answer_num = result.total
-            fn && fn()
-          })
+          API.get(Constants.Method.get_question_answered, options)
+              .then((result) => {
+                this.answer_num = result.data.total
+                fn && fn()
+              })
+              .catch((err) => {
+                console.log(err);
+              })
         }
       },
-      goSearch(word){
-        word = word.replace(/^\s+|\s+$/g,"")
+      goSearch(word) {
+        console.log(111)
+        word = word.replace(/^\s+|\s+$/g, "")
         if (!word) {
+          console.log('不能为空')
           EventBus.$emit(Constants.EventBus.showToast, {
-            message: '不能为空'
+            message: '搜索内容不能为空'
           });
           return;
         }
-        let data = {
-          key_word:word
+        let options = {
+            params:{
+              key_word: word,
+              uid:window.localStorage.getItem('uid')
+            }
         }
-       this.doRequest(Constants.Method.get_question_unanswered,data,(result)=>{
-         // console.log(result);
-         this.answered_list =result.question_list
-         if(result.total == 0){
-           EventBus.$emit(Constants.EventBus.showToast, {
-             message: '没有找到搜索结果'
-           });
-         }
-       })
+        API.get(Constants.Method.get_question_unanswered, options)
+            .then((result) => {
+              console.log(result);
+              this.answered_list = result.data.question_list
+              if (result.data.total === 0) {
+                console.log('no datas');
+                EventBus.$emit(Constants.EventBus.showToast, {
+                  message: '没有找到搜索结果'
+                });
+              }
+            })
+            .catch((err)=>{
+              console.log(err);
+            })
       }
     }
 
@@ -159,7 +181,7 @@
   .scroll-view {
     height: 100%;
     overflow: scroll;
-    .no-data{
+    .no-data {
       text-align: center;
       margin-top: px2rem(40);
     }
@@ -192,7 +214,7 @@
     height: px2rem(50);
     text-align: center;
     background: #fff;
-    margin:px2rem(10) 0;
+    margin: px2rem(10) 0;
     li {
       display: inline-block;
       box-sizing: border-box;

@@ -37,7 +37,7 @@ export default {
     pagePause() {
       this._pagePause && this._pagePause()
     },
-    // 编程式导航
+    //
     pushPage(action) {
       let rou = {
         name: action.name
@@ -51,6 +51,33 @@ export default {
         rou.params = action.params;
       }
       this.$router.push(rou);
-    }
+    },
+
+    // 监听 监听 浏览器返回
+    lisBack() {
+      pushHistory();
+      var _this = this
+      window.addEventListener("popstate", function (e) {
+        _this.goBack && _this.goBack()
+        console.log('goBack')
+        if (window.event) {
+          //IE中阻止函数器默认动作的方式
+          window.event.returnValue = false;
+        }
+        else {
+          //阻止默认浏览器动作(W3C)
+          e.preventDefault();
+        }
+
+      }, false);
+
+      function pushHistory() {
+        var state = {
+          title: "title",
+          url: "#"
+        };
+        window.history.pushState(state, "title", "#");
+      }
+    },
   }
 }

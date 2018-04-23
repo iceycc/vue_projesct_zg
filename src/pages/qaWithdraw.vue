@@ -19,8 +19,7 @@
 </template>
 
 <script>
-  import {Constants, EventBus, mixins} from '../assets/js/index';
-  import axios from 'axios'
+  import {Constants, EventBus, mixins,API} from '../config/index';
   import AppBar from "../components/AppBar.vue";
   import ComponentTemplate from "../components/template";
   import AutoListView from "../components/AutoListView";
@@ -32,19 +31,21 @@
       AppBar,
       AutoListView
     },
-    mixins: [mixins.base, mixins.request],
+    mixins: [mixins.base, mixins.wx],
     name: Constants.PageName.qaWithdraw,
     data() {
       return {
         data: {
           money: 0,
           username: '',
-          avatar: ''
+          avatar: '',
+          current_uid:null,
         }
       };
     },
     computed: {},
     created() {
+      this.current_uid = window.localStorage.getItem('uid')
       this.getData()
     },
     activated() {
@@ -52,13 +53,21 @@
     },
     methods: {
       getData() {
-        this.doRequest(Constants.Method.wallet, null, (result) => {
-          this.data.money = result.money;
-        });
-        this.doRequest(Constants.Method.profile, null, (result) => {
-          this.data.username = result.username;
-          this.data.avatar = result.avatar;
-        });
+        API.post(Constants.Method.wallet, null)
+            .then((result) => {
+              this.data.money = result.money;
+            })
+            .catch((err)=>{
+              console.log(err);
+            });
+        API.post(Constants.Method.profile, {uid:this.current_uid})
+            .then((result) => {
+              this.data.username = result.username;
+              this.data.avatar = result.avatar;
+            })
+            .catch((err)=>{
+              console.log(err);
+            });
       },
       gotoWithdraw() {
         let data = {
@@ -79,14 +88,9 @@
                   message: '提现失败'
                 });
               }
-            })
-        // this.doRequest('http://m.uzhuang.com/wxpay/sendWallet/payuser.php',data,(result)=>{
-        //   console.log(result);
-        //   EventBus.$emit(Constants.EventBus.showToast, {
-        //     message:result.message
-        //   });
-        // })
-        // window.location.href = 'http://m.uzhuang.com/wxpay/sendWallet/payuser.php?uid=' + localStorage.getItem('uid') + '&amount=' + parseInt(this.data.money);
+            }).catch((err)=>{
+          console.log(err);
+        })
       }
     }
   };

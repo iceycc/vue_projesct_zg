@@ -12,7 +12,6 @@
       <div class="info-text">
         关注优装美家公众号<br>
         第一时间收到回答提醒<br>
-        更多悬赏问题推送, 助你拿取赏金
       </div>
       <!--<mu-flat-button label="确定" slot="actions" primary @click="login = false"/>-->
     </mu-dialog>
@@ -20,11 +19,11 @@
 </template>
 
 <script>
-  import {EventBus, Constants, mixins} from '../assets/js/index';
+  import {EventBus, Constants, mixins} from '../config/index';
 
   export default {
     name: 'app',
-    mixins: [mixins.base, mixins.request],
+    mixins: [mixins.base, mixins.wx],
     data() {
       return {
         // transitionName:'',
@@ -57,7 +56,6 @@
       var muDialogWrapper = document.querySelector('.mu-dialog-wrapper') || document
       var _tar = document.querySelector('.mu-dialog')//获取你的目标元素
       if(muDialogWrapper && _tar){
-
         this.EventUtil().addHandler(muDialogWrapper,'click', (e) => {
           var e = e || window.event;
           var target = e.target || e.srcElement;
@@ -102,7 +100,7 @@
         this.login = true;
         setTimeout(()=>{
           this.login = false;
-        },2000)
+        },2500)
       });
 
     },

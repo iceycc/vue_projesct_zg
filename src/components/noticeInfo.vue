@@ -24,22 +24,23 @@
 </template>
 
 <script>
-  import minixs_request from '../assets/js/mixins/mixins-request';
-
-  import {Constants, EventBus, mixins} from '../assets/js/index';
+  import {Constants, EventBus, mixins,API} from '../config/index';
+  import moment from 'moment'
 
   const defaultStartPage = 1;
 
   export default {
     name: "notice-info",
-    mixins: [mixins.base, mixins.request],
+    mixins: [mixins.base, mixins.wx],
     filters: {
       crtTime: function (val) {
-
         if (val != null) {
+          // let data = new Date()
           var date = new Date(val * 1000);
-          return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' '
-              + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+          // return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' '
+          //     + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+          return moment(date).format("YYYY-MM-DD HH:mm:ss")
+          // return date
         }
       }
     },
@@ -84,6 +85,7 @@
       // 2 获取父组件传递的参数
       // 3 点击进入详情
       goDetail(type, index, q_id, a_id, id) {
+        console.log(5413)
         this.$router.push({
           name: Constants.PageName.qaComment,
           query: {
@@ -149,26 +151,30 @@
         //     });
         //     break;
         // }
-
       },
       getData() {
+        console.log(11)
         var data = {
-          uid: Constants.LocalStorage.uid,
+          uid: window.localStorage.getItem('uid'),
           page: this.page
         }
-        this.doRequest(Constants.Method.get_notice_list, data, (result) => {
-          this.getRedNum(result)
-          console.log(result)
-          this.datas = this.datas.concat(result)
-          //1 如果新请求的数据存在但是result.length为0  取消加载
-          if (result && result.length == 0) {
-            this.isMore = false
-          } else {
-            this.page = this.page + 1
-          }
-        });
+        API.get(Constants.Method.get_notice_list, {params:data})
+            .then((result) => {
+              result = result.data
+              this.getRedNum(result)
+              console.log(result)
+              this.datas = this.datas.concat(result)
+              //1 如果新请求的数据存在但是result.length为0  取消加载
+              if (result && result.length == 0) {
+                this.isMore = false
+              } else {
+                this.page = this.page + 1
+              }
+            })
+            .catch((err)=>{
+              console.log(err);
+            });
       },
-
       getRedNum(result) {
         var count = 0;
         result.forEach(function (item, value) {
@@ -177,10 +183,8 @@
           }
         })
         // console.log(count) 1
-        EventBus.$emit('notice_isread_num',count)
+        EventBus.$emit('notice_isread_num', count)
         // window.localStorage.setItem("notice_isread_num", count)
-
-
       },
       loadMore() {
         console.log(this.isMore)

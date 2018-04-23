@@ -14,7 +14,7 @@
 </template>
 
 <script>
-  import {Constants, EventBus, mixins} from '../assets/js/index';
+  import {Constants, EventBus, mixins, API} from '../config/index';
 
   import UploadView from "../components/UploadView";
   import AppBar from "../components/AppBar.vue";
@@ -24,18 +24,18 @@
       AppBar,
       UploadView
     },
-    mixins: [mixins.base, mixins.request],
+    mixins: [mixins.base, mixins.wx],
     name: Constants.PageName.qaIndex,
     data() {
       return {
-        content:'',
+        content: '',
         qa: {
           content: '',
         },
         localIds: [],
         localIdIndex: 0,
         serverIds: [],
-        is_edit:[]
+        is_edit: []
       };
     },
     created() {
@@ -46,12 +46,10 @@
 
     },
     activated() {
-      // this.qa.content=''
-      console.log('qa created')
+      this.qa.content=''
       this.is_edit = this.$route.params.is_edit || false
-      console.log(this.$route.params.content)
-      if(this.is_edit){
-        this.qa.content=this.$route.params.content
+      if (this.is_edit) {
+        this.qa.content = this.$route.params.content
       }
     },
     methods: {
@@ -66,40 +64,52 @@
           });
           return;
         }
-        if(is_edit){
+        if (is_edit) {
           let data = this.$route.params.data
-          data.content =  this.qa.content
-              // .concat({content:this.qa.content})
-          this.doRequest(Constants.Method.put_answer_edit,data,(result)=>{
-            console.log(result);
-            this.$router.go(-1)
-          })
+          data.content = this.qa.content
+          let options = {
+            data
+          }
+          // .concat({content:this.qa.content})
+          API.post(Constants.Method.put_answer_edit, options.data)
+              .then((result) => {
+                console.log(result);
+                this.$router.go(-1)
+              })
+              .catch((err) => {
+                console.log(err);
+              })
           console.log(data)
 
           return
         }
         let data = {
           q_id: this.$route.query.id,
-          content: this.qa.content
+          content: this.qa.content,
+          uid:window.localStorage.getItem('uid')
         };
 
-        this.doRequest(Constants.Method.answer, data, (result) => {
-          this.qa.content = '';
-          console.log(result)
-          if (result.code && result.code == 1) {
-            // 不用看了这里没作用的 哈哈
-            EventBus.$emit(Constants.EventBus.showToast, {
-              message: '你已经回答过了吆111！'
+        API.post(Constants.Method.answer, data)
+            .then((result) => {
+              this.qa.content = '';
+              console.log(result)
+              if (result.code && result.code == 1) {
+                // 不用看了这里没作用的 哈哈
+                EventBus.$emit(Constants.EventBus.showToast, {
+                  message: '你已经回答过了吆111！'
+                });
+              } else {
+                EventBus.$emit(Constants.EventBus.showToast, {
+                  message: '发布成功'
+                });
+              }
+              setTimeout(() => {
+                this.$router.go(-1);
+              }, 2000);
+            })
+            .catch((err) => {
+              console.log(err);
             });
-          } else {
-            EventBus.$emit(Constants.EventBus.showToast, {
-              message: '发布成功'
-            });
-          }
-          setTimeout(() => {
-            this.$router.go(-1);
-          }, 2000);
-        });
       },
       chooseImage() {
         let that = this;

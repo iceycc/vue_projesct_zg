@@ -46,7 +46,7 @@
 </template>
 
 <script>
-  import {Constants, EventBus, mixins} from '../assets/js/index';
+  import {Constants, EventBus, mixins,API} from '../config/index';
 
   import AppBar from "../components/AppBar.vue";
   import MuDivider from "../../node_modules/muse-ui/src/divider/divider.vue";
@@ -58,7 +58,7 @@
       ImgWrapper,
       AppBar,
     },
-    mixins: [mixins.base, mixins.request],
+    mixins: [mixins.base, mixins.wx],
     name: Constants.PageName.qaUser,
     data() {
       return {
@@ -71,47 +71,57 @@
         my_question:0,
         collect_num:0,
         role:0,
+        current_uid:''
       };
     },
     created() {
+      this.current_uid = window.localStorage.getItem('uid')
       this.role = this.$ls.get(Constants.LocalStorage.role);
-      this.doRequest(Constants.Method.profile, null, (result) => {
-        this.data = result;
-        // console.log(result);
-        this.collect_num = this.data.collect_num
-        this.my_question = this.data.my_question_num
+      API.post(Constants.Method.profile,{uid:this.current_uid})
+          .then((result) => {
+            this.data = result.data;
+            // console.log(result);
+            this.collect_num = this.data.collect_num
+            this.my_question = this.data.my_question_num
 
-        // 有待优化 监听 ask页面我得问题数量的变化 1
-        EventBus.$on('my_question_num',content => {
-          this.my_question = content || this.my_question
-        })
-        // 有待优化 监听 ask页面我得问题数量的变化 1
-        EventBus.$on('collect_num',content => {
-          this.collect_num = content || this.collect_num
-        })
-        window.localStorage.setItem('collect_num',this.collect_num)
-      });
+            // 有待优化 监听 ask页面我得问题数量的变化 1
+            EventBus.$on('my_question_num',content => {
+              this.my_question = content || this.my_question
+            })
+            // 有待优化 监听 ask页面我得问题数量的变化 1
+            EventBus.$on('collect_num',content => {
+              this.collect_num = content || this.collect_num
+            })
+            window.localStorage.setItem('collect_num',this.collect_num)
+          })
+          .catch((err)=>{
+            console.log(err);
+          });
     },
 
 
     activated() {
       console.log("user组件激活")
-      this.doRequest(Constants.Method.profile, null, (result) => {
-        this.data = result;
-        // console.log(result);
-        this.collect_num = this.data.collect_num
-        this.my_question = this.data.my_question_num
+      API.post(Constants.Method.profile, {uid:this.current_uid})
+          .then((result) => {
+            this.data = result.data;
+            // console.log(result);
+            this.collect_num = this.data.collect_num
+            this.my_question = this.data.my_question_num
 
-        // 有待优化 监听 ask页面我得问题数量的变化 1
-        EventBus.$on('my_question_num',content => {
-          this.my_question = content || this.my_question
-        })
-        // 有待优化 监听 ask页面我得问题数量的变化 1
-        EventBus.$on('collect_num',content => {
-          this.collect_num = content || this.collect_num
-        })
-        window.localStorage.setItem('collect_num',this.collect_num)
-      });
+            // 有待优化 监听 ask页面我得问题数量的变化 1
+            EventBus.$on('my_question_num',content => {
+              this.my_question = content || this.my_question
+            })
+            // 有待优化 监听 ask页面我得问题数量的变化 1
+            EventBus.$on('collect_num',content => {
+              this.collect_num = content || this.collect_num
+            })
+            window.localStorage.setItem('collect_num',this.collect_num)
+          })
+          .catch((err)=>{
+            console.log(err);
+          });
     },
     methods: {
       getUserData(){
@@ -134,6 +144,8 @@
         }
       },
       gotoList(type) {
+        console.log(type)
+        console.log(this.role)
         // this.role = 1
         // 普通用户
         if(this.role==0){

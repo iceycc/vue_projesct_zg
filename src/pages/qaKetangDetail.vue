@@ -29,8 +29,7 @@
 </template>
 
 <script>
-  import {Constants, EventBus, mixins} from '../assets/js/index';
-  import axios from 'axios';
+  import {Constants, EventBus, mixins,API} from '../config/index';
   import ComponentTemplate from "../components/template";
   import AutoListView from "../components/AutoListView";
   import ImgWrapper from "../components/ImgWrapper";
@@ -43,7 +42,7 @@
       AutoListView,
       AppBar
     },
-    mixins: [mixins.base, mixins.request],
+    mixins: [mixins.base, mixins.wx],
     name: Constants.PageName.qaknowledge,
     data() {
       return {

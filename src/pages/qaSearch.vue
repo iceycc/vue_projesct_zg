@@ -36,7 +36,7 @@
 </template>
 
 <script>
-  import {Constants, EventBus, mixins} from '../assets/js/index';
+  import {Constants, EventBus, mixins,API} from '../config/index';
 
   import AppBar from "../components/AppBar.vue";
   import ImgWrapper from "../components/ImgWrapper.vue";
@@ -45,7 +45,7 @@
     components: {
       AppBar,
     },
-    mixins: [mixins.base, mixins.request],
+    mixins: [mixins.base, mixins.wx],
     name: Constants.PageName.qaSearch,
     data() {
       return {
@@ -65,9 +65,13 @@
         this.searchwords = [];
       }
 
-      this.doRequest(Constants.Method.hot_search, null, (result) => {
-        this.words = result;
-      });
+      API.get(Constants.Method.hot_search, null)
+          .then((result) => {
+            this.words = result.data;
+          })
+          .catch((err)=>{
+            console.log(err);
+          });
 
     },
     activated() {

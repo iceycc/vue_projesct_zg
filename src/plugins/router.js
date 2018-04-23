@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import Pages from '../pages/index';
-import * as Constants from '../assets/js/Constants';
+import * as Constants from '../config/Constants';
 let AutoListView2 = resolve => require(['../components/AutoListView2'], resolve);
 function addRouter(name, meta) {
   routes.push({
@@ -90,7 +90,7 @@ addRouter(Constants.PageName.qaBindAccount, {keepAlive: false, title: '账号绑
 
 
 let router = new Router({
-  //mode: 'history',
+
   routes
 });
 

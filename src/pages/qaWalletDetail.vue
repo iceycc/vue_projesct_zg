@@ -24,7 +24,7 @@
 </template>
 
 <script>
-  import {Constants, EventBus, mixins} from '../assets/js/index';
+  import {Constants, EventBus, mixins,API} from '../config/index';
 
   import AppBar from "../components/AppBar.vue";
   import ComponentTemplate from "../components/template";
@@ -38,11 +38,12 @@
       AutoListView
     },
 
-    mixins: [mixins.base, mixins.request],
+    mixins: [mixins.base, mixins.wx],
     name: Constants.PageName.qaWalletDetail,
     data() {
       return {
         url: '',
+        current_uid:''
         // 类型 0 提现减 1 付费提问减  2 问题被采纳加  filter不能使用data中的数据
         // way_data:{
         //   tixian: '0',
@@ -63,6 +64,8 @@
           case '3':
             return '赏金';
             break;
+          default:
+            return ''
         }
       },
       add_sub:function(val){
@@ -76,6 +79,8 @@
           case '3':
             return '+';
             break;
+          default:
+            return ''
         }
       }.bind(this),
       isActive:function (val) {
@@ -90,15 +95,21 @@
           case '3':
             return 'active';
             break;
+          default:
+            return ''
         }
       }.bind(this)
     },
     computed: {},
     created() {
-
-      this.doRequest(Constants.Method.wallet, null, (result) => {
-        console.log(result);
-      });
+      this.current_uid = window.localStorage.getItem('uid')
+      API.post(Constants.Method.wallet, {uid:this.current_uid})
+          .then((result) => {
+            console.log(result);
+          })
+          .catch((err)=>{
+            console.log(err);
+          });
 
       this.getList();
     },

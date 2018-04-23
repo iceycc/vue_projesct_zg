@@ -105,6 +105,7 @@
                         @click.stop="editHandle(item.id,item.uid)"
                         style="border: none;background: transparent;outline: none"
                         :disabled="disabled"
+                        v-if="current_uid == item.uid"
                 >
                   <img-wrapper :url="icon_edit"
                                classStyle="icon"></img-wrapper>
@@ -191,7 +192,8 @@
 </template>
 
 <script>
-  import {Constants, EventBus, mixins, util} from '../assets/js/index';
+  // import {Constants, mixins, util} from '../assets/js/index';
+  import {EventBus, API,Constants,mixins,util} from '../config/index'
 
   import ComponentTemplate from "../components/template";
   import AutoListView from "../components/AutoListView";
@@ -207,7 +209,7 @@
       AppBar,
       AutoListView
     },
-    mixins: [mixins.base, mixins.request, util],
+    mixins: [mixins.base, mixins.wx, util],
     name: Constants.PageName.qaDetail,
     filters: {
       my_time: function (value) {
@@ -309,7 +311,7 @@
         }
       },
       goGujian(uid, role) {
-        let uid_this = uid || window.localStorage.getItem('uid')
+        let uid_this = uid || this.current_uid
         let role_this = role || window.localStorage.getItem('role')
         if (role_this == 1) {
           window.location.href = `http://m.uzhuang.com/mobile-m_butler_details.html?id=M%E7%AB%99-%E5%B7%A5%E5%9C%B0%E7%9B%B4%E6%92%AD&butlerid=${uid_this}`
@@ -354,17 +356,23 @@
       },
       deleteHandle(index) {
 
-        let data = {
-          // u_id:window.localStorage.getItem('uid'),
-          aid: this.answer_list[index].id
+        let options = {
+          params: {
+            uid: this.current_uid,
+            aid: this.answer_list[index].id
+          }
         }
-        this.doRequest(Constants.Method.del_answer, data, (result) => {
-          this.getData()
-          this.dialog2 = false
-          EventBus.$emit(Constants.EventBus.showToast, {
-            message: "删除成功"
-          });
-        })
+        API.post(Constants.Method.del_answer, options.params)
+            .then((result) => {
+              this.getData()
+              this.dialog2 = false
+              EventBus.$emit(Constants.EventBus.showToast, {
+                message: "删除成功"
+              });
+            })
+            .catch((err) => {
+              console.log(err);
+            })
       },
       webpage() {
         this.$router.push({name: Constants.PageName.qaDoc, params: {type: 2}})
@@ -388,43 +396,50 @@
       },
 
       getData() {
-        let data = {
-          q_id: this.$route.query.id,
-          uid: this.$ls.get(Constants.LocalStorage.uid)
+        let options = {
+          params:{
+            q_id: this.$route.query.id,
+            uid: this.current_uid
+          }
         };
 
-        this.doRequest(Constants.Method.get_question_list, data, (result) => {
-          this.question = result.question;
-          // 获取当前问题采纳的回答的id
-          let thisId = this.question.q_adoption
-          // 倒叙
-          this.answer_list = result.answer_list
-          // this.jsonSort()
-          // 采纳的部分：
-          let getIndex = function (arr, key) {
-            let index = -1;
-            arr.every(function (vale, i) {
-              if (vale['id'] === key) {
-                index = i
-              } else {
-                index = -1
+        API.get(Constants.Method.get_question_list, options)
+            .then((result) => {
+              result = result.data
+              this.question = result.question;
+              // 获取当前问题采纳的回答的id
+              let thisId = this.question.q_adoption
+              // 倒叙
+              this.answer_list = result.answer_list
+              // this.jsonSort()
+              // 采纳的部分：
+              let getIndex = function (arr, key) {
+                let index = -1;
+                arr.every(function (vale, i) {
+                  if (vale['id'] === key) {
+                    index = i
+                  } else {
+                    index = -1
+                  }
+                })
+                return index
               }
-            })
-            return index
-          }
-          let i = getIndex(this.answer_list, thisId)
-          let caiNa = ''
-          if (i !== -1) {
-            caiNa = this.answer_list.splice(i, 1)[0]
-          }
-          // 没有采纳的部分 按点赞排序
-          this.answer_list = util.jsonSort(this.answer_list, 'like_num', true);
-          if (caiNa) {
-            this.answer_list.unshift(caiNa)
-          }
-          this.isOwner = (this.question.uid === this.$ls.get(Constants.LocalStorage.uid));
+              let i = getIndex(this.answer_list, thisId)
+              let caiNa = ''
+              if (i !== -1) {
+                caiNa = this.answer_list.splice(i, 1)[0]
+              }
+              // 没有采纳的部分 按点赞排序
+              this.answer_list = util.jsonSort(this.answer_list, 'like_num', true);
+              if (caiNa) {
+                this.answer_list.unshift(caiNa)
+              }
+              this.isOwner = (this.question.uid === this.$ls.get(Constants.LocalStorage.uid));
 
-        });
+            })
+            .catch((err) => {
+              console.log(err);
+            });
       },
       gotoResponse() {
         this.pushPage({
@@ -480,27 +495,30 @@
         }
       },
       editHandle(aid, uid) {
-        let data = {
-          a_id: aid,
-          uid: uid
+        let options = {
+          params:{
+            a_id: aid,
+            uid: uid
+          }
         }
-        this.doRequest(Constants.Method.get_answer_edit, data, (result) => {
-          // console.log(result);
-          console.log(11)
-          this.$router.push({
-            name:Constants.PageName.qaResponse,
-            params:{
-              content:result.content,
-              is_edit:true,
-              data:data
-            }
-          })
-        })
-        // console.log(11)
-        // params: {content: result.content}
-        // this.$router.push(
-        //     {name: Constants.Method.qaResponse}
-        // )
+        API.get(Constants.Method.get_answer_edit,options)
+            .then((result) => {
+              console.log('edit success')
+              if(result.code ===0 && result.message == 'Success'){
+                this.$router.push({
+                  name: Constants.PageName.qaResponse,
+                  params: {
+                    content: result.data.content,
+                    is_edit: true,
+                    data: options.params
+                  }
+                })
+              }
+            })
+            .catch((err) => {
+              console.log('edit err');
+              console.log(err);
+            })
       },
       like(index, liked) {
         if (timer) {
@@ -508,27 +526,38 @@
         }
         this.disabled = true
         let timer;
-        let data = {
-          q_id: this.$route.query.id,
-          a_id: this.answer_list[index].id,
-          c_id: 0
+        let options = {
+         params:{
+           uid:this.current_uid,
+           q_id: this.$route.query.id,
+           a_id: this.answer_list[index].id,
+           c_id: 0
+         }
         };
         switch (liked) {
           case 1:
-            this.doRequest(Constants.Method.un_like, data, (result) => {
-              this.getData();
-              timer = setTimeout(() => {
-                this.disabled = false
-              }, 1000)
-            })
+            API.get(Constants.Method.un_like, options)
+                .then((result) => {
+                  this.getData();
+                  timer = setTimeout(() => {
+                    this.disabled = false
+                  }, 1000)
+                })
+                .catch((err)=>{
+                  console.log(err);
+                })
             break;
           case 0:
-            this.doRequest(Constants.Method.like, data, (result) => {
-              this.getData();
-              timer = setTimeout(() => {
-                this.disabled = false
-              }, 1000)
-            })
+            API.get(Constants.Method.like, options)
+                .then((result) => {
+                  this.getData();
+                  timer = setTimeout(() => {
+                    this.disabled = false
+                  }, 1000)
+                })
+                .catch((err)=>{
+                  console.log(err);
+                })
             break;
           default:
             console.log('操作太快')
@@ -571,35 +600,50 @@
 
         var count = window.localStorage.getItem('collect_num')
         if (this.question.is_collect) {
-          let data = {
-            q_id: this.$route.query.id,
+          let options = {
+            params:{
+              q_id: this.$route.query.id,
+              uid:this.current_uid
+            }
           };
-          this.doRequest(Constants.Method.un_favourites, data, (result) => {
-            count--;
-            EventBus.$emit('collect_num', count)
-            this.getData();
-            EventBus.$emit(Constants.EventBus.showToast, {
-              message: '取消收藏'
-            });
-            timer = setTimeout(() => {
-              this.disabled = false
-            }, 1000)
-          });
+          API.get(Constants.Method.un_favourites, options)
+              .then((result) => {
+                count--;
+                EventBus.$emit('collect_num', count)
+                this.getData();
+                EventBus.$emit(Constants.EventBus.showToast, {
+                  message: '取消收藏'
+                });
+                timer = setTimeout(() => {
+                  this.disabled = false
+                }, 1000)
+              })
+              .catch((err)=>{
+                console.log(err);
+              });
         } else {
-          let data = {
-            q_id: this.$route.query.id,
+          let options = {
+           params:{
+             q_id: this.$route.query.id,
+             uid:this.current_uid
+           }
           };
-          this.doRequest(Constants.Method.favourites, data, (result) => {
-            count++;
-            EventBus.$emit('collect_num', count)
-            this.getData();
-            EventBus.$emit(Constants.EventBus.showToast, {
-              message: '收藏成功'
-            });
-            timer = setTimeout(() => {
-              this.disabled = false
-            }, 2000)
-          });
+          API.get(Constants.Method.favourites,options)
+              .then((result) => {
+                count++;
+                EventBus.$emit('collect_num', count)
+                console.log('收藏成功')
+                this.getData();
+                EventBus.$emit(Constants.EventBus.showToast, {
+                  message: '收藏成功'
+                });
+                timer = setTimeout(() => {
+                  this.disabled = false
+                }, 2000)
+              })
+              .catch((err)=>{
+                console.log(err);
+              });
         }
 
 
@@ -607,18 +651,26 @@
       accept() {
         console.log('采纳')
         let index = this.q_adoption_index
-        let data = {
-          q_id: this.$route.query.id,
-          a_id: this.answer_list[index].id,
+        let options = {
+          params:{
+            q_id: this.$route.query.id,
+            a_id: this.answer_list[index].id,
+            uid:this.current_uid
+          }
+
         };
 
-        this.doRequest(Constants.Method.adoption, data, (result) => {
-          this.dialog = false
-          EventBus.$emit(Constants.EventBus.showToast, {
-            message: '已采纳'
-          });
-          this.getData();
-        });
+        API.get(Constants.Method.adoption, options)
+            .then((result) => {
+              this.dialog = false
+              EventBus.$emit(Constants.EventBus.showToast, {
+                message: '已采纳'
+              });
+              this.getData();
+            })
+            .catch((err)=>{
+              console.log(err);
+            });
       },
       onItemClick(index) {
         let data = {

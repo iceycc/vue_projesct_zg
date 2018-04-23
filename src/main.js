@@ -21,6 +21,10 @@ import {} from './assets/js/mixins/mixins-request';
 //无使用,仅防止重复打包
 import {} from './assets/js/request/axiosInstance';
 
+// import moment from 'moment'
+// Vue.prototype.$moment = moment
+
+
 // import VueTouch from 'vue-touch';
 // Vue.use(VueTouch,{name: 'v-touch'})
 /*Vue.config.productionTip = true;

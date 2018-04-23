@@ -17,8 +17,7 @@
 </template>
 
 <script>
-  import {Constants, EventBus, mixins} from '../assets/js/index';
-
+  import {Constants, EventBus, mixins,API} from '../config/index';
   import ComponentTemplate from "../components/template";
   import AutoListView from "../components/AutoListView";
 
@@ -27,7 +26,7 @@
       AutoListView,
       ComponentTemplate
     },
-    mixins: [mixins.base, mixins.request],
+    mixins: [mixins.base, mixins.wx],
     name: Constants.PageName.qaLogin,
     data() {
       return {
@@ -43,12 +42,10 @@
         this.gotoMain(id);
       }
       // 用于测试！！
-      // else {this.gotoMain(26270);} // 管家aaa
-      // else {this.gotoMain(26319);} // 假如时光倒流
-      // else {this.gotoMain(49766 );} //晓雅
-      // else {this.gotoMain(25416);} //
-
-
+      else {this.gotoMain(26319);} // 假如时光倒流
+      // else {this.gotoMain(25416);} //  176管家
+      // else {this.gotoMain(25416);} //  176管家
+      // else {this.gotoMain(25416);} //  176管家
     },
 
     methods: {
@@ -59,7 +56,6 @@
         let response_type = '&response_type=code';
         let scope = '&scope=snsapi_userinfo';
         let wechat_redirect = '#wechat_redirect';
-
           window.location.href = url + appid + redirect_uri + response_type + scope + wechat_redirect;
         // this.$router.replace({
         //   name: Constants.PageName.qaIndex,
@@ -70,20 +66,23 @@
       },
       gotoMain(uid) {
         this.$ls.remove(Constants.LocalStorage.uid);
-        this.doRequest(Constants.Method.profile, {
-          uid: uid
-        }, (result) => {
-          this.data = result;
-          // avatar collect_num    my_question_num  red_dot  username
-          this.$ls.set(Constants.LocalStorage.uid, uid);
-          this.$ls.set(Constants.LocalStorage.role, result.role);
-          this.$router.replace({
-            name: Constants.PageName.qaIndex,
-            params: {
-              isLogin: true
-            }
-          });
-        });
+        API.post(Constants.Method.profile, {uid: uid})
+            .then((result) => {
+              this.data = result.data;
+              console.log(this.data)
+              // avatar collect_num    my_question_num  red_dot  username
+              this.$ls.set(Constants.LocalStorage.uid, uid);
+              this.$ls.set(Constants.LocalStorage.role, this.data.role);
+              this.$router.replace({
+                name: Constants.PageName.qaIndex,
+                params: {
+                  isLogin: true
+                }
+              });
+            })
+            .catch((err)=>{
+              console.log(err);
+            });
       }
     }
   };

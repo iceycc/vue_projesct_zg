@@ -64,7 +64,8 @@
 </template>
 
 <script>
-  import {Constants, EventBus, mixins} from '../assets/js/index';
+  //
+  import {Constants, EventBus, mixins} from '../config/index';
   import ImgWrapper from "../components/ImgWrapper.vue";
 
   export default {
@@ -104,14 +105,15 @@
     },
 
     created() {
-      var _that = this
-      EventBus.$on('showTotal', (value)=> {
-        if(value){
-          _that.handleChange(2)
-        }else{
-          this.showAsk = !this.showAsk;
-        }
-      })
+      // var _that = this
+      // EventBus.$on('showTotal', (value)=> {
+      //   if(value){
+      //     _that.handleChange(2)
+      //   }else{
+      //     this.showAsk = !this.showAsk;
+      //   }
+      // })
+
       this.role = window.localStorage.getItem(Constants.LocalStorage.role)
       if(this.role==1){this.ask_text='提问'}
       this.to_doc ={name:Constants.PageName.qaDoc,params:{type:2}}
@@ -142,16 +144,7 @@
         this.$router.push({name:Constants.PageName.qaDoc,params:{type:2}})
       },
       getUserData(to,from){
-        // if(to.mame == 'qaindex'){
-        //   document.title = '问答';
-        // }
         this.showAsk = false
-        // this.doRequest(Constants.Method.profile, null, (result) => {
-        //   this.collect_num = this.collect_num || this.data.collect_num
-        //
-        //   window.localStorage.setItem('collect_num',this.collect_num)
-        //
-        // });
       },
       isReadShow() {
         EventBus.$on('notice_isread_num',(count)=>{
@@ -177,7 +170,6 @@
         });
       },
       handleChange(value) {
-        console.log('value:2')
         if (value == 2) {
           if(this.role==0){
             this.toggleAsk();

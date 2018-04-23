@@ -36,8 +36,7 @@
 </template>
 
 <script>
-  import {Constants, EventBus, mixins} from '../assets/js/index';
-  import axios from 'axios';
+  import {Constants, EventBus, mixins,API} from '../config/index';
   import ComponentTemplate from "../components/template";
   import AutoListView from "../components/AutoListView";
   import ImgWrapper from "../components/ImgWrapper";
@@ -47,7 +46,7 @@
       ImgWrapper,
       AutoListView
     },
-    mixins: [mixins.base, mixins.request],
+    mixins: [mixins.base, mixins.wx],
     name: Constants.PageName.qaknowledge,
     data() {
       return {
@@ -113,11 +112,14 @@
         this.loading = true
         this.picsTitle = picsTitle
         // todo axios
-        axios.get(url,{params:{type : type}})
+        API.get(url,{params:{type : type}})
           .then((res)=>{
             let urls = res.data.data
             this.pics = urls
           })
+            .catch((err)=>{
+              console.log(err);
+            })
       },
       selectHotWord(index) {
         this.category_index = index;

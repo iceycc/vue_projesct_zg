@@ -17,7 +17,7 @@
 </template>
 
 <script>
-  import {Constants, EventBus, mixins} from '../assets/js/index';
+  import {Constants, EventBus, mixins,API} from '../config/index';
 
   import AppBar from "../components/AppBar.vue";
   import ComponentTemplate from "../components/template";
@@ -30,7 +30,7 @@
       AppBar,
       AutoListView
     },
-    mixins: [mixins.base, mixins.request],
+    mixins: [mixins.base, mixins.wx],
     name: Constants.PageName.qaWallet,
     data() {
       return {
@@ -43,10 +43,14 @@
     created() {
       // console.log(1)
       this.role = window.localStorage.getItem('role')
-      this.doRequest(Constants.Method.wallet, null, (result) => {
-        this.result = result;
-        this.money = result.money
-      });
+      API.post(Constants.Method.wallet, {uid:window.localStorage.getItem('uid')})
+          .then((result) => {
+            this.result = result.data;
+            this.money = result.data.money
+          })
+          .catch((err)=>{
+            console.log(err);
+          });
     },
     methods: {
       gotoWalletDetail() {

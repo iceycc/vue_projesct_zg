@@ -29,7 +29,7 @@
         </div>
       </div>
     </div>
-    <div class="empty-view" v-if="data.length <= 0 && !loading">
+    <div class="empty-view" v-if="data.length === 0 && !loading">
       <div class="empty-message">{{emptyMsg}}</div>
     </div>
     <!--<mu-infinite-scroll :scroller="scroller" :loading="loading" @load="loadMore" v-if="isMore"/>-->
@@ -39,7 +39,7 @@
 </template>
 
 <script>
-  import minixs_request from '../assets/js/mixins/mixins-request';
+  import {API,mixins} from '../config/index';
   import {EventBus} from "../assets/js/index";
   // import minixs_request from '../assets/js/mixins/mixins-request';
 
@@ -47,7 +47,7 @@
 
   export default {
     name: 'AutoListView',
-    mixins: [minixs_request],
+    mixins: [mixins.wx],
     props: {
       url: {
         type: String,
@@ -76,7 +76,7 @@
         default: true
       },
       isTab: {
-        type: [String, Number, Boolean,Function,Object,Array,Symbol],
+        type: [String, Number, Boolean, Function, Object, Array, Symbol],
         default: false
       }
       // emptyMsg: {
@@ -130,8 +130,8 @@
     created() {
       if (this.flag) {
         this.getdata();
-      }
 
+      }
     },
     methods: {
       onItemClick(index) {
@@ -148,8 +148,11 @@
       },
       getPicsData() {
         this.loading = true;
-        this.doRequest(this.url, null, (result) => {
-
+        API.post(this.url, null)
+            .then((result) => {
+              console.log(result);
+            }).catch((err)=>{
+          console.log(err);
         })
       },
       getdata() {
@@ -159,40 +162,39 @@
           this.init()
         }
         let param = {
-          page: this.page
+          page: this.page,
+          uid:window.localStorage.getItem('uid')
         };
         if (this.$parent.handleParam) {
           param = Object.assign(this.$parent.handleParam(), param);
         }
-
-        this.doRequest(this.url, param,
-            (result) => {
+        API.get(this.url, {params: param})
+            .then((result) => {
+              console.log('autoListView result');
+              console.log(result);
+              result = result.data
               if ('handleResult' in this.$parent) {
                 result = this.$parent.handleResult(result);
               }
               EventBus.$emit('isTab')
-
               this.data = this.data.concat(result);
               // console.log('==================列表=========')
               console.log(this.url)
-              console.log(result)
+              console.log(this.data)
               // console.log('============================')
-              if (result && result.length === 0) {
+              if (result.length === 0) {
                 this.isMore = false;
                 this.emptyMsg = '没有数据'
               } else {
                 this.page = this.page + 1;
               }
-
               if (!this.isNeedLoadMore) {
                 this.isMore = false;
               }
-            }, null, () => {
               this.loading = false;
-            }, () => {
-              console.log('fail')
-            }, () => {
-              console.log('finish')
+            })
+            .catch((err) => {
+              this.loading = false;
             });
 
       },

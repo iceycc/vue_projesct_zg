@@ -78,8 +78,8 @@
 </template>
 
 <script>
-  import {Constants, EventBus, mixins} from '../assets/js/index';
-  import ComponentTemplate from "../components/template";
+  // todo 001 重构request 和 mixins 函数
+  import {Constants, EventBus,mixins,API} from '../config/index';
   import AutoListView from "../components/AutoListView";
   import ImgWrapper from "../components/ImgWrapper";
 
@@ -88,7 +88,7 @@
       ImgWrapper,
       AutoListView,
     },
-    mixins: [mixins.base, mixins.request],
+    mixins: [mixins.base, mixins.wx],
     name: Constants.PageName.qaIndex,
     data() {
       return {
@@ -114,33 +114,29 @@
         return this.$refs.mySwiper.swiper
       }
     },
-    computed: {},
     created() {
-      // let id = this.$route.query.id;
-      // console.log("=====index=======");
-      // console.log(id);
-      // console.log("===============");
-      // if(id != null){
-      //   this.$router.replace({
-      //     name: Constants.PageName.qaLogin,
-      //     params: {
-      //       isLogin: false
-      //     }
-      //   });
-      // }
-      this.doRequest(Constants.Method.get_banner_list, null, (result) => {
-        this.banners = result;
+      API.get(Constants.Method.get_banner_list, {data: null})
+          .then((result) => {
+            this.banners = result.data;
+          })
+          .catch((err) => {
+            console.log(err);
+          })
 
-      });
+      API.get(Constants.Method.get_hot_words, {})
+          .then((result) => {
+            console.log(result);
+            this.hot_words = this.hot_words.concat(result.data);
+              this.getList();
 
-      this.doRequest(Constants.Method.get_hot_words, null, (result) => {
-        this.hot_words = this.hot_words.concat(result);
-        // console.log(this.hot_words)
-        this.getList();
-      });
+          })
+          .catch((err) => {
+            console.log(err);
+          })
+
     },
-    updated(){
-      EventBus.$on('isTab',()=>{
+    updated() {
+      EventBus.$on('isTab', () => {
         this.isTab = false
       })
     },
@@ -211,6 +207,7 @@
     padding-bottom: px2rem(70);
     &.isIndex0 {
       padding-bottom: px2rem(0);
+      max-height: 100% !important;
     }
   }
 
