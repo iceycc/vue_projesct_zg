@@ -13,13 +13,13 @@ import {} from './plugins/loadComponent';
 import {} from './plugins/localstorage';
 
 //  混合器
-
-import {} from './assets/js/mixins/mixins-base';
-import {} from './assets/js/mixins/mixins-request';
+//
+import {} from './config/mixins/mixins-base';
+import {} from './config/mixins/mixins-wx';
 
 //拦截器
 //无使用,仅防止重复打包
-import {} from './assets/js/request/axiosInstance';
+import {} from './request/requestInstance';
 
 // import moment from 'moment'
 // Vue.prototype.$moment = moment

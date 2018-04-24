@@ -66,7 +66,7 @@
 <script>
   //
   import {Constants, EventBus, mixins} from '../config/index';
-  import ImgWrapper from "../components/ImgWrapper.vue";
+  import ImgWrapper from "../components/commons/ImgWrapper.vue";
 
   export default {
     components: {

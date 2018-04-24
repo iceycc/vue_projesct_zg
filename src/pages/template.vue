@@ -11,17 +11,17 @@
 </template>
 
 <script>
-    import {Constants, EventBus, mixins} from '../assets/js/index';
+    import {Constants, EventBus, mixins} from '../config/index';
 
     import ComponentTemplate from "../components/template";
-    import AutoListView from "../components/AutoListView";
+    import AutoListView from "../components/commons/AutoListView";
 
     export default {
         components: {
             AutoListView,
             ComponentTemplate
         },
-        mixins: [mixins.base, mixins.request],
+        mixins: [mixins.base, mixins.wx],
         name: 'about',
         data() {
             return {

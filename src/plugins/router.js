@@ -2,7 +2,8 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Pages from '../pages/index';
 import * as Constants from '../config/Constants';
-let AutoListView2 = resolve => require(['../components/AutoListView2'], resolve);
+let AutoListView2 = resolve => require(['../components/commons/AutoListView2'], resolve);
+// let UserQuestionList = resolve => require(['../components/UserQuestionList'], resolve);
 function addRouter(name, meta) {
   routes.push({
     path: '/' + name.replace(/-/g, '/'),
@@ -54,17 +55,17 @@ let routes = [
     ]
   },
   {
-    path: '/' + Constants.PageName.qaGuanJiaList,
-    name: Constants.PageName.qaGuanJiaList,
-    component: Pages[Constants.PageName.qaGuanJiaList],
+    path: '/' + Constants.PageName.qaQuestion,
+    name: Constants.PageName.qaQuestion,
+    component: Pages[Constants.PageName.qaQuestion],
     meta: {keepAlive: false, title: '我的问题'},
-    children:[
-      {
-        path:'gjlist',
-        name:'gjlist',
-        component:AutoListView2
-      }
-    ]
+    // children:[
+    //   {
+    //     path:Constants.PageName.qaQuestionList,
+    //     name:Constants.PageName.qaQuestionList,
+    //     component:Constants.PageName.qaQuestionList
+    //   }
+    // ]
   }
 ];
 

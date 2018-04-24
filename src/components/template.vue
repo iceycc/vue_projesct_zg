@@ -3,7 +3,7 @@
 </template>
 
 <script>
-    import {EventBus, Constants} from '../assets/js/index'
+    import {EventBus, Constants} from '../config/index'
 
     export default {
         name: 'component-template',

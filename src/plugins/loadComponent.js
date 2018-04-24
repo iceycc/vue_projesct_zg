@@ -5,9 +5,9 @@ import Vue from 'vue';
  *  通用组件引用,以免懒加载重复打包.
  */
 import template from "../components/template.vue";
-import AutoListView from "../components/AutoListView.vue";
-import uzLable from "../components/uzLable.vue";
-import ImgWrapper from "../components/ImgWrapper.vue";
+import AutoListView from "../components/commons/AutoListView.vue";
+import uzLable from "../components/commons/uzLable.vue";
+import ImgWrapper from "../components/commons/ImgWrapper.vue";
 
 Vue.component(template.name, template);
 Vue.component(AutoListView.name, AutoListView);

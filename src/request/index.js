@@ -1,8 +1,9 @@
 
-import axios from '../assets/js/request/axiosInstance';
+import axios from './requestInstance';
+// import axios from '../assets/js/request/axiosInstance';
 // import axios from 'axios';
 
-let API = axios
+const API = axios
 
 export default API;
 

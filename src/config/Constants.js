@@ -78,7 +78,9 @@ export const Method = {
       // 获取编辑 回答 内容
       get_answer_edit: BASE_URL + "f=question_list&v=get_answer_edit",
       // 提交编辑
-      put_answer_edit: BASE_URL + "f=operation&v=edit_answer"
+      put_answer_edit: BASE_URL + "f=operation&v=edit_answer",
+
+  // get_question_answered: BASE_URL + "f=question_list&v=get_question_answered"
 
 
     }
@@ -103,12 +105,12 @@ export const PageName = {
   qaAsk: 'qaask',
   qaResponse: 'qaresponse',
   qaNotice: 'qanotice',
-  qaGuanJiaList: 'qaguanjialist',
+  qaQuestion: 'qaquestion',
   qaKetangDetail: 'qaketangdetail',
   qaDoc: 'qadoc',
-  qaBindAccount: 'qabindaccount'
+  qaBindAccount: 'qabindaccount',
+  qaQuestionList: 'qaquestionlist',
 };
-
 //
 export const LocalStorage = {
   test: 'test',

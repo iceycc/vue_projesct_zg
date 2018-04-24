@@ -118,18 +118,27 @@
           <p>3) 优秀的管家团队参与回答。</p>
         </div>
         <div class="tiwenxuzhi" v-if="view==3">
-          用户将获得至少一个金牌管家回答，提问后2小时之内必答，优秀的管家团队参与回答。<br>
+          <p>1、你的问题将至少获得一位金牌装修管家回答</p>
+          <img src="../assets/img/qk(1).png" alt="" class="xuzhi_img">
+          <p>2、你的问题在2小时内必会获得回答</p>
+          <img src="../assets/img/qk(2).png" alt="" class="xuzhi_img">
+          <p>3、你的问题同时会推送到更多优秀的管家团队,获得
+            更多专业解答</p>
+          <img src="../assets/img/qk(3).png" alt="" class="xuzhi_img">
+          <p>4、同时，你的问题也有可能获得其他装修达人的解答</p>
+          <img src="../assets/img/qk(4).png" alt="" class="xuzhi_img">
+          <p>5、悬赏提问请根据你的自由意愿选择赏金金额（1-10元）
+            赏金最终会奖励给你采纳的回答者，如你未选择采纳，
+            赏金将悬赏给被点赞数最高或最“早”回答的回答者</p>
+          <img src="../assets/img/qk(5).png" alt="" class="xuzhi_img">
 
-          同时可能会收到其他用户的主观回答（诸葛装修对普通用户的答案内容不负责）。<br>
-
-          悬赏提问会扣除相应的赏金（金额由用户自行选择，区间为1-10元钱）。<br>
         </div>
     </mu-list>
   </div>
 </template>
 
 <script>
-  import AppBar from '../components/AppBar.vue'
+  import AppBar from '../components/commons/AppBar.vue'
   export default {
     name: "qa-user-agreement",
     components:{
@@ -174,7 +183,11 @@
   .text-content{
     padding: px2rem(10) px2rem(20) px2rem(80);
     height: 100%;
+    width: 100%;
     overflow: scroll;
   }
+.xuzhi_img{
+  width: px2rem(330);
+}
 
 </style>
