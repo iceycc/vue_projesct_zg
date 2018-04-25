@@ -218,7 +218,7 @@
   .mu-bottom-nav{
     position: fixed;
     bottom: 0;
-
+    border-top:1px solid #ccc
   }
   .sub-page {
     flex-grow: 1;
@@ -240,6 +240,7 @@
     padding-top:($ask_with - 40px)/2;
     background: #fff;
     border-radius:$ask_with/2;
+    border-top:1px solid #ccc;
     .askicon {
       width: 40px;
       height: 40px;

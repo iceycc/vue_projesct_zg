@@ -122,7 +122,7 @@
         this.flag = this.url;
       },
       onItemClick(item) {
-        if(item.way == 0){
+        if(item.way == 0 || item.way == 1){
           return false
         }
         this.pushPage({

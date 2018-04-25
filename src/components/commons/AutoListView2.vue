@@ -23,13 +23,13 @@
         <div class="answer-info">
           <div class="question-notice" v-if="item.answer_num == 0 && item.q_reward > 0">还没有对该问题进行回答,赶紧回答领取赏金吧!</div>
           <div class="question-notice" v-if="item.answer_num == 0 && item.q_reward == 0">亲，虽然我不是付费问题，可是我一直在等你答复哦！</div>
-            我是回答的内容
+            {{item.answer[0].content}}
         </div>
         <!---->
         <div class="view-footer">
+          <div>{{item.answer[0].laud}}点赞</div>
           <div>{{item.pv}}浏览</div>
-          <div>{{item.answer_num}}条回答</div>
-          <div>{{item.qtime}}</div>
+          <div>{{item.answer[0].atime}}</div>
         </div>
         <div class="card-tags" v-if="item.label.length > 0">
           <div class="tag" v-for="value,index in item.label" :key="index" v-if="value !== '' ">{{value}}</div>
@@ -120,10 +120,12 @@
             })
       },
       goQuestionDetail(item) {
+        console.log('item.id')
+        console.log(item)
         this.pushPage({
           name: Constants.PageName.qaDetail,
           query: {
-            id: item.id
+            id: item.answer[0].qid
           }
         });
       },
@@ -246,8 +248,8 @@
     }
     .title {
       font-size: px2rem(16);
-      font-weight: bold;
-      color: #666;
+      color:#666;
+      font-weight: 600;
     }
     .question-content {
       font-size: px2rem(14);

@@ -54,10 +54,11 @@
   .role {
     vertical-align: top;
     font-size: px2rem(12);
-    padding: px2rem(1) px2rem(3);
+    padding: px2rem(1) px2rem(5);
     border-radius: px2rem(10);
     border: px2rem(1) solid #333;
     color: #333;
+    /*line-height: 1;*/
   }
 
   .role-jinpaiguanjia {

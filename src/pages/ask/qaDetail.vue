@@ -17,7 +17,7 @@
                      @onClick="ifGoDetail(question.uid,unll,null)"></img-wrapper>
         <div class="username">{{question.aname}}</div>
         <span class="reward shadow"
-              v-if="parseFloat(question.q_reward) > 0"> 悬赏金额 ¥{{question.q_reward}}</span>
+              v-if="parseFloat(question.q_reward) > 0">¥{{question.q_reward}}</span>
       </div>
       <!--问题标题-->
       <div class="card-title">{{question.title}}</div>
@@ -708,7 +708,11 @@
     width: 100%;
     padding: px2rem(10) px2rem(20);
     z-index: 1;
-
+    .card-title{
+      font-size: px2rem(16);
+      color:#333;
+      font-weight: 600;
+    }
     .card-img {
       display: flex;
       overflow-x: scroll;
@@ -867,6 +871,7 @@
         display: flex;
         flex-direction: row;
         margin-right: px2rem(10);
+        color:#999;
         .icon {
           width: px2rem(15);
           height: px2rem(15);

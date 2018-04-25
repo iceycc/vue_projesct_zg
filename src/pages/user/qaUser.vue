@@ -32,13 +32,6 @@
           <img-wrapper :url="icon_user_arrow" classStyle="icon_arrow"></img-wrapper>
         </div>
         <div class="divider"></div>
-        <!--<div class="item" @click="gotoAccount">-->
-        <!--<img-wrapper :url="icon_acont" classStyle="icon"></img-wrapper>-->
-        <!--<div class="name" v-if="data.role == 0">账号绑定</div>-->
-        <!--<div class="name" v-else>更换绑定</div>-->
-        <!--<div class="num" style="visibility: hidden"></div>-->
-        <!--<img-wrapper :url="icon_user_arrow" classStyle="icon_arrow"></img-wrapper>-->
-        <!--</div>-->
       </div>
       <div class="goaccount">
         <a href="javascript:;" @click="clickThree">诸葛装修 V1.0</a>
@@ -98,6 +91,7 @@
         current_uid: ''
       };
     },
+
     created() {
       this.click_num = 0
       this.current_uid = window.localStorage.getItem('uid')
@@ -127,6 +121,7 @@
 
     activated() {
       console.log("user组件激活")
+      this.click_num = 0
       API.post(Constants.Method.profile, {uid: this.current_uid})
           .then((result) => {
             this.data = result.data;
@@ -244,7 +239,7 @@
     display: flex;
     flex-direction: column;
     margin: px2rem(20) px2rem(10) px2rem(10) px2rem(10);
-    padding: 0 px2rem(10);
+    padding: 0 px2rem(15);
     border-radius: px2rem(5);
     background-color: white;
     .item {
@@ -253,9 +248,9 @@
       align-items: center;
       padding: px2rem(20) 0;
       .icon {
-        width: px2rem(25);
-        height: px2rem(25);
-        margin-right: px2rem(15);
+        width: px2rem(16);
+        height: px2rem(16);
+        margin-right: px2rem(10);
       }
       .name {
         font-size: px2rem(14);
@@ -278,7 +273,6 @@
       .icon_arrow {
         width: px2rem(8);
         margin-left: px2rem(10);
-        margin-right: px2rem(15);
         color: #ccc;
         vertical-align: middle;
       }

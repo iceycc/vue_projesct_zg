@@ -5,7 +5,7 @@
       <mu-icon-button icon="arrow_back" slot="left" @click="goBack"></mu-icon-button>
     </mu-appbar>
     <div class="form">
-      <mu-text-field class="field_title" fullWidth :underlineShow="false" v-model="qa.title" hintText="请输入标题 5~150字"/>
+      <mu-text-field class="field_title" fullWidth :underlineShow="false" v-model="qa.title" hintText="请输入标题（5~150字）"/>
 
       <div class="line"></div>
 

@@ -12,7 +12,7 @@
       <li class="question-tab-li" @click="toList(2)">已回答（{{g_answer_num}}）</li>
     </ul>
     <ul class="question-tab" v-if="role == 0">
-      <li class="question-tab-li" @click="toList(3)">提问（{{quetion_num}}）</li>
+      <li class="active question-tab-li" @click="toList(3)">提问（{{quetion_num}}）</li>
       <li class="question-tab-li" @click="toList(4)">回答（{{answer_num}}）</li>
     </ul>
     <auto-list-view2 v-show="isShow === 1" :url="url1" :answered_list="answered_list_1" type="user_question"></auto-list-view2>
@@ -388,6 +388,8 @@
       .title {
         font-size: px2rem(16);
         flex-grow: 1;
+        font-weight: 600;
+        color:#666
       }
       .reward {
         font-size: px2rem(12);

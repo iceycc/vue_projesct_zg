@@ -10,7 +10,7 @@
     <div class="search-hotword">
 
       <div class="title">
-        <img-wrapper @onClick="remove(index)" :url="icon_search_histroy" classStyle="title_icon"></img-wrapper>
+        <img-wrapper @onClick="remove(index)" :url="icon_search_hot" classStyle="title_icon"></img-wrapper>
         <span> 热门搜索</span>
       </div>
       <div class="words">
@@ -18,13 +18,13 @@
       </div>
     </div>
 
-    <div class="search-hotword" v-if="searchwords && searchwords.length > 0">
+    <div class="search-hotword history" v-if="searchwords && searchwords.length > 0">
       <div class="title">
-        <img-wrapper @onClick="remove(index)" :url="icon_search_hot" classStyle="title_icon"></img-wrapper>
+        <img-wrapper @onClick="remove(index)" :url="icon_search_histroy" classStyle="title_icon"></img-wrapper>
         <span> 搜索历史</span>
       </div>
       <div class="list">
-        <div v-for="item,index in searchwords">
+        <div v-for="item,index in searchwords" v-if="index<=4">
           <div class="name" @click="searchWord(item,false)">{{item}}</div>
           <img-wrapper @onClick="remove(index)" :url="icon_search_close"></img-wrapper>
         </div>
@@ -80,8 +80,7 @@
       clickAllSearchHistory(){
         console.log(11)
         this.$ls.remove(Constants.LocalStorage.searchHistory)
-        location.reload()
-
+        this.searchwords = []
       },
       searchWord(word, issave) {
         if (issave) {
@@ -160,9 +159,14 @@
 
   .search-hotword {
     background-color: white;
+
     margin: px2rem(10);
     padding: px2rem(10);
     border-radius: px2rem(5);
+    &.history{
+      max-height:60%;
+      overflow-y: scroll;
+    }
     .title {
       /*font-size: px2rem(0);*/
       vertical-align: top;
@@ -202,6 +206,9 @@
         flex-direction: row;
         .name {
           flex-grow: 1;
+          overflow-x:hidden;
+          text-overflow:ellipsis;
+          white-space: nowrap;
         }
       }
 

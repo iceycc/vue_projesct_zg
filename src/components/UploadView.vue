@@ -50,8 +50,8 @@
         position: relative;
         .close {
             position: absolute;
-            top: 0;
-            right: 0;
+            top: px2rem(-10);
+            right:px2rem(-10);
             width: px2rem(20);
             height: px2rem(20);
         }

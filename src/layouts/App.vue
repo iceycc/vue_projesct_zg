@@ -164,7 +164,8 @@
   @import "../assets/scss/px2rem";
   /* h */
   .mu-dialog {
-    border-radius: px2rem(10)
+    border-radius: px2rem(10);
+    padding-bottom:px2rem(10)
   }
 
   .text-center {
@@ -172,15 +173,15 @@
     text-align: center !important;
     font-size: px2rem(24) !important;
     margin: 0 0 !important;
-    height: px2rem(80);
-    padding-top: px2rem(30);
-    padding-bottom: px2rem(30);
-    letter-spacing: px2rem(3) !important
+    height: px2rem(70);
+    padding-top: px2rem(20);
+    padding-bottom: px2rem(40);
+    letter-spacing: px2rem(3) !important;
   }
 
   .info-text {
     text-align: center;
-    font-size: px2rem(12);
+    font-size: px2rem(14);
     color: #666;
     letter-spacing: px2rem(1) !important
   }
