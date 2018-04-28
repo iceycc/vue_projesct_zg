@@ -64,8 +64,9 @@
       } else {
         this.searchwords = [];
       }
-
-      API.get(Constants.Method.hot_search, null)
+      let data ={
+      }
+      API.post(Constants.Method.hot_search, {})
           .then((result) => {
             this.words = result.data;
           })
@@ -100,7 +101,6 @@
       },
       doSearch() {
         this.search = this.search.replace(/^\s+|\s+$/g, "");
-        console.log(this.search)
         if (!this.search) {
           EventBus.$emit(Constants.EventBus.showToast, {
             message: '不能为空'

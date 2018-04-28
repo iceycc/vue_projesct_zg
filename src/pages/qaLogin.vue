@@ -10,14 +10,16 @@
     <div class="btn-view">
       <div class="btn-submit" @click="gotoLogin"><img src="../assets/img/icon_login_wechat.svg" alt="">
         <span>微信登录</span></div>
-      <div class="btn-desc">同意诸葛装修<router-link :to="to_doc">用户协议</router-link></div>
+      <div class="btn-desc">同意诸葛装修
+        <router-link :to="to_doc">用户协议</router-link>
+      </div>
     </div>
 
   </div>
 </template>
 
 <script>
-  import {Constants, EventBus, mixins,API} from '../config/index';
+  import {Constants, EventBus, mixins, API} from '../config/index';
   import ComponentTemplate from "../components/template";
   import AutoListView from "../components/commons/AutoListView";
 
@@ -30,57 +32,53 @@
     name: Constants.PageName.qaLogin,
     data() {
       return {
-        to_doc:{}
+        to_doc: {}
       };
     },
     computed: {},
     created() {
-      this.to_doc = {name:Constants.PageName.qaDoc,params:{type:1}}
-      let id = this.$route.query.id;
-      // console.log(id);
-      if (id) {
-        this.gotoMain(id);
-      }
+      this.to_doc = {name: Constants.PageName.qaDoc, params: {type: 1}}
+      // let id = this.$route.query.id;
+      // // console.log(id);
+      // if (id) {
+      //   this.gotoMain(id);
+      // }
       // 用于测试！！
-      else {this.gotoMain(26319);} // 假如时光倒流
+      // else {this.gotoMain(26319);} // 假如时光倒流
       // else {this.gotoMain(25416);} //  176管家
-      // else {this.gotoMain(25416);} //  176管家
-      // else {this.gotoMain(25416);} //  176管家
+      // else {this.gotoMain(49942);} //  121 普通用户
+
     },
 
     methods: {
       gotoLogin() {
-        let url = 'https://open.weixin.qq.com/connect/oauth2/authorize?';
-        let appid = 'appid=wx7a6e11836803bbbb';
-        let redirect_uri = '&redirect_uri=http%3A%2F%2Fm.uzhuang.com%2Fwxpay%2Fwx_login%2Fwd_wx_login.php';
-        let response_type = '&response_type=code';
-        let scope = '&scope=snsapi_userinfo';
-        let wechat_redirect = '#wechat_redirect';
-          window.location.href = url + appid + redirect_uri + response_type + scope + wechat_redirect;
-        // this.$router.replace({
-        //   name: Constants.PageName.qaIndex,
-        //   params: {
-        //     isLogin: true
-        //   }
-        // });
+        window.location.href = 'http://wx.uzhuang.com/index.php?r=wx/oauth2'
       },
       gotoMain(uid) {
         this.$ls.remove(Constants.LocalStorage.uid);
-        API.post(Constants.Method.profile, {uid: uid})
+        this.getUserInfos(uid, () => {
+          this.$ls.set(Constants.LocalStorage.uid, uid);
+          // this.$router.replace({
+          //   name: Constants.PageName.qaIndex,
+          //   params: {
+          //     sign:uid,
+          //     isLogin: true
+          //   }
+          // });
+        })
+      },
+      getUserInfos(uid, success) {
+        API.post(Constants.Method.profile, {})
             .then((result) => {
-              this.data = result.data;
-              console.log(this.data)
-              // avatar collect_num    my_question_num  red_dot  username
-              this.$ls.set(Constants.LocalStorage.uid, uid);
-              this.$ls.set(Constants.LocalStorage.role, this.data.role);
-              this.$router.replace({
-                name: Constants.PageName.qaIndex,
-                params: {
-                  isLogin: true
-                }
-              });
+              let userInfos = result.data
+              this.$ls.set(Constants.LocalStorage.role, userInfos.role);
+              this.$ls.set(Constants.LocalStorage.question_num, userInfos.question_num)
+              this.$ls.set(Constants.LocalStorage.inform_num, userInfos.inform_num)
+              this.$ls.set(Constants.LocalStorage.collect_num, userInfos.collect_num)
+              this.$ls.set(Constants.LocalStorage.collect_num, userInfos.uid)
+              success && success(result)
             })
-            .catch((err)=>{
+            .catch((err) => {
               console.log(err);
             });
       }
@@ -97,17 +95,18 @@
     background-size: cover;
     /*background-color: #1bd4bb;*/
   }
-  .top-text{
+
+  .top-text {
     font-size: 0;
     text-align: center;
     margin-top: px2rem(50);
-    .app-title{
-      img{
+    .app-title {
+      img {
         width: px2rem(60);
         height: px2rem(60);
         vertical-align: middle;
       }
-      span{
+      span {
         display: inline-block;
         height: 100%;
         line-height: px2rem(60);
@@ -116,12 +115,13 @@
         vertical-align: middle;
       }
     }
-    .app-text{
+    .app-text {
       margin: 0;
-      font-size:px2rem(20) ;
+      font-size: px2rem(20);
       color: #fff;
     }
   }
+
   .btn-view {
     position: absolute;
     width: px2rem(250);

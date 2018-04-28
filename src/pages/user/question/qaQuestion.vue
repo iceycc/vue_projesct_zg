@@ -8,19 +8,19 @@
       </div>
     </div>
     <ul class="question-tab" v-if="role == 1">
-      <li class="active question-tab-li" @click="toList(1)">未回答（{{g_unanswer_num}}）</li>
-      <li class="question-tab-li" @click="toList(2)">已回答（{{g_answer_num}}）</li>
+      <li class="active question-tab-li" @click="toList(1)">未回答（{{left_num}}）</li>
+      <li class="question-tab-li" @click="toList(2)">已回答（{{right_num}}）</li>
     </ul>
     <ul class="question-tab" v-if="role == 0">
-      <li class="active question-tab-li" @click="toList(3)">提问（{{quetion_num}}）</li>
-      <li class="question-tab-li" @click="toList(4)">回答（{{answer_num}}）</li>
+      <li class="active question-tab-li" @click="toList(3)">提问（{{left_num}}）</li>
+      <li class="question-tab-li" @click="toList(4)">回答（{{right_num}}）</li>
     </ul>
     <auto-list-view2 v-show="isShow === 1" :url="url1" :answered_list="answered_list_1" type="user_question"></auto-list-view2>
 
     <auto-list-view2 v-show="isShow === 2" :url="url2" :answered_list="answered_list_2" type="user_question">
 
     </auto-list-view2>
-    <auto-list-view2 v-show="isShow === 3" :url="url3" :answered_list="answered_list_2" type="list"  @onItemClick="onItemClick">
+    <auto-list-view2 v-show="isShow === 3" :url="url3" :answered_list="answered_list_2" type="list"  @onItemClick="onItemClick" :ex_params="ex_params">
       <template slot="item" slot-scope="props">
         <div class="card">
           <div class="title-view">
@@ -64,10 +64,8 @@
         title: '我得问题',
         icon_search: require('../../../assets/img/icon_search.svg'),
         answered_list: [],
-        g_unanswer_num: 0,
-        g_answer_num: 0,
-        quetion_num: 0,
-        answer_num: 0,
+        left_num:null,
+        right_num:null,
         search_word: '',
         answered_list_1: [],
         answered_list_2: [],
@@ -77,7 +75,8 @@
         url2: '',
         url3: '',
         url4: '',
-        role:0
+        role:0,
+        ex_params:{}
       }
     },
     created() {
@@ -98,17 +97,15 @@
         console.log(this_role)
         if(this_role ==1){
           this.isShow = 1
-          this.getData(1)
-          this.getData(2)
+          this.getNum()
           this.url1 = Constants.Method.get_question_unanswered
           this.url2 = Constants.Method.get_question_answered
         }
         if(this_role == 0){
           this.isShow = 3
-          this.getData(3)
-          this.getData(4)
-          this.url3 = Constants.Method.get_homepage + '&type=3';
-          this.url4 = Constants.Method.get_question_answered
+          this.getNum()
+          this.url3 = Constants.Method.get_my_question;
+          this.url4 = Constants.Method.get_my_answer
         }
       },
       toList(type) {
@@ -122,11 +119,11 @@
         }
         if (type === 3) {
           this.isShow = 3
-          this.url3 = Constants.Method.get_homepage + '&type=2';
+          this.url3 = Constants.Method.get_my_question;
         }
         if (type === 4) {
           this.isShow = 4
-          this.url4 = Constants.Method.get_question_answered
+          this.url4 = Constants.Method.get_my_answer
         }
       },
       onItemClick(item){
@@ -153,57 +150,52 @@
           }, true)
         }
       },
+      getNum(){
+        let data = {
+
+        }
+        function getLeftNum(){
+          return API.post(Constants.Method.get_my_left_num,data)
+        }
+
+        function getRightNum() {
+          return API.post(Constants.Method.get_my_right_num,data)
+        }
+        // API.all([getLeftNum(),getRightNum()])
+        //     .then(API.spread((res1,res2)=>{
+        //       console.log(res1);
+        //       console.log(res2);
+        //     }))
+        //     .catch((err1,err2)=>{
+        //       console.log(err1);
+        //       console.log(err2);
+        //     })
+        getLeftNum().then((result)=>{
+          console.log(result);
+          this.left_num = result.data.num
+        })
+        getRightNum().then((result)=>{
+
+          console.log(result);
+          this.right_num = result.data.num
+        })
+
+      },
       getData(type, fn) {
         //  未回答
-        let options = {
-          params: {
-          }
+        let data = {
+
         }
         // 未回答
         if (type === 1) {
-          API.get(Constants.Method.get_question_unanswered, options)
-              .then((result) => {
-                this.g_unanswer_num = result.data.total
-                fn && fn()
-              })
-              .catch((err) => {
-                console.log(err);
-              })
         }
         // 已回答
         if (type === 2) {
-          API.get(Constants.Method.get_question_answered, options)
-              .then((result) => {
-                this.g_answer_num = result.data.total
-                fn && fn()
-              })
-              .catch((err) => {
-                console.log(err);
-              })
         }
 
         if(type === 3){
-          let url = Constants.Method.get_homepage + '&type=2';
-          API.get(url, options)
-              .then((result) => {
-                this.quetion_num = result.data.total
-                fn && fn()
-              })
-              .catch((err) => {
-                console.log(err);
-              })
         }
         if(type === 4){
-          let url = Constants.Method.get_question_answered;
-          API.get(url, options)
-              .then((result) => {
-                this.answer_num = result.data.total
-                console.log(result)
-                fn && fn()
-              })
-              .catch((err) => {
-                console.log(err);
-              })
         }
       },
       goSearch(word) {
@@ -216,13 +208,10 @@
           });
           return;
         }
-        let options = {
-            params:{
+        let data = {
               key_word: word,
-              uid:window.localStorage.getItem('uid')
-            }
         }
-        API.get(Constants.Method.get_question_unanswered, options)
+        API.post(Constants.Method.get_question_unanswered, data)
             .then((result) => {
               console.log(result);
               this.answered_list = result.data.question_list

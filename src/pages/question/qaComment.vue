@@ -3,27 +3,27 @@
     <app-bar :title="title"></app-bar>
     <div class="card shadow" v-if="answer">
       <div class="view1 horizontal-view">
-        <img-wrapper :url="answer.a_avatar" classStyle="avatar"
-                     @onClick="ifGoDetail(answer.uid,answer.role,answer.aname)"></img-wrapper>
+        <img-wrapper :url="answer.answerer_avatar" classStyle="avatar"
+                     @onClick="ifGoDetail(answer.uid,answer.role,answer.answerer_name)"></img-wrapper>
         <div class="vertical-view">
-          <div class="name" @click="ifGoDetail(answer.uid,answer.role,answer.aname)">{{answer.aname}}
-            <uz-lable v-if="answer.role" :role="answer.role"></uz-lable>
+          <div class="name" @click="ifGoDetail(answer.uid,answer.role,answer.answerer_name)">{{answer.answerer_name}}
+            <uz-lable v-if="answer.answerer_rank" :role="answer.answerer_rank"></uz-lable>
           </div>
-          <div class="date">{{answer.atime}}</div>
+          <div class="date">{{answer.addtime | crtTime}}</div>
         </div>
         <div class="horizontal-view">
-          <button class="like" v-bind:class="answer.is_liked == 1 ? 'liked' : ''"
-                  @click.stop="like(answer.id,answer.is_liked,0)"
+          <button class="like" v-bind:class="answer.is_like == 1 ? 'liked' : ''"
+                  @click.stop="like(answer.id,answer.is_like,0)"
                   :disabled="disabled"
           >
-            <img-wrapper :url="answer.is_liked == 1 ? icon4 : icon3 "
+            <img-wrapper :url="answer.is_like == 1 ? icon4 : icon3 "
                          classStyle="icon"></img-wrapper>
-            {{answer.like_num}}
+            {{answer.laud}}
           </button>
         </div>
       </div>
       <div class="context">{{answer.content}}</div>
-      <div class="huifu" @click="onItemClick(answer.aname,0)">回复</div>
+      <div class="huifu" @click="onItemClick(answer.answerer_name,0,answer.id)">回复</div>
 
     </div>
     <div class="title">{{comments.length > 0 ? '全部回复' : '暂无回复'}}</div>
@@ -38,21 +38,22 @@
                 <div class="vertical-view">
                   <div class="name huifu-name">
                     <!--如果是管家用户名 进入管家详情 但是管家不能访问管家-->
-                    <span @click="ifGoDetail(item.from_user_id,item.role)">{{item.from_user}} </span>
+                    <span @click="ifGoDetail(item.from_user_id,item.role)">{{item.from_user_name}} </span>
                     <span class="huifu-text"> 回复 </span>
-                    <span>{{item.to_user ? item.to_user + " ：": answer.aname + " ："}}</span>
+                    <span>{{item.to_user_name ? item.to_user_name + " ：": answer.answerer_name + " ："}}</span>
                   </div>
                 </div>
               </div>
               <div class="context">{{item.content}}</div>
               <div style="display: flex">
-                <span class="left">{{item.addtime}}</span>
-                <span class="right" @click="clickDel" v-if="item.from_user_id == current_uid">删除</span>
-                <span class="right" @click="onItemClick(item.from_user,item.cid)">回复</span>
+                <span class="left">{{item.addtime | crtTime}}</span>
+                <span class="right" @click="clickDel(item.id)" v-if="item.from_user_id == current_uid">删除</span>
+                <span class="right" @click="onItemClick(item.from_user_name,item.id,0)">回复</span>
                 <mu-dialog :open="dialog1" title="提示" @close="close">
                   确定要删除该条评论吗
                   <mu-flat-button slot="actions" @click="close" primary label="取消"/>
-                  <mu-flat-button slot="actions" primary @click="delCommentHandle(item.cid)" label="确定"/>
+                  <!--这里传item.id 为啥和上面获取的不一样呢-->
+                  <mu-flat-button slot="actions" primary  @click="delCommentHandle" label="确定"/>
                 </mu-dialog>
               </div>
 
@@ -108,30 +109,9 @@
         c_id: 0,
         is_footer_show: false,
         title: '',
-        from_to: [
-          {
-            from_user_id: 1,
-            from_user: '22',
-            to_user_id: 2,
-            to_user: '你',
-            content: '哈哈哈哈哈'
-          },
-          {
-            from_user_id: 1,
-            from_user: '我顶顶顶顶',
-            to_user_id: 2,
-            to_user: '你',
-            content: '哈哈哈哈哈'
-          },
-          {
-            from_user_id: 2,
-            from_user: '你',
-            to_user_id: 2,
-            to_user: '我2222',
-            content: '哈哈哈哈哈'
-          }
-        ],
-        disabled: false
+        disabled: false,
+        a_id:0,
+        del_comment:null
       };
     },
     computed: {},
@@ -145,6 +125,7 @@
       this.getComment();
     },
     methods: {
+      // uid
       ifGoDetail(uid, role) {
         // 这里通过判断返回的role是否时管是家 自己是管家的话点不开其他管家的详情 匿名用户不能打开 管家看管家也是显示匿名用户
         let my_role = window.localStorage.getItem('role')
@@ -170,10 +151,8 @@
       getData() {
         let options = {
           params:{
-            q_id: this.$route.query.q_id,
-            a_id: this.$route.query.a_id,
+            id: this.$route.query.id,
             inform_id: this.$route.query.inform_id || 0,
-            uid:this.current_uid
           }
         };
 
@@ -194,10 +173,7 @@
       getComment() {
         let options = {
           params:{
-            uid:this.current_uid,
-            q_id: this.$route.query.q_id,
-            a_id: this.$route.query.a_id,
-            c_id: this.c_id,
+            id: this.$route.query.id,
             inform_id: this.$route.query.inform_id || 0
           }
         };
@@ -218,28 +194,38 @@
       getRoleClass(role) {
 
       },
-      clickDel() {
+      clickDel(id) {
         this.dialog1 = true
+        console.log(id)
+        this.del_comment = id
         // this.delCommentHandle(item.cid)
       },
       close() {
         this.dialog1 = false
       },
-      delCommentHandle(cid) {
-        let options = {
-          cid: cid,
-          uid:this.current_uid
+      //
+      delCommentHandle() {
+        let data = {
+          id: this.del_comment,
         }
-        API.post(Constants.Method.del_comment, options)
+        API.post(Constants.Method.del_comment, data)
             .then((result) => {
               this.getComment()
               this.dialog1 = false
+              this.del_comment = null
+            })
+            .catch((err)=>{
+              console.log(err);
             })
       },
-      onItemClick(name, c_id) {
+      //
+      onItemClick(name, c_id,a_id) {
         // console.log(name);
         this.is_footer_show = true
+        this.a_id = a_id
+        console.log('this.a_id : '+ a_id)
         this.c_id = c_id
+        console.log('this.c_id : '+ c_id)
         this.to_who = "回复 " + name + " 评论："
       },
       submit() {
@@ -249,49 +235,61 @@
           });
           return;
         }
-        let options = {
-          params:{
-            q_id: this.$route.query.q_id,
-            a_id: this.$route.query.a_id,
-            c_id: this.c_id,
+
+        // 回复回答
+        if(this.c_id == 0){
+          let data = {
+            answer_id: this.a_id,
             content: this.recomment,
-            uid:this.current_uid
-          }
-        };
-        API.post(Constants.Method.comment, options.params)
-            .then((result) => {
-              this.getComment();
-              this.recomment = '';
-              console.log("++++++++++++comment+++++++++++++");
-              // console.log(result);
-              this.is_footer_show = false
-              console.log("++++++++++++++++++++++++++++++++");
-            })
-            .catch((err)=>{
-              console.log(err);
-            });
+          };
+          API.post(Constants.Method.reply_answer, data)
+              .then((result) => {
+                this.getComment();
+                this.recomment = '';
+                console.log("++++++++++++comment+++++++++++++");
+                // console.log(result);
+                this.is_footer_show = false
+                console.log("++++++++++++++++++++++++++++++++");
+              })
+              .catch((err)=>{
+                console.log(err);
+              });
+        }
+        if(this.a_id == 0){
+          let data = {
+            comment_id: this.c_id,
+            content: this.recomment,
+          };
+          API.post(Constants.Method.reply_comment, data)
+              .then((result) => {
+                this.getComment();
+                this.recomment = '';
+                console.log("++++++++++++comment+++++++++++++");
+                // console.log(result);
+                this.is_footer_show = false
+                console.log("++++++++++++++++++++++++++++++++");
+              })
+              .catch((err)=>{
+                console.log(err);
+              });
+        }
+
       },
       like(a_id, liked, c_id) {
+
         if (timer) {
           clearTimeout(timer)
         }
         this.disabled = true
         let timer;
-        let options = {
-          q_id: this.$route.query.q_id,
-          a_id: a_id,
-          c_id: c_id,
-          uid:this.current_uid
+        let data = {
+          id: a_id,
         };
         switch (liked) {
-          case 1:
-            API.post(Constants.Method.un_like, options)
+          case '1':
+            API.post(Constants.Method.un_like, data)
                 .then((result) => {
-                  if (c_id) {
-                    this.getComment();
-                  } else {
                     this.getData();
-                  }
                   timer = setTimeout(() => {
                     this.disabled = false;
                   }, 1000)
@@ -300,14 +298,10 @@
                   console.log(err);
                 });
             break;
-          case 0:
-            API.post(Constants.Method.like, options)
+          case '0':
+            API.post(Constants.Method.like, data)
                 .then((result) => {
-                  if (c_id) {
-                    this.getComment();
-                  } else {
                     this.getData();
-                  }
                   timer = setTimeout(() => {
                     this.disabled = false;
                   }, 1000)
@@ -316,6 +310,9 @@
                   console.log(err);
                 });
         }
+        timer = setTimeout(() => {
+          this.disabled = false;
+        }, 1000)
 
       },
       collect() {
@@ -326,7 +323,6 @@
           params:{
             q_id: this.$route.query.id,
             a_id: this.answer_list[index].id,
-            uid:this.current_uid
           }
         };
 

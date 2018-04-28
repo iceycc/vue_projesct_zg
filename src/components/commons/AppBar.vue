@@ -44,7 +44,6 @@
           this.icon = 'menu';
           break;
         case 'test':
-
           break;
       }
 

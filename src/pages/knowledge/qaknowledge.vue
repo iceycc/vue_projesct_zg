@@ -111,8 +111,10 @@
         this.isFirst = false
         this.loading = true
         this.picsTitle = picsTitle
-        // todo axios
-        API.get(url,{params:{type : type}})
+        let data = {
+          type : type
+        }
+        API.post(url,data)
           .then((res)=>{
             let urls = res.data.data
             this.pics = urls

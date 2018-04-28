@@ -57,6 +57,12 @@
     name: 'AutoListView',
     mixins: [mixins.wx],
     props: {
+      ex_params:{
+        type:Object,
+        default:function () {
+          return {}
+        }
+      },
       url: {
         type: String,
         default: ''
@@ -138,7 +144,6 @@
     created() {
       if (this.flag) {
         this.getdata();
-
       }
     },
     methods: {
@@ -171,12 +176,14 @@
         }
         let param = {
           page: this.page,
-          uid:window.localStorage.getItem('uid')
         };
+        if(this.ex_params){
+          param = Object.assign(this.ex_params,param)
+        }
         if (this.$parent.handleParam) {
           param = Object.assign(this.$parent.handleParam(), param);
         }
-        API.get(this.url, {params: param})
+        API.post(this.url,param)
             .then((result) => {
               console.log('autoListView result');
               console.log(result);
@@ -207,6 +214,7 @@
 
       },
       loadMore() {
+        console.log('isMore')
         console.log(this.isMore)
         if (this.isMore) {
           this.loading = true

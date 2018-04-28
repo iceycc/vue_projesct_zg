@@ -13,7 +13,7 @@
       <mu-bottom-nav-item value="1" title="课堂">
         <img-wrapper :url="bottomNav == 1 ? tab1[1] : tab1[0]" class="tabicon"></img-wrapper>
       </mu-bottom-nav-item>
-      <mu-bottom-nav-item value="2" :title="ask_text">
+      <mu-bottom-nav-item value="2" title="提问">
         <img-wrapper :url="bottomNav == 2 ? tab2[1] : tab2[0]" class="tabicon"></img-wrapper>
       </mu-bottom-nav-item>
       <mu-bottom-nav-item value="3" title="通知">
@@ -65,7 +65,7 @@
 
 <script>
   //
-  import {Constants, EventBus, mixins} from '../config/index';
+  import {Constants, EventBus, mixins,API} from '../config/index';
   import ImgWrapper from "../components/commons/ImgWrapper.vue";
 
   export default {
@@ -101,26 +101,26 @@
     },
     updated() {
       console.log('updated')
-      this.isReadShow()
+      // this.isReadShow()
     },
 
     created() {
-      // var _that = this
-      // EventBus.$on('showTotal', (value)=> {
-      //   if(value){
-      //     _that.handleChange(2)
-      //   }else{
-      //     this.showAsk = !this.showAsk;
-      //   }
-      // })
+      let str = window.location.hash.toString()
+      this.role = window.localStorage.getItem('role')
+      if(typeof str == 'string'){
+        // let sign = str.split('=')[1]
 
-      this.role = window.localStorage.getItem(Constants.LocalStorage.role)
-      if(this.role==1){this.ask_text='提问'}
-      this.to_doc ={name:Constants.PageName.qaDoc,params:{type:2}}
-      this.isReadShow()
-      if (this.bottomNav === -1) {
-        this.handleChange(0);
+        let sign = '215b54bc24847bdaa7344b2504514881'
+        if(sign){
+          window.localStorage.setItem('sign',sign)
+        }
       }
+
+      this.getUserInfos()
+
+      this.to_doc ={name:Constants.PageName.qaDoc,params:{type:2}}
+
+
 
       if (this.$route.params.isLogin) {
         EventBus.$emit(Constants.EventBus.login);
@@ -139,25 +139,44 @@
         height: (this.$el.offsetHeight - this.$refs['bottom'].$el.offsetHeight) + 'px'
       };
     },
+    activated(){
+      this.isreadShow = window.localStorage.getItem(Constants.LocalStorage.inform_num) > 0
+    },
     methods: {
+      getUserInfos(uid, success) {
+        API.post(Constants.Method.profile, {uid: uid})
+            .then((result) => {
+              console.log(result)
+              let userInfos = result.data
+              this.$ls.set(Constants.LocalStorage.role, userInfos.role);
+              this.$ls.set(Constants.LocalStorage.question_num, userInfos.question_num)
+              this.$ls.set(Constants.LocalStorage.inform_num, userInfos.inform_num)
+              this.$ls.set(Constants.LocalStorage.collect_num, userInfos.collect_num)
+              this.$ls.set(Constants.LocalStorage.collect_num, userInfos.uid)
+              success && success(result)
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+      },
       webpage(){
         this.$router.push({name:Constants.PageName.qaDoc,params:{type:2}})
       },
       getUserData(to,from){
         this.showAsk = false
       },
-      isReadShow() {
-        EventBus.$on('notice_isread_num',(count)=>{
-          if (count > 0) {
-            this.isreadShow = true
-          }
-
-          if (count == 0) {
-            this.isreadShow = false
-          }
-        })
-
-      },
+      // isReadShow() {
+      //   EventBus.$on('notice_isread_num',(count)=>{
+      //     if (count > 0) {
+      //       this.isreadShow = true
+      //     }
+      //
+      //     if (count == 0) {
+      //       this.isreadShow = false
+      //     }
+      //   })
+      //
+      // },
       toggleAsk() {
         this.showAsk = !this.showAsk;
       },
@@ -173,8 +192,11 @@
         if (value == 2) {
           if(this.role==0){
             this.toggleAsk();
-          }
-          if(this.role == 1){
+          }else if(this.role == 1){
+            EventBus.$emit(Constants.EventBus.showToast, {
+              message: '管家没有提问权限'
+            });
+          }else {
             EventBus.$emit(Constants.EventBus.showToast, {
               message: '管家没有提问权限'
             });

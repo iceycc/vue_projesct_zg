@@ -9,34 +9,43 @@ const _axios =  axios.create(Config)
 // 请求的拦截器
 _axios.interceptors.request.use( (config) => {
   // const token = localStorage.getItem('token')
-  const uid = localStorage.getItem('uid')
+
+  let sign = localStorage.getItem('sign')
+  // let sign = '215b54bc24847bdaa7344b2504514881'
   // 判断请求的类型
   // 如果是post请求就把默认参数拼到data里面
   // 如果是get请求就拼到params里面
-  if(config.method === 'post') {
-    let data = qs.parse(config.data)
-    config.params = qs.stringify({
-      uid: uid,
-      ...data
-    })
-  } else if(config.method === 'get') {
-    config.params = {
-      uid: uid,
-      ...config.params
-    }
+  config.params = {
+    sign:sign,
+    ...config.params
   }
   return config;
 },  (error)=> {
-  return Promise.reject(error);
+  return Promise.reject({
+    msg:'request err'
+  });
+  // return Promise.reject(error);
 })
 
 // 添加响应拦截器
 _axios.interceptors.response.use( (response)=>{
   // 对响应数据做点什么
-  return response.data;
+  // sign过期或者不正确时提醒重新登陆，移除当前的 sign
+  if(response.data.code == 1 && response.data.message == '登录失败' ){
+    // window.location.href = location.host + '/#/qalogin'
+    EventBus.$emit(Constants.EventBus.showToast,{
+      message:"登陆已经过期，请重新登陆"
+    })
+    window.localStorage.removeItem('sign')
+    return
+  }
+  else {
+    return response.data;
+  }
 }, (error) =>{
   // 对响应错误做点什么
   return Promise.reject(error);
+  // return Promise.reject(error);
 });
 
 export default _axios;

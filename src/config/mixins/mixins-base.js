@@ -52,6 +52,19 @@ export default {
       }
       this.$router.push(rou);
     },
+    // 这里为啥不管 todo
+    filters: {
+      crtTime: function (val) {
+        if (val != null) {
+          // let data = new Date()
+          var date = new Date(val * 1000);
+          // return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' '
+          //     + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+          return moment(date).format("YYYY-MM-DD HH:mm:ss")
+          // return date
+        }
+      }
+    },
 
     // 监听 监听 浏览器返回
     lisBack() {

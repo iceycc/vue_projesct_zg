@@ -223,23 +223,25 @@
             title: this.qa.title,
             content: this.qa.content,
             attach: this.serverIds,
-            uid:this.current_uid
           };
+          // 钱包支付
           if (this.type === 0) {
             data.reward = 0;
-          } else {
+            data.pay_type = 0
+          } else{
             data.reward = this.qa.reward;
+            data.pay_type = 1
           }
-
+          // http://zhuge.uzhuang.com/index.php?r=member/question
           API.post(Constants.Method.ask_question, data)
               .then((result) => {
                     EventBus.$emit(Constants.EventBus.showToast, {
                       message: '发布成功',
                     });
                     result = result.data
-                    this.insert_id = result.insert_id
-                    if (data.reward > 0 && !is_wallet) {//
-                      // todo 钱包支付 和 微信支付 不同看看啊
+                    this.insert_id = result.id
+                    if (data.reward > 0 && !is_wallet) {
+                      // todo
                       window.location.href = `http://m.uzhuang.com/wxpay/pay/Weixin/h5_wx/example/jsapi.php?question_id=${result.insert_id}&pay_type=h5_wx&uid=${localStorage.getItem('uid')}`;
                     }
 
@@ -340,7 +342,7 @@
     beforeRouteLeave(to, from, next) {
 
       // todo 这里不是很合理  离开组件时 添加自己的问题数
-      API.post(Constants.Method.profile, {uid:this.current_uid})
+      API.post(Constants.Method.profile, {})
           .then((result) => {
             EventBus.$emit('my_question_num', result.my_question_num)
           })

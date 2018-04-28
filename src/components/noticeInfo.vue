@@ -5,7 +5,7 @@
       <div class="info-box"
            v-for="(item,index) in datas" :key="index"
            @click="goDetail(item.type,index,item.question_id,item.answer_id,item.id)"
-           :class="{isread:item.isread != '1'}"
+           :class="{isread:item.is_read == '0'}"
       >
         <!--问题指向11-->
         <!--1 回答 2采纳 3点赞回答 4点赞评论 5评论回答 6评论评论-->
@@ -32,18 +32,6 @@
   export default {
     name: "notice-info",
     mixins: [mixins.base, mixins.wx],
-    filters: {
-      crtTime: function (val) {
-        if (val != null) {
-          // let data = new Date()
-          var date = new Date(val * 1000);
-          // return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' '
-          //     + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
-          return moment(date).format("YYYY-MM-DD HH:mm:ss")
-          // return date
-        }
-      }
-    },
     data() {
       return {
         // 1 回答 2采纳 3点赞回答 4点赞评论 5评论回答 6评论评论
@@ -89,68 +77,10 @@
         this.$router.push({
           name: Constants.PageName.qaComment,
           query: {
-            q_id: q_id,
-            a_id: a_id,
-            c_id: 0,
+            id: a_id,
             inform_id: id
           }
         });
-        // switch (type){
-        //   case '1':
-        //     this.$router.push({
-        //       name: Constants.PageName.qaDetail,
-        //       query: {
-        //         id: q_id
-        //       }
-        //     });
-        //     break;
-        //   case '2':
-        //     this.$router.push({
-        //       name: Constants.PageName.qaDetail,
-        //       query: {
-        //         id: q_id
-        //       }
-        //     });
-        //     break;
-        //   case '3':
-        //     this.$router.push({
-        //       name: Constants.PageName.qaDetail,
-        //       query: {
-        //         id: q_id
-        //       }
-        //     });
-        //     break;
-        //   case '4':
-        //     this.$router.push({
-        //       name: Constants.PageName.qaComment,
-        //       query: {
-        //         q_id: q_id,
-        //         a_id: a_id,
-        //         c_id: 0
-        //       }
-        //     });
-        //     break;
-        //   case '5':
-        //     this.$router.push({
-        //       name: Constants.PageName.qaComment,
-        //       query: {
-        //         q_id: q_id,
-        //         a_id: a_id,
-        //         c_id: 0
-        //       }
-        //     });
-        //     break;
-        //   case '6':
-        //     this.$router.push({
-        //       name: Constants.PageName.qaComment,
-        //       query: {
-        //         q_id: q_id,
-        //         a_id: a_id,
-        //         c_id: 0
-        //       }
-        //     });
-        //     break;
-        // }
       },
       getData() {
         console.log(11)
@@ -158,7 +88,7 @@
           uid: window.localStorage.getItem('uid'),
           page: this.page
         }
-        API.get(Constants.Method.get_notice_list, {params:data})
+        API.post(Constants.Method.get_notice_list, data)
             .then((result) => {
               result = result.data
               this.getRedNum(result)

@@ -47,9 +47,8 @@
         let data = {
           username:this.username,
           password:md5(this.password),
-          uid:window.localStorage.getItem('uid')
         }
-        API.get(Constants.Method.bind_account,{params:data})
+        API.post(Constants.Method.bind_account,data)
             .then((result)=>{
               console.log(result)
               if(result.data.code == 0 && result.data.message == '绑定成功'){

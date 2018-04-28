@@ -6,7 +6,7 @@
       <div class="user-view">
         <img-wrapper :url="data.avatar"
                      classStyle="avatar" @onClick="ifGoDetail(null,null)"></img-wrapper>
-        <div class="username">{{data.username}}</div>
+        <div class="username">{{data.name}}</div>
       </div>
       <div class="menu">
         <div class="item" @click="gotoList(1)">
@@ -96,12 +96,12 @@
       this.click_num = 0
       this.current_uid = window.localStorage.getItem('uid')
       this.role = this.$ls.get(Constants.LocalStorage.role);
-      API.post(Constants.Method.profile, {uid: this.current_uid})
+      API.post(Constants.Method.profile)
           .then((result) => {
             this.data = result.data;
-            // console.log(result);
+            console.log(result);
             this.collect_num = this.data.collect_num
-            this.my_question = this.data.my_question_num
+            this.my_question = this.data.question_num
 
             // 有待优化 监听 ask页面我得问题数量的变化 1
             EventBus.$on('my_question_num', content => {
@@ -122,12 +122,12 @@
     activated() {
       console.log("user组件激活")
       this.click_num = 0
-      API.post(Constants.Method.profile, {uid: this.current_uid})
+      API.post(Constants.Method.profile, {})
           .then((result) => {
             this.data = result.data;
-            // console.log(result);
+            console.log(result);
             this.collect_num = this.data.collect_num
-            this.my_question = this.data.my_question_num
+            this.my_question = this.data.question_num
 
             // 有待优化 监听 ask页面我得问题数量的变化 1
             EventBus.$on('my_question_num', content => {

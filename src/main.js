@@ -13,7 +13,6 @@ import {} from './plugins/loadComponent';
 import {} from './plugins/localstorage';
 
 //  混合器
-//
 import {} from './config/mixins/mixins-base';
 import {} from './config/mixins/mixins-wx';
 
@@ -21,10 +20,10 @@ import {} from './config/mixins/mixins-wx';
 //无使用,仅防止重复打包
 import {} from './request/requestInstance';
 
-// import moment from 'moment'
-// Vue.prototype.$moment = moment
-
-
+import * as custom from './plugins/filter'
+Object.keys(custom).forEach(key=>{
+  Vue.filter(key, custom[key])
+})
 // import VueTouch from 'vue-touch';
 // Vue.use(VueTouch,{name: 'v-touch'})
 /*Vue.config.productionTip = true;

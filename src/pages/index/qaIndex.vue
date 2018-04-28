@@ -17,8 +17,6 @@
       </div>
     </div>
     <!---->
-
-
     <!--  -->
     <!--{{text}}-->
 
@@ -29,6 +27,7 @@
         :isNeedDivider="false"
         :class="{isIndex0:hot_words_index === 0}"
         :isTab="isTab"
+        :ex_params="ex_params"
     >
       <!--@SwipeLeft="onSwipeLeft"-->
       <!--@SwipeRight="onSwipeRight"-->
@@ -37,7 +36,7 @@
       <template slot="swiper">
         <swiper :options="swiperOption" ref="mySwiper" class="banner" v-if="hot_words_index === 0">
           <swiper-slide v-for="item,index in banners" :key="index">
-            <img-wrapper :url="item.img_name" @onClick="openWeb(item.activity_url)"
+            <img-wrapper :url="item.img" @onClick="openWeb(item.url)"
                          classStyle="banner_img"></img-wrapper>
           </swiper-slide>
         </swiper>
@@ -96,6 +95,7 @@
         swiperOption: {
           autoplay: 3000
         },
+        ex_params:{},
         url: '',// 请求的地址
         banners: [],
         hot_words: [],
@@ -115,7 +115,7 @@
       }
     },
     created() {
-      API.get(Constants.Method.get_banner_list, {data: null})
+      API.post(Constants.Method.get_banner_list, {})
           .then((result) => {
             this.banners = result.data;
           })
@@ -123,8 +123,9 @@
             console.log(err);
           })
 
-      API.get(Constants.Method.get_hot_words, {})
+      API.post(Constants.Method.get_hot_words, {})
           .then((result) => {
+            console.log('result');
             console.log(result);
             this.hot_words = this.hot_words.concat(result.data);
               this.getList();
@@ -164,9 +165,12 @@
 
       },
       getList(isTab) {
-        this.url = Constants.Method.get_homepage + '&hot_words_id=' + this.hot_words[this.hot_words_index].id;
-        this.isTab = isTab || false
-        this.flag = this.url;
+        this.url = Constants.Method.get_homepage;
+        this.ex_params = {
+          id:this.hot_words[this.hot_words_index].id
+        }
+        this.isTab = isTab || false;
+        this.flag = this.url + '&hot_words_id=' + this.hot_words[this.hot_words_index].id;
       },
       onItemClick(item) {
         this.pushPage({

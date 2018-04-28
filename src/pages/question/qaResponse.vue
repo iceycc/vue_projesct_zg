@@ -67,11 +67,9 @@
         if (is_edit) {
           let data = this.$route.params.data
           data.content = this.qa.content
-          let options = {
-            data
-          }
+
           // .concat({content:this.qa.content})
-          API.post(Constants.Method.put_answer_edit, options.data)
+          API.post(Constants.Method.put_answer_edit, data)
               .then((result) => {
                 console.log(result);
                 this.$router.go(-1)
@@ -84,9 +82,9 @@
           return
         }
         let data = {
-          q_id: this.$route.query.id,
+          id: this.$route.query.id,
           content: this.qa.content,
-          uid:window.localStorage.getItem('uid')
+
         };
 
         API.post(Constants.Method.answer, data)

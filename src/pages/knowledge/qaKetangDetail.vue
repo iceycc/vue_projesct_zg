@@ -104,7 +104,11 @@
       },
       getList() {
         let id = this.$route.query.cid || 0;
-        API.get(Constants.Method.ketang_nodeList, {params: {cid: id, page: this.page}})
+        let data ={
+          cid: id,
+          page: this.page
+        }
+        API.post(Constants.Method.ketang_nodeList,data)
             .then((result) => {
               this.data_list = this.data_list.concat(result.data.data)
               // 判断数据是否存在且是否为空 控制加载是否继续

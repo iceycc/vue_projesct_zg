@@ -1,26 +1,28 @@
 <template>
   <div class="content">
     <!--标题 问题详情-->
-    <!--<app-bar :title="title"></app-bar>-->
     <mu-appbar title="问答详情" v-if="showAppBar">
       <mu-icon-button icon="arrow_back" slot="left" @click="goBack"></mu-icon-button>
-      <!--<template slot="right" v-if="this.mode !== 'test'">-->
-      <!--&lt;!&ndash;<mu-icon-button v-if="showSearch" icon="search" slot="right" @click="goSearch"></mu-icon-button>&ndash;&gt;-->
-      <!--<slot name="right"></slot>-->
-      <!--</template>-->
+
     </mu-appbar>
     <!--顶部问题详情-->
-    <div class="card shadow" v-if="question">
+    <div class="card" v-if="question">
       <!--用户头像 名称 赏金-->
       <div class="view1">
-        <img-wrapper :url="question.avatar" classStyle="avatar"
+        <img-wrapper :url="question.asker_avatar" classStyle="avatar"
                      @onClick="ifGoDetail(question.uid,unll,null)"></img-wrapper>
-        <div class="username">{{question.aname}}</div>
+        <div class="username">{{question.asker_name}}</div>
         <span class="reward shadow"
-              v-if="parseFloat(question.q_reward) > 0">¥{{question.q_reward}}</span>
+              v-if="parseFloat(question.reward) > 0">¥{{question.reward}}</span>
       </div>
       <!--问题标题-->
       <div class="card-title">{{question.title}}</div>
+
+      </div>
+    <div class="scroll-view">
+      <mu-list>
+      <div class="card shadow" v-if="question">
+      <!--==========================================================================================================-->
       <!--问题描述-->
       <div class="card-content">{{question.content}}
         <!--图片展示-->
@@ -37,49 +39,48 @@
         <div>{{question.answer_num}}回答</div>
         <!--收藏 -->
 
-        <button @click.stop="collect" class="collect-icon" :class="question.is_collect ? 'collected' : 'collect'"
+        <button @click.stop="collect" class="collect-icon" :class="question.is_collect == '1' ? 'collected' : 'collect'"
                 :disabled="disabled"
                 style="border: none;background: transparent;outline:none">
           <!--<img-wrapper :url="question.is_collect ?  icon5 : icon6 " classStyle="icon"></img-wrapper>-->
-          {{question.is_collect? '已收藏': '收藏'}}
+          {{question.is_collect == '1' ? '已收藏': '收藏'}}
         </button>
 
         <div>{{ question.qtime | my_time }}</div>
       </div>
-      <div class="card-tags" v-if="question.label && question.label.length > 0">
-        <div class="tag" v-for="item in question.label" v-if="question.label[0] !==''">
+      <div class="card-tags" v-if="question.tab && question.tab.length > 0">
+        <div class="tag" v-for="item in question.tab" v-if="question.tab[0] !==''">
           {{item}}
         </div>
       </div>
 
     </div>
     <!--评论列表-->
-    <div class="scroll-view">
-      <!--mu-->
-      <mu-list>
+
         <template v-for="item, index in answer_list">
           <div class="item" @click="onItemClick(index)">
             <div class="card-re">
               <!--评论 人 头像 名称 用户等级 是否采纳 11-->
               <div class="view1 horizontal-view">
                 <img-wrapper
-                    :url=" item.a_avatar == 'http://m.uzhuang.com/res/images/userface.png' ? a_avatar : item.a_avatar "
+                    :url="item.a_avatar == 'http://m.uzhuang.com/res/images/userface.png' ? a_avatar : item.answerer_avatar "
                     classStyle="avatar"
-                    @onClick="ifGoDetail(item.uid,item.role,item.aname)"
+                    @onClick="ifGoDetail(item.answerer_id,item.answerer_role,item.answerer_name)"
                 ></img-wrapper>
 
                 <div class="vertical-view">
-                  <div class="name" @click.stop="ifGoDetail(item.uid,item.role,item.aname)">{{item.aname ? item.aname :
+                  <div class="name" @click.stop="ifGoDetail(item.answerer_id,item.answerer_role,item.answerer_name)">{{item.answerer_name ? item.answerer_name :
                     '匿名用户'}}
                     <!--显示颜色从组件内根据角色名匹配的-->
                     <uz-lable v-if="question.q_reward > 0"
-                              :role="item.uid === question.uid ? '赏金发起人' : item.role"></uz-lable>
-                    <uz-lable v-else :role="item.uid ===question.uid ? '问题发起人' : item.role"></uz-lable>
+                              :role="item.answerer_id === question.asker_id ? '赏金发起人' : item.answerer_rank"></uz-lable>
+                    <uz-lable v-else :role="item.answerer_id ===question.asker_id ? '问题发起人' : item.answerer_rank"></uz-lable>
                   </div>
-                  <div class="date">{{item.atime | my_time}}</div>
+                  <div class="date">{{item.addtime | crtTime}}</div>
                 </div>
                 <!--采纳@click.once.stop="accept(index)"   && item.uid !== question.uid-->
-                <div class="accept" v-if="isOwner && question.q_adoption == 0 && item.uid !== question.uid"
+                <!--todo 当前问题采纳的回答的 id -->
+                <div class="accept" v-if="isOwner && item.adoption == 0 && item.answerer_id !== question.asker_id"
                      @click.stop="open(index)">采纳
                 </div>
 
@@ -91,12 +92,12 @@
               <!--评论内容-->
               <div class="context">{{item.content}}</div>
               <!--获取评论下的评论 -->
-              <div v-if="item.hot_comment.c_id" class="hotcomment">
-                <div class="title">{{item.hot_comment.username}}
-                  <uz-lable :role="item.hot_comment.role"></uz-lable>
-                  :{{item.hot_comment.content}}
+              <div v-if="item.hot_commnet.commenter_name" class="hotcomment">
+                <div class="title">{{item.hot_commnet.commenter_name}}
+                  <uz-lable :role="item.hot_commnet.commenter_rank"></uz-lable>
+                  :{{item.hot_commnet.content}}
                 </div>
-                <div class="count">查看全部{{item.hot_comment.comment_total_num}}条回复</div>
+                <div class="count">查看全部{{item.hot_commnet.total}}条回复</div>
               </div>
               <!--底部信息展示-->
               <div class="view2 horizontal-view">
@@ -105,29 +106,29 @@
                         @click.stop="editHandle(item.id,item.uid)"
                         style="border: none;background: transparent;outline: none"
                         :disabled="disabled"
-                        v-if="current_uid == item.uid"
+                        v-if="current_uid == item.answerer_id"
                 >
                   <img-wrapper :url="icon_edit"
                                classStyle="icon"></img-wrapper>
                   编辑
                 </button>
                 <!--点赞功能-->
-                <button class="like" v-bind:class="item.liked == 1 ? 'liked' : ''"
-                        @click.stop="like(index,item.liked)"
+                <button class="like" v-bind:class="item.is_like == 1 ? 'liked' : ''"
+                        @click.stop="like(index,item.is_like)"
                         style="border: none;background: transparent;outline: none"
                         :disabled="disabled"
                 >
-                  <img-wrapper :url="item.liked == 1 ? icon4 : icon3 "
+                  <img-wrapper :url="item.is_like == 1 ? icon4 : icon3 "
                                classStyle="icon"></img-wrapper>
-                  {{item.like_num}}
+                  {{item.laud}}
 
                 </button>
-                <div @click.once.stop="clickDel" v-if="item.uid == current_uid && question.q_adoption !=item.id"> 删除
+                <div @click.stop="clickDel(item.id)" v-if="item.answerer_id == current_uid && question.q_adoption !=item.answerer_id"> 删除
                 </div>
                 <mu-dialog :open="dialog2" title="提示" @close="close">
                   确定要删除该条回答吗
                   <mu-flat-button slot="actions" @click="close" primary label="取消"/>
-                  <mu-flat-button slot="actions" primary @click="deleteHandle(index)" label="确定"/>
+                  <mu-flat-button slot="actions" primary @click="deleteHandle" label="确定"/>
                 </mu-dialog>
 
               </div>
@@ -221,6 +222,7 @@
     },
     data() {
       return {
+        del_answer_id:null,
         q_adoption_index: null,
         showAsk: false,
         dialog2: false,
@@ -248,6 +250,7 @@
         localValue: this.$ls.get(Constants.LocalStorage.test, '-1'),
         disabled: false,
         current_uid: null,
+        isOwner:false,
         attach: [// text
           'http://pic40.nipic.com/20140412/11857649_170524977000_2.jpg',
           'http://pic34.photophoto.cn/20150202/0005018384491898_b.jpg',
@@ -319,7 +322,6 @@
           return
         }
       },
-
       open(index) {
         this.dialog = true
         this.q_adoption_index = index
@@ -348,21 +350,20 @@
           urls: pics // 需要预览的图片http链接列表
         });
       },
-      clickDel() {
+      clickDel(id) {
         this.dialog2 = true
+        this.del_answer_id = id
+
       },
       close() {
         this.dialog2 = false
       },
-      deleteHandle(index) {
+      deleteHandle() {
 
-        let options = {
-          params: {
-            uid: this.current_uid,
-            aid: this.answer_list[index].id
-          }
+        let data = {
+            id: this.del_answer_id
         }
-        API.post(Constants.Method.del_answer, options.params)
+        API.post(Constants.Method.del_answer, data)
             .then((result) => {
               this.getData()
               this.dialog2 = false
@@ -394,23 +395,38 @@
           }
         })
       },
-
       getData() {
-        let options = {
-          params:{
-            q_id: this.$route.query.id,
-            uid: this.current_uid
-          }
+        this.getQuestion()
+        this.getAnswerList()
+      },
+      getQuestion(){
+        let data = {
+          id: this.$route.query.id,
+          inform_id: this.$route.query.inform_id || 0
         };
-
-        API.get(Constants.Method.get_question_list, options)
+        // 获取问题详情
+        API.post(Constants.Method.get_question_info, data)
             .then((result) => {
+              console.log(result)
               result = result.data
-              this.question = result.question;
-              // 获取当前问题采纳的回答的id
-              let thisId = this.question.q_adoption
+              this.question = result;
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+      },
+      getAnswerList(){
+        let data = {
+          id: this.$route.query.id,
+        };
+        // 获取当前用户下的回答列表
+        API.post(Constants.Method.get_answer_list,data)
+            .then((result)=>{
               // 倒叙
-              this.answer_list = result.answer_list
+              if(!result.data){
+                return
+              }
+              this.answer_list = result.data
               // this.jsonSort()
               // 采纳的部分：
               let getIndex = function (arr, key) {
@@ -424,6 +440,8 @@
                 })
                 return index
               }
+              // 获取当前问题采纳的回答的id todo
+              let thisId = this.question.q_adoption || null
               let i = getIndex(this.answer_list, thisId)
               let caiNa = ''
               if (i !== -1) {
@@ -434,12 +452,9 @@
               if (caiNa) {
                 this.answer_list.unshift(caiNa)
               }
-              this.isOwner = (this.question.uid === this.$ls.get(Constants.LocalStorage.uid));
-
+              // 判断此问题是自己的吗 自己的化显示 采纳 按钮
+              this.isOwner = (this.question.asker_id === this.$ls.get(Constants.LocalStorage.uid));
             })
-            .catch((err) => {
-              console.log(err);
-            });
       },
       gotoResponse() {
         this.pushPage({
@@ -495,13 +510,10 @@
         }
       },
       editHandle(aid, uid) {
-        let options = {
-          params:{
-            a_id: aid,
-            uid: uid
-          }
+        let data = {
+            id: aid,
         }
-        API.get(Constants.Method.get_answer_edit,options)
+        API.post(Constants.Method.get_answer_edit,data)
             .then((result) => {
               console.log('edit success')
               if(result.code ===0 && result.message == 'Success'){
@@ -521,22 +533,18 @@
             })
       },
       like(index, liked) {
+        console.log("isLiked")
         if (timer) {
           clearTimeout(timer)
         }
         this.disabled = true
         let timer;
-        let options = {
-         params:{
-           uid:this.current_uid,
-           q_id: this.$route.query.id,
-           a_id: this.answer_list[index].id,
-           c_id: 0
-         }
+        let data = {
+           id: this.answer_list[index].id,
         };
         switch (liked) {
-          case 1:
-            API.get(Constants.Method.un_like, options)
+          case '1':
+            API.post(Constants.Method.un_like, data)
                 .then((result) => {
                   this.getData();
                   timer = setTimeout(() => {
@@ -547,8 +555,8 @@
                   console.log(err);
                 })
             break;
-          case 0:
-            API.get(Constants.Method.like, options)
+          case '0':
+            API.post(Constants.Method.like, data)
                 .then((result) => {
                   this.getData();
                   timer = setTimeout(() => {
@@ -563,50 +571,21 @@
             console.log('操作太快')
         }
       },
-      toLiked(index, liked) {
-        this.debounce(this.like(index, liked), 1000)
-
-      },
-      debounce(fn, delay) {
-        // 1 记录一个初始时间11
-        let last = Date.now()
-        // 2 维护一个 timer
-        let timer;
-        return function () {
-          // 3 记录当前时间
-          let current = Date.now()
-          // 4 进来的时候清除之前的定时器
-          // 5
-
-          if ((current - last) > delay) {
-            timer = setTimeout(fn, delay)
-            last = current
-          } else {
-            // 当前是2秒以内重复触发
-            timer = setTimeout(fn, delay)
-          }
-        }
-      },
       toggleAsk() {
         this.showAsk = !this.showAsk;
       },
       collect() {
-
         if (timer) {
           clearTimeout(timer)
         }
         this.disabled = true
         let timer
-
         var count = window.localStorage.getItem('collect_num')
-        if (this.question.is_collect) {
-          let options = {
-            params:{
-              q_id: this.$route.query.id,
-              uid:this.current_uid
-            }
+        if (this.question.is_collect == '1') {
+          let data = {
+              id: this.$route.query.id,
           };
-          API.get(Constants.Method.un_favourites, options)
+          API.post(Constants.Method.un_favourites, data)
               .then((result) => {
                 count--;
                 EventBus.$emit('collect_num', count)
@@ -622,17 +601,13 @@
                 console.log(err);
               });
         } else {
-          let options = {
-           params:{
-             q_id: this.$route.query.id,
-             uid:this.current_uid
-           }
+          let data = {
+             id: this.$route.query.id,
           };
-          API.get(Constants.Method.favourites,options)
+          API.post(Constants.Method.favourites,data)
               .then((result) => {
                 count++;
                 EventBus.$emit('collect_num', count)
-                console.log('收藏成功')
                 this.getData();
                 EventBus.$emit(Constants.EventBus.showToast, {
                   message: '收藏成功'
@@ -651,16 +626,12 @@
       accept() {
         console.log('采纳')
         let index = this.q_adoption_index
-        let options = {
-          params:{
+        let data = {
             q_id: this.$route.query.id,
             a_id: this.answer_list[index].id,
-            uid:this.current_uid
-          }
-
         };
 
-        API.get(Constants.Method.adoption, options)
+        API.post(Constants.Method.adoption, data)
             .then((result) => {
               this.dialog = false
               EventBus.$emit(Constants.EventBus.showToast, {
@@ -674,8 +645,7 @@
       },
       onItemClick(index) {
         let data = {
-          q_id: this.$route.query.id,
-          a_id: this.answer_list[index].id
+          id: +this.answer_list[index].id
         };
 
         this.pushPage({
@@ -810,6 +780,9 @@
     overflow: scroll;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
+    .mu-list{
+      padding: 0;
+    }
   }
 
   .card-re {

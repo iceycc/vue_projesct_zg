@@ -56,6 +56,14 @@ export default {
   // 自定义参数部分
   custom: {
     handleError: true //是否在interceptors处理错误状态.
-  }
+  },
+  // proxy: {
+  //   host: '127.0.0.1',
+  //   port: 9000,
+  //   auth : {
+  //     username: 'mikeymike',
+  //     password: 'rapunz3l'
+  //   }
+  // },
 
 };
