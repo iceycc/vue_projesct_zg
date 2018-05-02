@@ -5,6 +5,7 @@
       <mu-icon-button icon="arrow_back" slot="left" @click="goBack"></mu-icon-button>
 
     </mu-appbar>
+
     <!--顶部问题详情-->
     <div class="card" v-if="question">
       <!--用户头像 名称 赏金-->
