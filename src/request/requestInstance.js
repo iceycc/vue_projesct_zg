@@ -8,10 +8,7 @@ const _axios =  axios.create(Config)
 
 // 请求的拦截器
 _axios.interceptors.request.use( (config) => {
-  // const token = localStorage.getItem('token')
-
   let sign = localStorage.getItem('sign')
-  // let sign = '215b54bc24847bdaa7344b2504514881'
   // 判断请求的类型
   // 如果是post请求就把默认参数拼到data里面
   // 如果是get请求就拼到params里面

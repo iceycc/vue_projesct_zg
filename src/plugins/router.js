@@ -29,20 +29,17 @@ let routes = [
     name: Constants.PageName.main,
     component: Pages.main,
     meta: {
-      title: '主页',
+      title: '诸葛装修',
       keepAlive: false,
-      needLogin: true
+      needLogin: false
 
-    },
-    redirect: {
-      name: Constants.PageName.qaIndex
     },
     children: [
       {
         path: Constants.PageName.qaIndex,
         name: Constants.PageName.qaIndex,
         component: Pages[Constants.PageName.qaIndex],
-        meta: {keepAlive: true, title: '问答',needLogin: true},
+        meta: {keepAlive: true, title: '主页',needLogin: true},
       },
       {
         path: Constants.PageName.qaUser,
@@ -97,7 +94,7 @@ addRouter(Constants.PageName.qaLogin, {keepAlive: false, title: '登录', needLo
 addRouter(Constants.PageName.qaWallet, {keepAlive: false, title: '钱包'});
 addRouter(Constants.PageName.qaWithdraw, {keepAlive: false, title: '提现'});
 addRouter(Constants.PageName.qaKetangDetail, {keepAlive: false, title: '课堂'});
-addRouter(Constants.PageName.qaDoc, {keepAlive: false, title: ''});
+addRouter(Constants.PageName.qaDoc, {keepAlive: false, title: '',needLogin: false});
 addRouter(Constants.PageName.qaBindAccount, {keepAlive: false, title: '账号绑定'});
 
 let router = new Router({
@@ -109,8 +106,10 @@ router.beforeEach((to, from, next) => {
   if (to.meta && to.meta.title) {
     document.title = to.meta.title;
   }
-  let sign = localStorage.getItem('sign')
+  // 判断是否需要进行登陆 校验
   if (to.meta.needLogin) {
+    let sign = localStorage.getItem('sign')
+    // 判断sign是否存在
     if (sign) {
       next()
     } else {
@@ -150,9 +149,7 @@ const reloadIntercepetor = (to, from) => {
 
 
 router.afterEach((to, from) => {
-  if (to.mame == 'qaindex') {
-    document.title = '问答';
-  }
+
 })
 
 

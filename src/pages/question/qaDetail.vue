@@ -94,7 +94,9 @@
               <!--获取评论下的评论 -->
               <div v-if="item.hot_commnet.commenter_name" class="hotcomment">
                 <div class="title">{{item.hot_commnet.commenter_name}}
-                  <uz-lable :role="item.hot_commnet.commenter_rank"></uz-lable>
+                  <uz-lable v-if="question.q_reward > 0"
+                            :role="item.hot_commnet.commenter_id === question.asker_id ? '赏金发起人' : item.commenter_rank"></uz-lable>
+                  <uz-lable v-else :role="item.hot_commnet.commenter_id === question.asker_id ? '问题发起人' : item.commenter_rank"></uz-lable>
                   :{{item.hot_commnet.content}}
                 </div>
                 <div class="count">查看全部{{item.hot_commnet.total}}条回复</div>
@@ -103,7 +105,7 @@
               <div class="view2 horizontal-view">
                 <!--编辑功能-->
                 <button class="like"
-                        @click.stop="editHandle(item.id,item.uid)"
+                        @click.stop="editHandle(item.id)"
                         style="border: none;background: transparent;outline: none"
                         :disabled="disabled"
                         v-if="current_uid == item.answerer_id"
@@ -509,20 +511,22 @@
           });
         }
       },
-      editHandle(aid, uid) {
+      editHandle(aid) {
         let data = {
             id: aid,
         }
+        console.log(313123123)
         API.post(Constants.Method.get_answer_edit,data)
             .then((result) => {
               console.log('edit success')
-              if(result.code ===0 && result.message == 'Success'){
+              console.log(result)
+              if(result.code === 0 && result.message == 'Successful'){
                 this.$router.push({
                   name: Constants.PageName.qaResponse,
                   params: {
                     content: result.data.content,
                     is_edit: true,
-                    data: options.params
+                    data:data
                   }
                 })
               }

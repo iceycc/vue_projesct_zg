@@ -185,18 +185,12 @@
         }
         API.post(this.url,param)
             .then((result) => {
-              console.log('autoListView result');
-              console.log(result);
               result = result.data
               if ('handleResult' in this.$parent) {
                 result = this.$parent.handleResult(result);
               }
               EventBus.$emit('isTab')
               this.data = this.data.concat(result);
-              // console.log('==================列表=========')
-              console.log(this.url)
-              console.log(this.data)
-              // console.log('============================')
               if (result.length === 0) {
                 this.isMore = false;
                 this.emptyMsg = '没有数据'

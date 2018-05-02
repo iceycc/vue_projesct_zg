@@ -24,6 +24,7 @@
   import AutoListView from "../components/commons/AutoListView";
 
   export default {
+
     components: {
       AutoListView,
       ComponentTemplate
@@ -43,10 +44,6 @@
       // if (id) {
       //   this.gotoMain(id);
       // }
-      // 用于测试！！
-      // else {this.gotoMain(26319);} // 假如时光倒流
-      // else {this.gotoMain(25416);} //  176管家
-      // else {this.gotoMain(49942);} //  121 普通用户
 
     },
 

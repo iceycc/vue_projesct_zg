@@ -26,15 +26,15 @@
 
       <div class="slider" v-if="slider">
         <vue-slider-component
-            v-model="qa.reward"
-            :direction="slider.direction"
-            :height="slider.height"
-            :min="slider.min"
-            :max="slider.max"
-            :tooltip="false"
-            :processStyle="slider.processStyle"
-            :sliderStyle="slider.sliderStyle"
-            :bgStyle="slider.bgStyle"
+          v-model="qa.reward"
+          :direction="slider.direction"
+          :height="slider.height"
+          :min="slider.min"
+          :max="slider.max"
+          :tooltip="false"
+          :processStyle="slider.processStyle"
+          :sliderStyle="slider.sliderStyle"
+          :bgStyle="slider.bgStyle"
         ></vue-slider-component>
       </div>
       <div class="tip2">
@@ -87,7 +87,9 @@
         serverIds: [],
         showMask: false,
         last_num: img_max,
-        current_uid:null,
+        current_uid: null,
+        is_wallet: false,
+        money_sum: 0
       };
     },
     computed: {
@@ -186,13 +188,11 @@
         });
       },
       submit: function () {
-        // 去除前后空格
-
+        // 判断是否是从钱包详情页过来的
         if (this.$route.params) {
-          var is_wallet = this.$route.params.is_wallet
-          var money_sum = this.$route.params.money_sum
+          this.is_wallet = this.$route.params.is_walle || false//是否是钱包支付。
+          this.money_sum = this.$route.params.money_sum || 0//钱包零钱总数
         }
-        console.log(this.$route.params)
         this.qa.title = this.qa.title.replace(/^\s+|\s+$/g, "");
         if (!this.qa.title) {
           EventBus.$emit(Constants.EventBus.showToast, {
@@ -212,7 +212,7 @@
           });
           return;
         }
-        if (money_sum && this.qa.reward > money_sum) {
+        if (this.money_sum && this.qa.reward > this.money_sum) {
           EventBus.$emit(Constants.EventBus.showToast, {
             message: '您的钱包余额不足'
           });
@@ -222,49 +222,113 @@
           let data = {
             title: this.qa.title,
             content: this.qa.content,
-            attach: this.serverIds,
+            attach: this.serverIds || [],
+            reward: 0,
+            pay_type: 0
           };
-          // 钱包支付
+          // todo 1st 付费支付接口调试
+          // 免费支付：    reward = 0   pay_type = 0
           if (this.type === 0) {
             data.reward = 0;
             data.pay_type = 0
-          } else{
-            data.reward = this.qa.reward;
-            data.pay_type = 1
           }
-          // http://zhuge.uzhuang.com/index.php?r=member/question
-          API.post(Constants.Method.ask_question, data)
-              .then((result) => {
-                    EventBus.$emit(Constants.EventBus.showToast, {
-                      message: '发布成功',
-                    });
-                    result = result.data
-                    this.insert_id = result.id
-                    if (data.reward > 0 && !is_wallet) {
-                      // todo
-                      window.location.href = `http://m.uzhuang.com/wxpay/pay/Weixin/h5_wx/example/jsapi.php?question_id=${result.insert_id}&pay_type=h5_wx&uid=${localStorage.getItem('uid')}`;
-                    }
+          // 付费 微信支付： reward >0  pay_type = 1
+          if (this.type === 1 && !this.is_wallet) {
+            data.reward = this.qa.reward * 100;
+            data.pay_type = 1
 
-                    this.qa.title = '';
-                    this.qa.content = '';
-                    this.qa.reward = 5;
-                    this.localIds = [];
-                    this.serverIds = [];
-                    //  获取问题id
-                    setTimeout(() => {
-                      this.pushPage({
-                        name: Constants.PageName.qaDetail,
-                        query: {
-                          id: this.insert_id,
-                          go_home: true
-                        }
-                      });
-                    }, 2000);
-                  })
-              .catch((err)=>{
-                console.log(err);
-              });
+          }
+          // 付费 钱包支付： reward >0  pay_type = 0
+          if (this.type === 1 && this.is_wallet) {
+            data.reward = this.qa.reward * 100;
+            data.pay_type = 0
+          }
+          this.doPostDateHandle(data)
+          return
         });
+      },
+      doPostDateHandle(data) {
+        console.log(this.is_wallet);
+        API.post(Constants.Method.ask_question, data)
+          .then((result) => {
+            result = result.data
+            this.insert_id = result.id
+            var successHandle = () => {
+              EventBus.$emit(Constants.EventBus.showToast, {
+                message: '发布成功',
+              });
+              this.qa.title = '';
+              this.qa.content = '';
+              this.qa.reward = 5;
+              this.localIds = [];
+              this.serverIds = [];
+              //  获取问题id
+              setTimeout(() => {
+                this.pushPage({
+                  name: Constants.PageName.qaDetail,
+                  query: {
+                    id: this.insert_id,
+                    go_home: true
+                  }
+                });
+              }, 2000);
+            }
+            if (data.reward > 0 && !this.is_wallet) {
+              console.log('xxxxx')
+              let options = {
+                question_id: this.insert_id,
+                reward: data.reward
+              }
+              API.post(Constants.Method.wxpay, options)
+                .then((result) => {
+                  let option = JSON.parse(result.data)
+
+                  console.log('wxpay option');
+                  console.log(option);
+                  // successHandle()
+                  wx.chooseWXPay({
+                    timeStamp: option.timestamp,
+                    nonceStr: option.nonceStr,
+                    package: option.package,
+                    signType: option.signType,
+                    paySign: option.paySign, // 支付签名
+                    success(res) {
+                      // 支付成功后的回调函数
+                      // 支付成功后
+                      console.log('');
+                      console.log(res);
+                      successHandle()
+                    }
+                    // fail(err){
+                    //   console.log(err);
+                    // }
+                  });
+                })
+                .catch((err) => {
+                  console.log(err);
+                })
+              // window.location.href = `http://m.uzhuang.com/wxpay/pay/Weixin/h5_wx/example/jsapi.php?question_id=${result.insert_id}&pay_type=h5_wx&uid=${localStorage.getItem('uid')}`;
+            } else {
+              successHandle()
+            }
+
+
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      },
+      doWXPay() {
+        //   wx.chooseWXPay({
+        //     timestamp: <?= $config['timestamp'] ?>,
+        //     nonceStr: '<?= $config['nonceStr'] ?>',
+        //     package: '<?= $config['package'] ?>',
+        //     signType: '<?= $config['signType'] ?>',
+        //     paySign: '<?= $config['paySign'] ?>', // 支付签名
+        //     success: function (res) {
+        //     // 支付成功后的回调函数
+        //   }
+        // });
       },
       chooseImage() {
         // 获取当前的
@@ -343,12 +407,12 @@
 
       // todo 这里不是很合理  离开组件时 添加自己的问题数
       API.post(Constants.Method.profile, {})
-          .then((result) => {
-            EventBus.$emit('my_question_num', result.my_question_num)
-          })
-          .catch((err)=>{
-            console.log(err);
-          });
+        .then((result) => {
+          EventBus.$emit('my_question_num', result.my_question_num)
+        })
+        .catch((err) => {
+          console.log(err);
+        });
       next()
     },
   };

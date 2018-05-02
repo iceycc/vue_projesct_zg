@@ -103,18 +103,25 @@
       console.log('updated')
       // this.isReadShow()
     },
+    beforeCreate(){
 
+    },
     created() {
       let str = window.location.hash.toString()
-      this.role = window.localStorage.getItem('role')
       if(typeof str == 'string'){
-        // let sign = str.split('=')[1]
+        let sign = str.split('=')[1]
 
-        let sign = '215b54bc24847bdaa7344b2504514881'
+        // let sign = '215b54bc24847bdaa7344b2504514881'
+
         if(sign){
           window.localStorage.setItem('sign',sign)
+          this.pushPage({
+            name:Constants.PageName.qaIndex
+          })
         }
       }
+
+      this.role = window.localStorage.getItem('role')
 
       this.getUserInfos()
 
@@ -149,10 +156,12 @@
               console.log(result)
               let userInfos = result.data
               this.$ls.set(Constants.LocalStorage.role, userInfos.role);
+              this.role = userInfos.role;
               this.$ls.set(Constants.LocalStorage.question_num, userInfos.question_num)
               this.$ls.set(Constants.LocalStorage.inform_num, userInfos.inform_num)
               this.$ls.set(Constants.LocalStorage.collect_num, userInfos.collect_num)
-              this.$ls.set(Constants.LocalStorage.collect_num, userInfos.uid)
+
+              this.$ls.set(Constants.LocalStorage.uid, userInfos.uid)
               success && success(result)
             })
             .catch((err) => {
@@ -190,7 +199,7 @@
       },
       handleChange(value) {
         if (value == 2) {
-          if(this.role==0){
+          if(this.role == 0){
             this.toggleAsk();
           }else if(this.role == 1){
             EventBus.$emit(Constants.EventBus.showToast, {
@@ -198,7 +207,7 @@
             });
           }else {
             EventBus.$emit(Constants.EventBus.showToast, {
-              message: '管家没有提问权限'
+              message: '没有提问权限'
             });
           }
         } else {

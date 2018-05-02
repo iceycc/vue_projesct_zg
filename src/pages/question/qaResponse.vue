@@ -66,6 +66,7 @@
         }
         if (is_edit) {
           let data = this.$route.params.data
+          console.log(data)
           data.content = this.qa.content
 
           // .concat({content:this.qa.content})
@@ -77,7 +78,7 @@
               .catch((err) => {
                 console.log(err);
               })
-          console.log(data)
+
 
           return
         }
