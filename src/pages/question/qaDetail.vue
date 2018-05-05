@@ -11,10 +11,10 @@
       <!--用户头像 名称 赏金-->
       <div class="view1">
         <img-wrapper :url="question.asker_avatar" classStyle="avatar"
-                     @onClick="ifGoDetail(question.uid,unll,null)"></img-wrapper>
+                     @onClick="ifGoDetail(question.asker_id,null,null)"></img-wrapper>
         <div class="username">{{question.asker_name}}</div>
         <span class="reward shadow"
-              v-if="parseFloat(question.reward) > 0">¥{{question.reward}}</span>
+              v-if="parseFloat(question.reward) > 0">¥{{question.reward | chu100}}</span>
       </div>
       <!--问题标题-->
       <div class="card-title">{{question.title}}</div>
@@ -47,7 +47,7 @@
           {{question.is_collect == '1' ? '已收藏': '收藏'}}
         </button>
 
-        <div>{{ question.qtime | my_time }}</div>
+        <div>{{ question.addtime | crtTime }}</div>
       </div>
       <div class="card-tags" v-if="question.tab && question.tab.length > 0">
         <div class="tag" v-for="item in question.tab" v-if="question.tab[0] !==''">
@@ -70,8 +70,8 @@
                 ></img-wrapper>
 
                 <div class="vertical-view">
-                  <div class="name" @click.stop="ifGoDetail(item.answerer_id,item.answerer_role,item.answerer_name)">{{item.answerer_name ? item.answerer_name :
-                    '匿名用户'}}
+                  <div class="name" @click.stop="ifGoDetail(item.answerer_id,item.answerer_role,item.answerer_name)">
+                    {{item.answerer_role == 1 && role == 1 ? '匿名用户': item.answerer_name }}
                     <!--显示颜色从组件内根据角色名匹配的-->
                     <uz-lable v-if="question.q_reward > 0"
                               :role="item.answerer_id === question.asker_id ? '赏金发起人' : item.answerer_rank"></uz-lable>
@@ -79,15 +79,14 @@
                   </div>
                   <div class="date">{{item.addtime | crtTime}}</div>
                 </div>
-                <!--采纳@click.once.stop="accept(index)"   && item.uid !== question.uid-->
-                <!--todo 当前问题采纳的回答的 id -->
-                <div class="accept" v-if="isOwner && item.adoption == 0 && item.answerer_id !== question.asker_id"
-                     @click.stop="open(index)">采纳
+
+                <div class="accept" v-if="question.asker_id == current_uid  && item.answerer_id !== question.asker_id && !isAdoption"
+                     @click.stop="openAdoption(index)">采纳
                 </div>
 
-                <div class="accepted" v-if="question.q_adoption ==item.id"><img src="../../assets/img/accepted@2x.png"
+                <div class="accepted" v-if="item.adoption =='1'"><img src="../../assets/img/accepted@2x.png"
                                                                                 alt=""></div>
-                <div class="get_reward" v-if="question.q_adoption ==item.id && question.q_reward > 0"><img
+                <div class="get_reward" v-if="item.adoption =='1' && question.reward > 0"><img
                     src="../../assets/img/get_reward.png" alt=""></div>
               </div>
               <!--评论内容-->
@@ -96,8 +95,8 @@
               <div v-if="item.hot_commnet.commenter_name" class="hotcomment">
                 <div class="title">{{item.hot_commnet.commenter_name}}
                   <uz-lable v-if="question.q_reward > 0"
-                            :role="item.hot_commnet.commenter_id === question.asker_id ? '赏金发起人' : item.commenter_rank"></uz-lable>
-                  <uz-lable v-else :role="item.hot_commnet.commenter_id === question.asker_id ? '问题发起人' : item.commenter_rank"></uz-lable>
+                            :role="item.hot_commnet.commenter_id === question.asker_id ? '赏金发起人' : item.hot_commnet.commenter_rank"></uz-lable>
+                  <uz-lable v-else :role="item.hot_commnet.commenter_id === question.asker_id ? '问题发起人' : item.hot_commnet.commenter_rank"></uz-lable>
                   :{{item.hot_commnet.content}}
                 </div>
                 <div class="count">查看全部{{item.hot_commnet.total}}条回复</div>
@@ -126,7 +125,7 @@
                   {{item.laud}}
 
                 </button>
-                <div @click.stop="clickDel(item.id)" v-if="item.answerer_id == current_uid && question.q_adoption !=item.answerer_id"> 删除
+                <div @click.stop="openClickDel(item.id)" v-if="item.answerer_id == current_uid && question.q_adoption !=item.answerer_id && !isAdoption"> 删除
                 </div>
                 <mu-dialog :open="dialog2" title="提示" @close="close">
                   确定要删除该条回答吗
@@ -227,12 +226,12 @@
       return {
         del_answer_id:null,
         q_adoption_index: null,
+        current_question_id:0,
         showAsk: false,
         dialog2: false,
         dialog: false,
         ifGoHome: false,
         icon_back: '',
-        text_lable: ['哈哈', 'hhe1'],
         icon_a: require('../../assets/img/icon_ask_free.png'),
         icon_b: require('../../assets/img/icon_ask.png'),
         icon1: require('../../assets/img/icon_detail_response.svg'),
@@ -244,6 +243,7 @@
         icon_ask_close: require('../../assets/img/icon_ask_close.svg'),
         icon_edit: require('../../assets/img/icon_edit.svg'),
         role: 0,
+        ifSelfAnswer:false,
         a_avatar: require('../../assets/img/icon_slider.png'),
         uid: 0,
         question: {},
@@ -253,7 +253,7 @@
         localValue: this.$ls.get(Constants.LocalStorage.test, '-1'),
         disabled: false,
         current_uid: null,
-        isOwner:false,
+        isAdoption:false,
         attach: [// text
           'http://pic40.nipic.com/20140412/11857649_170524977000_2.jpg',
           'http://pic34.photophoto.cn/20150202/0005018384491898_b.jpg',
@@ -272,15 +272,14 @@
     },
     computed: {},
     created() {
-      this.current_uid = window.localStorage.getItem('uid')
-      this.role = window.localStorage.getItem('role')
+      this.current_uid = window.localStorage.getItem(Constants.LocalStorage.uid)
+      this.role = window.localStorage.getItem(Constants.LocalStorage.role)
       this.getData();
       this.initWX(() => {
         console.log('wx success');
       });
 
       this.ifGoHome = this.$route.query.go_home || false
-      console.log(this.ifGoHome)
 
       let newTime = new Date()
       let timeChuo1 = Date.parse(newTime)
@@ -308,28 +307,31 @@
     activated() {
     },
     methods: {
-      ifGoDetail(uid, role, aname) {
+      ifGoDetail(uid, role) {
         // 这里通过判断返回的role是否时管是家 自己是管家的话点不开其他管家的详情 匿名用户不能打开 管家看管家也是显示匿名用户
-        if (!(role == '管家' || role == '金牌管家') || (aname == '匿名用户' || '')) {
+        if(role == this.role && uid != this.current_uid){
           return
         } else {
-          this.goGujian(uid, 1)
+          this.goGujian(uid, role)
         }
       },
       goGujian(uid, role) {
-        let uid_this = uid || this.current_uid
-        let role_this = role || window.localStorage.getItem('role')
-        if (role_this == 1) {
-          window.location.href = `http://m.uzhuang.com/mobile-m_butler_details.html?id=M%E7%AB%99-%E5%B7%A5%E5%9C%B0%E7%9B%B4%E6%92%AD&butlerid=${uid_this}`
+        if (role == 1) {
+          window.location.href = `http://m.uzhuang.com/mobile-m_butler_details.html?id=M%E7%AB%99-%E5%B7%A5%E5%9C%B0%E7%9B%B4%E6%92%AD&butlerid=${uid}`
         } else {
           return
         }
       },
-      open(index) {
+      openAdoption(index) {
         this.dialog = true
         this.q_adoption_index = index
       },
+      openClickDel(id) {
+        this.dialog2 = true
+        this.del_answer_id = id
+      },
       close() {
+        this.dialog2 = false
         this.dialog = false
       },
       goBack() {
@@ -353,14 +355,6 @@
           urls: pics // 需要预览的图片http链接列表
         });
       },
-      clickDel(id) {
-        this.dialog2 = true
-        this.del_answer_id = id
-
-      },
-      close() {
-        this.dialog2 = false
-      },
       deleteHandle() {
 
         let data = {
@@ -368,7 +362,7 @@
         }
         API.post(Constants.Method.del_answer, data)
             .then((result) => {
-              this.getData()
+              this.getAnswerList()
               this.dialog2 = false
               EventBus.$emit(Constants.EventBus.showToast, {
                 message: "删除成功"
@@ -383,8 +377,6 @@
       },
       fenXiang() {
         let url = window.location.href
-        console.log(url)
-        console.log(wx.onMenuShareTimeline)
         wx.onMenuShareTimeline({
           title: '分享该问题', // 分享标题
           link: url, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
@@ -410,9 +402,9 @@
         // 获取问题详情
         API.post(Constants.Method.get_question_info, data)
             .then((result) => {
-              console.log(result)
               result = result.data
               this.question = result;
+              this.current_question_id = this.question.id
             })
             .catch((err) => {
               console.log(err);
@@ -430,36 +422,38 @@
                 return
               }
               this.answer_list = result.data
-              // this.jsonSort()
-              // 采纳的部分：
-              let getIndex = function (arr, key) {
-                let index = -1;
-                arr.every(function (vale, i) {
-                  if (vale['id'] === key) {
-                    index = i
-                  } else {
-                    index = -1
-                  }
-                })
-                return index
-              }
-              // 获取当前问题采纳的回答的id todo
-              let thisId = this.question.q_adoption || null
-              let i = getIndex(this.answer_list, thisId)
-              let caiNa = ''
-              if (i !== -1) {
-                caiNa = this.answer_list.splice(i, 1)[0]
-              }
+              // 判断当前回答列表内是否有自己回答过的
+              this.ifSelfAnswer = util.ifHaveVale(this.answer_list,'answerer_id',this.current_uid)
+
+              // if(this.ifSelfAnswer){
+              //   EventBus.$emit(Constants.EventBus.showToast,{
+              //     message:'你已经回答过改问题'
+              //   })
+              // }
+
+              // 欧安的是否有采纳的
+              // this.isAdoption = util.ifHaveVale(this.answer_list,'adoption','1')
               // 没有采纳的部分 按点赞排序
-              this.answer_list = util.jsonSort(this.answer_list, 'like_num', true);
-              if (caiNa) {
-                this.answer_list.unshift(caiNa)
+              this.answer_list = util.jsonSort(this.answer_list, 'laud', true);
+              // 获取采纳的序列号
+              let _index =  util.getSuccIndex(this.answer_list,'adoption','1')
+              if(_index !== -1){
+                this.isAdoption = true
+                var adoptionAnswer = this.answer_list.splice(_index,1)[0]
+                console.log('adoptionAnswer');
+                this.answer_list.unshift(adoptionAnswer)
               }
-              // 判断此问题是自己的吗 自己的化显示 采纳 按钮
-              this.isOwner = (this.question.asker_id === this.$ls.get(Constants.LocalStorage.uid));
             })
       },
+
       gotoResponse() {
+        if(this.ifSelfAnswer){
+
+          EventBus.$emit(Constants.EventBus.showToast,{
+            message:'你已经回答过该问题，不能继续回答，可以编辑'
+          })
+          return
+        }
         this.pushPage({
           name: Constants.PageName.qaResponse,
           query: {
@@ -468,13 +462,6 @@
         });
       },
       gotoAsk1() {
-        // this.pushPage({
-        //   name: Constants.PageName.qaAsk,
-        //   qarams: {
-        //     type: 1
-        //   }
-        // });
-        // EventBus.$emit('showTotal','true')
         this.handleChange(2)
 
       },
@@ -519,8 +506,7 @@
         console.log(313123123)
         API.post(Constants.Method.get_answer_edit,data)
             .then((result) => {
-              console.log('edit success')
-              console.log(result)
+
               if(result.code === 0 && result.message == 'Successful'){
                 this.$router.push({
                   name: Constants.PageName.qaResponse,
@@ -533,12 +519,12 @@
               }
             })
             .catch((err) => {
-              console.log('edit err');
+
               console.log(err);
             })
       },
       like(index, liked) {
-        console.log("isLiked")
+
         if (timer) {
           clearTimeout(timer)
         }
@@ -551,7 +537,7 @@
           case '1':
             API.post(Constants.Method.un_like, data)
                 .then((result) => {
-                  this.getData();
+                  this.getAnswerList()
                   timer = setTimeout(() => {
                     this.disabled = false
                   }, 1000)
@@ -563,7 +549,7 @@
           case '0':
             API.post(Constants.Method.like, data)
                 .then((result) => {
-                  this.getData();
+                  this.getAnswerList()
                   timer = setTimeout(() => {
                     this.disabled = false
                   }, 1000)
@@ -594,7 +580,7 @@
               .then((result) => {
                 count--;
                 EventBus.$emit('collect_num', count)
-                this.getData();
+                this.getQuestion();
                 EventBus.$emit(Constants.EventBus.showToast, {
                   message: '取消收藏'
                 });
@@ -613,7 +599,7 @@
               .then((result) => {
                 count++;
                 EventBus.$emit('collect_num', count)
-                this.getData();
+               this.getQuestion();
                 EventBus.$emit(Constants.EventBus.showToast, {
                   message: '收藏成功'
                 });
@@ -632,17 +618,17 @@
         console.log('采纳')
         let index = this.q_adoption_index
         let data = {
-            q_id: this.$route.query.id,
-            a_id: this.answer_list[index].id,
+            question_id: this.current_question_id,
+            answer_id: this.answer_list[index].id,
         };
-
+        console.log(data);
         API.post(Constants.Method.adoption, data)
             .then((result) => {
               this.dialog = false
               EventBus.$emit(Constants.EventBus.showToast, {
                 message: '已采纳'
               });
-              this.getData();
+              this.getAnswerList();
             })
             .catch((err)=>{
               console.log(err);
@@ -795,6 +781,7 @@
     padding: px2rem(10);
     margin: px2rem(10);
     .view1 {
+      position: relative;
       align-items: center;
       > div:nth-child(2) {
         flex-grow: 1;

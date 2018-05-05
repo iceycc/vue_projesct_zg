@@ -33,9 +33,13 @@
         icon: 'arrow_back',
       };
     },
+    activated(){
+      // console.log(this.mode)
+    },
     created() {
       // document.title = this.title;
       //alert(navigator.userAgent);
+
       switch (this.mode) {
         case 'page':
           this.icon = 'arrow_back';
@@ -58,8 +62,16 @@
         this.$router.push({name: 'search'});
       },
       goBack() {
+        console.log(this.mode)
         switch (this.mode) {
-          case 'test':
+          case 'zsql':
+
+            this.pushPage({
+              name: Constants.PageName.qaAsk,
+              params: {
+                type:1
+              }
+            });
           case 'page':
             this.$router.go(-1);
             break;

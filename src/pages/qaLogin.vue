@@ -39,14 +39,16 @@
     computed: {},
     created() {
       this.to_doc = {name: Constants.PageName.qaDoc, params: {type: 1}}
-      // let id = this.$route.query.id;
-      // // console.log(id);
-      // if (id) {
-      //   this.gotoMain(id);
-      // }
+      // let text = null;
+      // EventBus.$on(Constants.EventBus.sign,(val)=>{
+      //   text = val
+      // })
+      let sign = window.localStorage.getItem(Constants.LocalStorage.sign)
+      if (sign) {
+        this.gotoLogin()
+      }
 
     },
-
     methods: {
       gotoLogin() {
         window.location.href = 'http://wx.uzhuang.com/index.php?r=wx/oauth2'
@@ -66,18 +68,18 @@
       },
       getUserInfos(uid, success) {
         API.post(Constants.Method.profile, {})
-            .then((result) => {
-              let userInfos = result.data
-              this.$ls.set(Constants.LocalStorage.role, userInfos.role);
-              this.$ls.set(Constants.LocalStorage.question_num, userInfos.question_num)
-              this.$ls.set(Constants.LocalStorage.inform_num, userInfos.inform_num)
-              this.$ls.set(Constants.LocalStorage.collect_num, userInfos.collect_num)
-              this.$ls.set(Constants.LocalStorage.collect_num, userInfos.uid)
-              success && success(result)
-            })
-            .catch((err) => {
-              console.log(err);
-            });
+          .then((result) => {
+            let userInfos = result.data
+            this.$ls.set(Constants.LocalStorage.role, userInfos.role);
+            this.$ls.set(Constants.LocalStorage.question_num, userInfos.question_num)
+            this.$ls.set(Constants.LocalStorage.inform_num, userInfos.inform_num)
+            this.$ls.set(Constants.LocalStorage.collect_num, userInfos.collect_num)
+            this.$ls.set(Constants.LocalStorage.collect_num, userInfos.uid)
+            success && success(result)
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       }
     }
   };

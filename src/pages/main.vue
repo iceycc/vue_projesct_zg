@@ -99,22 +99,18 @@
         role:0
       };
     },
-    updated() {
-      console.log('updated')
-      // this.isReadShow()
-    },
-    beforeCreate(){
-
-    },
     created() {
       let str = window.location.hash.toString()
       if(typeof str == 'string'){
         let sign = str.split('=')[1]
 
-        // let sign = '215b54bc24847bdaa7344b2504514881'
+        sign = '215b54bc24847bdaa7344b2504514881'
+        // sign = 'e0c4bdf36c78b9faac7ab659341fb033' // a
+        // sign = 'a39c64680e64ee62b6a932a0a6c3942f' // a
 
         if(sign){
-          window.localStorage.setItem('sign',sign)
+          // EventBus.$emit(Constants.EventBus.sign,"text")
+          window.localStorage.setItem(Constants.LocalStorage.sign,sign)
           this.pushPage({
             name:Constants.PageName.qaIndex
           })
@@ -138,16 +134,20 @@
       }
     },
     watch:{
-      "$router":"getUserData"
+      // 坑 监视路由
+      "$route":"getUserData"
     },
-
       mounted() {
       this.style = {
         height: (this.$el.offsetHeight - this.$refs['bottom'].$el.offsetHeight) + 'px'
       };
     },
     activated(){
-      this.isreadShow = window.localStorage.getItem(Constants.LocalStorage.inform_num) > 0
+      // console.log('activated');
+      EventBus.$on(Constants.EventBus.inform_num,(val)=>{
+        this.isreadShow = val > 0
+      })
+      // this.isreadShow = window.localStorage.getItem(Constants.LocalStorage.inform_num) > 0
     },
     methods: {
       getUserInfos(uid, success) {
@@ -173,6 +173,10 @@
       },
       getUserData(to,from){
         this.showAsk = false
+        console.log('路由改变了')
+        EventBus.$on(Constants.EventBus.inform_num,(val)=>{
+          this.isreadShow = val > 0
+        })
       },
       // isReadShow() {
       //   EventBus.$on('notice_isread_num',(count)=>{

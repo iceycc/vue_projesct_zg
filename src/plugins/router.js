@@ -108,7 +108,11 @@ router.beforeEach((to, from, next) => {
   }
   // 判断是否需要进行登陆 校验
   if (to.meta.needLogin) {
-    let sign = localStorage.getItem('sign')
+    let sign = localStorage.getItem(Constants.LocalStorage.sign)
+    // let sign = null;
+    // EventBus.$on(Constants.EventBus.sign,(val)=>{
+    //   sign = val
+    // })
     // 判断sign是否存在
     if (sign) {
       next()

@@ -5,7 +5,8 @@
       <div class="info-box"
            v-for="(item,index) in datas" :key="index"
            @click="goDetail(item.type,index,item.question_id,item.answer_id,item.id)"
-           :class="{isread:item.is_read == '0'}"
+           :class="{isread:item.is_read == '1'}"
+
       >
         <!--问题指向11-->
         <!--1 回答 2采纳 3点赞回答 4点赞评论 5评论回答 6评论评论-->
@@ -24,7 +25,7 @@
 </template>
 
 <script>
-  import {Constants, EventBus, mixins,API} from '../config/index';
+  import {Constants, EventBus, mixins,API,util} from '../config/index';
   import moment from 'moment'
 
   const defaultStartPage = 1;
@@ -35,7 +36,7 @@
     data() {
       return {
         // 1 回答 2采纳 3点赞回答 4点赞评论 5评论回答 6评论评论
-        notice_infos: ['0', ' 回答了您的问题', ' 采纳了您的问题', ' 点赞了你的回答', ' 点赞了你的评论', ' 评论了你的回答', ' 评论了你的评论'],
+        notice_infos: ['0', ' 回答了您的问题', ' 采纳了您的回答', ' 点赞了你的回答', ' 点赞了你的评论', ' 评论了你的回答', ' 评论了你的评论'],
         datas: [],
         title: '',
         isReadNum: 0,
@@ -73,17 +74,27 @@
       // 2 获取父组件传递的参数
       // 3 点击进入详情
       goDetail(type, index, q_id, a_id, id) {
-        console.log(5413)
-        this.$router.push({
-          name: Constants.PageName.qaComment,
-          query: {
-            id: a_id,
-            inform_id: id
-          }
-        });
+        console.log(a_id)
+        if(a_id){
+          this.$router.push({
+            name: Constants.PageName.qaComment,
+            query: {
+              id: a_id,
+              inform_id: id
+            }
+          });
+        }else {
+          this.$router.push({
+            name: Constants.PageName.qaDetail,
+            query: {
+              id: q_id,
+              inform_id: id
+            }
+          });
+        }
+
       },
       getData() {
-        console.log(11)
         var data = {
           uid: window.localStorage.getItem('uid'),
           page: this.page
@@ -92,7 +103,7 @@
             .then((result) => {
               result = result.data
               this.getRedNum(result)
-              console.log(result)
+              // 坑 分页
               this.datas = this.datas.concat(result)
               //1 如果新请求的数据存在但是result.length为0  取消加载
               if (result && result.length == 0) {
@@ -106,14 +117,7 @@
             });
       },
       getRedNum(result) {
-        var count = 0;
-        result.forEach(function (item, value) {
-          if (item.isread == "0") {
-            count++
-          }
-        })
-        // console.log(count) 1
-        EventBus.$emit('notice_isread_num', count)
+        EventBus.$emit(Constants.EventBus.inform_num, util.getObejctValueNum(result,'is_read',1))
         // window.localStorage.setItem("notice_isread_num", count)
       },
       loadMore() {

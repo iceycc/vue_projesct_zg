@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <app-bar :title="title"></app-bar>
+    <app-bar :title="title" :mode="doc"></app-bar>
     <mu-list class="text-content">
         <div class="yonghuxieyi" v-if="view ==1">
           <h4>功能介绍</h4>
@@ -147,7 +147,8 @@
     data(){
       return {
         title:'诸葛装修用户协议',
-        view:1
+        view:1,
+        doc:'page'
       }
     },
     created(){
@@ -166,6 +167,7 @@
         case 3:
           this.title = '提问须知';
           window.document.title = '提问须知'
+          this.doc = 'zsql'
           break;
         default:
           this.title = ''

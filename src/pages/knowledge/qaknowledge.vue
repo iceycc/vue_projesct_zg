@@ -116,7 +116,7 @@
         }
         API.post(url,data)
           .then((res)=>{
-            let urls = res.data.data
+            let urls = res.data
             this.pics = urls
           })
             .catch((err)=>{

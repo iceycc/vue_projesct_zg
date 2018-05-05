@@ -12,6 +12,7 @@ const Method_Class = {
   answer: BASE_URL + '?r=answer/',
   wallet: BASE_URL + '?r=wallet/',
   wx: BASE_URL + '?r=wx/',
+
 };
 //用于管理项目请求地址
 export const Method = {
@@ -71,6 +72,7 @@ export const Method = {
     del_answer: Method_Class.member + "del-answer",
     // 删除问题 del_question uid qid
     del_question: Method_Class.member + "del-question",
+
     // 管家我得问题列表
     // 未回答 get_question_unanswered   uid page
     get_question_unanswered: Method_Class.member + "unanswered-list",
@@ -83,7 +85,7 @@ export const Method = {
     get_my_question: Method_Class.member + "member-question-list",
     // 左 个人提问  管家未回答
     get_my_left_num: Method_Class.member + "member-question-num",
-    // 右 个人/管家回答
+    // 右 个人/管家 回答
     get_my_right_num: Method_Class.member + "member-answered-num",
     //
     // 账户绑定
@@ -107,6 +109,8 @@ export const Method = {
     // wxpay: 'http://m.uzhuang.com/wxpay/sendWallet/payuser.php',
     wxpay: Method_Class.member + 'pay',
     //wxpay: 'http://m.uzhuang.com/wxpay/pay/Weixin/h5_wx/example/jsapi.php',
+    // 微信提现接口
+    wxtx:Method_Class.member + 'withdraw-deposit',
     //wx_jssdk 配置信息
     get_wx_config_info: Method_Class.wx + 'get-jsconfig',
   }
@@ -147,6 +151,7 @@ export const LocalStorage = {
   question_num: 'question_num',//当前用户问题数
   inform_num: 'inform_num', // 当前用户通知数
   collect_num: 'collect_num', // 当前收藏数
+  sign: 'ZHUGESISE', //
 };
 
 
@@ -161,6 +166,8 @@ export const EventBus = {
   setTitleLeftIcon: 'setTitleLeftIcon',
   update_main_tab_index: 'update_main_tab_index',
   add_red: 'is_read_num',
+  inform_num: 'inform_num', // 当前收藏数
+  sign: 'sign', //
 };
 
 

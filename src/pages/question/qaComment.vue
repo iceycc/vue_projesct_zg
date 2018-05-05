@@ -4,9 +4,10 @@
     <div class="card shadow" v-if="answer">
       <div class="view1 horizontal-view">
         <img-wrapper :url="answer.answerer_avatar" classStyle="avatar"
-                     @onClick="ifGoDetail(answer.uid,answer.role,answer.answerer_name)"></img-wrapper>
+                     @onClick="ifGoDetail(answer.answerer_id,answer.answerer_role,answer.answerer_name)"></img-wrapper>
         <div class="vertical-view">
-          <div class="name" @click="ifGoDetail(answer.uid,answer.role,answer.answerer_name)">{{answer.answerer_name}}
+          <div class="name" @click="ifGoDetail(answer.uid,answer.answerer_role,answer.answerer_name)">
+            {{answer.answerer_role == 1 && role == 1 ? '匿名用户': answer.answerer_name }}
             <uz-lable v-if="answer.answerer_rank" :role="answer.answerer_rank"></uz-lable>
           </div>
           <div class="date">{{answer.addtime | crtTime}}</div>
@@ -111,39 +112,34 @@
         title: '',
         disabled: false,
         a_id:0,
-        del_comment:null
+        del_comment:null,
+        role:0
       };
     },
     computed: {},
     created() {
-      let current_uid = window.localStorage.getItem('uid')
-      this.current_uid = current_uid
+      this.current_uid = window.localStorage.getItem(Constants.LocalStorage.uid)
+      this.role = window.localStorage.getItem(Constants.LocalStorage.role)
 
     },
     activated() {
-      this.getData();
-      this.getComment();
+      this.getData()
+      this.getComment()
     },
     methods: {
       // uid
       ifGoDetail(uid, role) {
         // 这里通过判断返回的role是否时管是家 自己是管家的话点不开其他管家的详情 匿名用户不能打开 管家看管家也是显示匿名用户
-        let my_role = window.localStorage.getItem('role')
-        let current_uid = window.localStorage.getItem('uid')
-        console.log(role == my_role);
-        console.log(uid != current_uid);
-        if (role == my_role && uid !== current_uid) {
+        if(role == this.role && uid != this.current_uid){
           return
-        } else {
-          this.goGujian(uid, 1)
+        }else {
+          this.goGujian(uid, role)
         }
       },
       goGujian(uid, role) {
-        console.log(421)
-        let uid_this = uid || window.localStorage.getItem('uid')
-        let role_this = role || window.localStorage.getItem('role')
-        if (role_this == 1) {
-          window.location.href = `http://m.uzhuang.com/mobile-m_butler_details.html?id=M%E7%AB%99-%E5%B7%A5%E5%9C%B0%E7%9B%B4%E6%92%AD&butlerid=${uid_this}`
+        // 管家可以跳
+        if (role == 1) {
+          window.location.href = `http://m.uzhuang.com/mobile-m_butler_details.html?id=M%E7%AB%99-%E5%B7%A5%E5%9C%B0%E7%9B%B4%E6%92%AD&butlerid=${uid}`
         } else {
           return
         }
@@ -182,13 +178,13 @@
             .then((result) => {
               this.comments = result.data;
               if (this.comments && this.comments.length > 0) {
-                this.title = `${this.comments.length}条回复`;
+                this.title = `${this.comments.length}条回复`
               } else {
-                this.title = `暂无回复`;
+                this.title = `暂无回复`
               }
             })
             .catch((err)=>{
-              console.log(err);
+              console.log(err)
             });
       },
       getRoleClass(role) {
@@ -215,7 +211,7 @@
               this.del_comment = null
             })
             .catch((err)=>{
-              console.log(err);
+              console.log(err)
             })
       },
       //
@@ -233,7 +229,7 @@
           EventBus.$emit(Constants.EventBus.showToast, {
             message: '内容不能为空'
           });
-          return;
+          return
         }
 
         // 回复回答
@@ -244,15 +240,15 @@
           };
           API.post(Constants.Method.reply_answer, data)
               .then((result) => {
-                this.getComment();
-                this.recomment = '';
+                this.getComment()
+                this.recomment = ''
                 console.log("++++++++++++comment+++++++++++++");
                 // console.log(result);
                 this.is_footer_show = false
                 console.log("++++++++++++++++++++++++++++++++");
               })
               .catch((err)=>{
-                console.log(err);
+                console.log(err)
               });
         }
         if(this.a_id == 0){
@@ -262,15 +258,15 @@
           };
           API.post(Constants.Method.reply_comment, data)
               .then((result) => {
-                this.getComment();
-                this.recomment = '';
+                this.getComment()
+                this.recomment = ''
                 console.log("++++++++++++comment+++++++++++++");
                 // console.log(result);
                 this.is_footer_show = false
                 console.log("++++++++++++++++++++++++++++++++");
               })
               .catch((err)=>{
-                console.log(err);
+                console.log(err)
               });
         }
 
@@ -289,13 +285,13 @@
           case '1':
             API.post(Constants.Method.un_like, data)
                 .then((result) => {
-                    this.getData();
+                    this.getData()
                   timer = setTimeout(() => {
                     this.disabled = false;
                   }, 1000)
                 })
                 .catch((err)=>{
-                  console.log(err);
+                  console.log(err)
                 });
             break;
           case '0':
@@ -307,8 +303,8 @@
                   }, 1000)
                 })
                 .catch((err)=>{
-                  console.log(err);
-                });
+                  console.log(err)
+                })
         }
         timer = setTimeout(() => {
           this.disabled = false;

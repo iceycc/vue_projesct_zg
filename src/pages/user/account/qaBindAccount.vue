@@ -50,8 +50,7 @@
         }
         API.post(Constants.Method.bind_account,data)
             .then((result)=>{
-              console.log(result)
-              if(result.data.code == 0 && result.data.message == 'Successful'){
+              if(result.code == 0 && result.message == 'Successful'){
                 EventBus.$emit(Constants.EventBus.showToast, {
                   message: '绑定成功,需要重新登陆'
                 });
@@ -67,6 +66,9 @@
                 });
               }
             })
+          .catch((err)=>{
+            console.log(err);
+          })
       }
     }
   }

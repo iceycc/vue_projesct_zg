@@ -2,13 +2,13 @@
   <div class="content">
     <app-bar :title="title"></app-bar>
     <div class="card-view">
-      <span class="money">{{data.money}}</span>
+      <span class="money">{{tx_data.money | chu100}}</span>
       <div class="desc">提现金额( 元)</div>
       <div class="line"></div>
       <div class="wechatinfo">
         <div class="status">您已绑定微信</div>
-        <img-wrapper :url="data.avatar" classStyle="avatar"></img-wrapper>
-        {{data.username}}
+        <img-wrapper :url="tx_data.avatar" classStyle="avatar"></img-wrapper>
+        {{tx_data.username}}
       </div>
     </div>
     <div style="flex-grow: 1"></div>
@@ -35,8 +35,8 @@
     name: Constants.PageName.qaWithdraw,
     data() {
       return {
-        data: {
-          money: 0,
+        tx_data: {
+          money: 100,
           username: '',
           avatar: '',
           current_uid:null,
@@ -55,7 +55,9 @@
       getData() {
         API.post(Constants.Method.wallet, null)
             .then((result) => {
-              this.data.money = result.money;
+              console.log('tx');
+              console.log(result);
+              this.tx_data.money = result.data.money;
             })
             .catch((err)=>{
               console.log(err);
@@ -71,13 +73,11 @@
       },
       gotoWithdraw() {
         let data = {
-          uid: localStorage.getItem('uid'),
-          amount: parseInt(this.data.money)
+          amount: parseInt(this.tx_data.money)
         }
-        axios.get('http://m.uzhuang.com/wxpay/sendWallet/payuser.php', {params: data})
+        API.get(Constants.Method.wxtx,null)
             .then((result) => {
               console.log(result.data);
-
               if (result.data.code === 0) {
                 EventBus.$emit(Constants.EventBus.showToast, {
                   message: '提现成功'

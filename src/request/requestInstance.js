@@ -5,10 +5,14 @@ import {EventBus,Constants} from '../config/index'
 const _axios =  axios.create(Config)
 
 
-
 // 请求的拦截器
-_axios.interceptors.request.use( (config) => {
-  let sign = localStorage.getItem('sign')
+_axios.interceptors.request.use((config)=>{
+  //
+  // var _this =this
+  // EventBus.$on(Constants.EventBus.sign,(val)=>{
+  //   _this.text = 1111
+  // })
+  let sign = localStorage.getItem(Constants.LocalStorage.sign)
   // 判断请求的类型
   // 如果是post请求就把默认参数拼到data里面
   // 如果是get请求就拼到params里面

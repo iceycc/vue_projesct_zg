@@ -11,10 +11,6 @@ export default {
       //  获取当前url的微信配置凭证
       API.post(Constants.Method.get_wx_config_info, params)
           .then((result) => {
-            // let option = JSON.parse(result)
-            // console.log(option)
-            console.log(typeof result);
-
             wx.config(
               result
             );

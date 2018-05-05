@@ -1,8 +1,8 @@
 <template>
   <div class="content">
     <app-bar :title="title"></app-bar>
-    <div class="money-view">
-      <div><span class="money">{{result.money}}</span>元</div>
+    <div class="money-view" v-if="result">
+      <div><span class="money">{{result.money | chu100}}</span>元</div>
       <div class="desc">{{result.message}}</div>
       <div class="link" @click="gotoWalletDetail">钱包明细</div>
     </div>
@@ -34,7 +34,9 @@
     name: Constants.PageName.qaWallet,
     data() {
       return {
-        result: {},
+        result: {
+          money:0
+        },
         role:0,
         money:0
       };
@@ -43,7 +45,7 @@
     created() {
       // console.log(1)
       this.role = window.localStorage.getItem('role')
-      API.post(Constants.Method.wallet, {uid:window.localStorage.getItem('uid')})
+      API.post(Constants.Method.wallet,null)
           .then((result) => {
             this.result = result.data;
             this.money = result.data.money

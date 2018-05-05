@@ -95,53 +95,33 @@
     created() {
       this.click_num = 0
       this.current_uid = window.localStorage.getItem('uid')
-      this.role = this.$ls.get(Constants.LocalStorage.role);
-      API.post(Constants.Method.profile)
-          .then((result) => {
-            this.data = result.data;
-            console.log(result);
-            this.collect_num = this.data.collect_num
-            this.my_question = this.data.question_num
-
-            // 有待优化 监听 ask页面我得问题数量的变化 1
-            EventBus.$on('my_question_num', content => {
-              this.my_question = content || this.my_question
-            })
-            // 有待优化 监听 ask页面我得问题数量的变化 1
-            EventBus.$on('collect_num', content => {
-              this.collect_num = content || this.collect_num
-            })
-            window.localStorage.setItem('collect_num', this.collect_num)
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+      this.role = window.localStorage.getItem(Constants.LocalStorage.role);
     },
 
 
     activated() {
       console.log("user组件激活")
       this.click_num = 0
-      API.post(Constants.Method.profile, {})
-          .then((result) => {
-            this.data = result.data;
-            console.log(result);
-            this.collect_num = this.data.collect_num
-            this.my_question = this.data.question_num
+      API.post(Constants.Method.profile)
+        .then((result) => {
+          this.data = result.data;
+          console.log(result);
+          this.collect_num = this.data.collect_num
+          this.my_question = this.data.question_num
 
-            // 有待优化 监听 ask页面我得问题数量的变化 1
-            EventBus.$on('my_question_num', content => {
-              this.my_question = content || this.my_question
-            })
-            // 有待优化 监听 ask页面我得问题数量的变化 1
-            EventBus.$on('collect_num', content => {
-              this.collect_num = content || this.collect_num
-            })
-            window.localStorage.setItem('collect_num', this.collect_num)
+          // 有待优化 监听 ask页面我得问题数量的变化 1
+          EventBus.$on('my_question_num', content => {
+            this.my_question = content || this.my_question
           })
-          .catch((err) => {
-            console.log(err);
-          });
+          // 有待优化 监听 ask页面我得问题数量的变化 1
+          EventBus.$on(Constants.EventBus.collect_num, content => {
+            this.collect_num = content || this.collect_num
+          })
+          window.localStorage.setItem(Constants.LocalStorage.collect_num, this.collect_num)
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     methods: {
       clickThree() {

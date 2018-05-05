@@ -1,20 +1,22 @@
 <template>
   <div class="content">
     <app-bar :title="title"></app-bar>
-    <auto-list-view :url="url" :flag="flag" :isNeedDivider="false" @onItemClick="onItemClick">
+    <auto-list-view :url="url" :flag="flag" :isNeedDivider="false" @onItemClick="onItemClick" type="list">
       <template slot="item" slot-scope="props">
         <div class="card" style="display: flex">
           <div class="title-view" style="flex: 7">
-            <div v-if=" props.item.way == 1" class="title">&nbsp; 提现</div>
+            <div v-if="props.item.way == 1" class="title">&nbsp; 提现</div>
             <div v-else class="title">【<span>{{props.item.title}}</span>】 的{{props.item.way | ways }}</div>
-            <div class="card-time">{{props.item.addtime}}</div>
+            <div class="card-time">{{props.item.addtime | crtTime}}</div>
           </div>
           <div class="money"
                style="flex:2;text-align: right;"
                :class="props.item.way | isActive "
           >
             <i>{{props.item.way | add_sub}} </i>
-            {{props.item.money}}
+
+            {{props.item.money | chu100}}
+            元
           </div>
         </div>
       </template>
@@ -55,13 +57,13 @@
     filters:{
       ways:function (val) {
         switch(val){
-          case '1':
+          case 1:
             return '提现';
             break;
-          case '2':
+          case 2:
             return '提问';
             break;
-          case '3':
+          case 3:
             return '赏金';
             break;
           default:
@@ -70,13 +72,13 @@
       },
       add_sub:function(val){
         switch(val){
-          case '1':
+          case 1:
             return '-';
             break;
-          case '2':
+          case 2:
             return '-';
             break;
-          case '3':
+          case 3:
             return '+';
             break;
           default:
@@ -86,13 +88,13 @@
       isActive:function (val) {
 
         switch(val){
-          case '1':
+          case 1:
             return '';
             break;
-          case '2':
+          case 2:
             return '';
             break;
-          case '3':
+          case 3:
             return 'active';
             break;
           default:
@@ -103,7 +105,7 @@
     computed: {},
     created() {
       this.current_uid = window.localStorage.getItem('uid')
-      API.post(Constants.Method.wallet, {uid:this.current_uid})
+      API.post(Constants.Method.wallet, null)
           .then((result) => {
             console.log(result);
           })
@@ -114,8 +116,9 @@
       this.getList();
     },
     methods: {
+
       handleResult(result) {
-        return result.detail;
+        return result;
       },
       getList() {
         this.url = Constants.Method.wallet_detail;
@@ -197,9 +200,10 @@
       .avatar {
         flex-grow: 1;
       }
-      .pv {
-      }
     }
+  }
+  .info_msg_center{
+      margin: 0 auto;
   }
 
 </style>

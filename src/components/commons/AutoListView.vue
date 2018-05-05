@@ -8,7 +8,7 @@
       <template v-for="item, index in data">
         <mu-list-item @click="onItemClick(index)">
           <div class="item">
-            <slot name="item" :item="item" :index="index"></slot>
+            <slot name="item" :item="item" :index="index" haha="c"> </slot>
           </div>
         </mu-list-item>
         <mu-divider v-if="isNeedDivider"/>
@@ -191,6 +191,10 @@
               }
               EventBus.$emit('isTab')
               this.data = this.data.concat(result);
+              // console.log(result);
+              // console.log(this.data);
+              // console.log(this.data instanceof Array);
+
               if (result.length === 0) {
                 this.isMore = false;
                 this.emptyMsg = '没有数据'
@@ -201,6 +205,7 @@
                 this.isMore = false;
               }
               this.loading = false;
+
             })
             .catch((err) => {
               this.loading = false;

@@ -13,7 +13,7 @@
                      hintText="请描述您的问题（非必填）" fullWidth
                      multiLine :rows="6"/>
 
-      <upload-view @upload="chooseImage" @remove="remove" :localIds="localIds" v-if="last_num > 0"></upload-view>
+      <upload-view @upload="chooseImage" @remove="remove" :localIds="localIds"></upload-view>
 
     </div>
 
@@ -253,6 +253,7 @@
           .then((result) => {
             result = result.data
             this.insert_id = result.id
+            // 回答成功后的操作
             var successHandle = () => {
               EventBus.$emit(Constants.EventBus.showToast, {
                 message: '发布成功',
@@ -273,6 +274,7 @@
                 });
               }, 2000);
             }
+            // 如果是付费回答
             if (data.reward > 0 && !this.is_wallet) {
               console.log('xxxxx')
               let options = {
@@ -282,12 +284,8 @@
               API.post(Constants.Method.wxpay, options)
                 .then((result) => {
                   let option = JSON.parse(result.data)
-
-                  console.log('wxpay option');
-                  console.log(option);
-                  // successHandle()
                   wx.chooseWXPay({
-                    timeStamp: option.timestamp,
+                    timestamp: option.timestamp,
                     nonceStr: option.nonceStr,
                     package: option.package,
                     signType: option.signType,
@@ -295,19 +293,13 @@
                     success(res) {
                       // 支付成功后的回调函数
                       // 支付成功后
-                      console.log('');
-                      console.log(res);
                       successHandle()
                     }
-                    // fail(err){
-                    //   console.log(err);
-                    // }
                   });
                 })
                 .catch((err) => {
                   console.log(err);
                 })
-              // window.location.href = `http://m.uzhuang.com/wxpay/pay/Weixin/h5_wx/example/jsapi.php?question_id=${result.insert_id}&pay_type=h5_wx&uid=${localStorage.getItem('uid')}`;
             } else {
               successHandle()
             }
@@ -341,6 +333,12 @@
         }
         // 剩余的
         this.last_num = img_max - pic_num;
+        if(this.last_num<=0){
+          EventBus.$emit(Constants.EventBus.showToast,{
+            message:'您只能上传9张图片'
+          })
+          return
+        }
         // todo 测试选择图片数量的啊
         console.log(this.last_num)
         let that = this;
@@ -408,7 +406,7 @@
       // todo 这里不是很合理  离开组件时 添加自己的问题数
       API.post(Constants.Method.profile, {})
         .then((result) => {
-          EventBus.$emit('my_question_num', result.my_question_num)
+          EventBus.$emit('my_question_num', result.question_num)
         })
         .catch((err) => {
           console.log(err);

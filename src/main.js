@@ -16,10 +16,11 @@ import {} from './plugins/localstorage';
 import {} from './config/mixins/mixins-base';
 import {} from './config/mixins/mixins-wx';
 
-//拦截器
-//无使用,仅防止重复打包
+// 拦截器
+// 无使用,仅防止重复打包
 import {} from './request/requestInstance';
 
+// 引入过滤器
 import * as custom from './plugins/filter'
 Object.keys(custom).forEach(key=>{
   Vue.filter(key, custom[key])
