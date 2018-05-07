@@ -2,7 +2,7 @@
   <div class="content">
     <app-bar :title="title"></app-bar>
     <auto-list-view :url="url" :flag="flag" :isNeedDivider="false" @onItemClick="onItemClick" type="list">
-      <template slot="item" slot-scope="props">
+      <template slot="item" slot-scope="props" v-if="props.item.money>0">
         <div class="card" style="display: flex">
           <div class="title-view" style="flex: 7">
             <div v-if="props.item.way == 1" class="title">&nbsp; 提现</div>
@@ -16,7 +16,6 @@
             <i>{{props.item.way | add_sub}} </i>
 
             {{props.item.money | chu100}}
-            元
           </div>
         </div>
       </template>
@@ -46,19 +45,15 @@
       return {
         url: '',
         current_uid:''
-        // 类型 0 提现减 1 付费提问减  2 问题被采纳加  filter不能使用data中的数据
-        // way_data:{
-        //   tixian: '0',
-        //   tiwen: '1',
-        //   shangjin: '2'
-        // }
+        // 类型 1 提现减 2 付费提问减  3 问题被采纳加  4 钱包提问减 filter不能使用data中的数据
+
       };
     },
     filters:{
       ways:function (val) {
-        switch(val){
+        switch(Number(val)){
           case 1:
-            return '提现';
+            return '';
             break;
           case 2:
             return '提问';
@@ -66,12 +61,15 @@
           case 3:
             return '赏金';
             break;
+          case 4:
+            return '提问';
+            break;
           default:
             return ''
         }
       },
       add_sub:function(val){
-        switch(val){
+        switch(Number(val)){
           case 1:
             return '-';
             break;
@@ -81,13 +79,16 @@
           case 3:
             return '+';
             break;
+          case 4:
+            return '-';
+            break;
           default:
             return ''
         }
       }.bind(this),
       isActive:function (val) {
 
-        switch(val){
+        switch(Number(val)){
           case 1:
             return '';
             break;
@@ -96,6 +97,9 @@
             break;
           case 3:
             return 'active';
+            break;
+          case 4:
+            return '';
             break;
           default:
             return ''

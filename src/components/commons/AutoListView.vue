@@ -36,11 +36,9 @@
         </div>
       </div>
     </div>
-
     <div class="empty-view" v-if="data.length === 0 && !loading">
       <div class="empty-message">{{emptyMsg}}</div>
     </div>
-
     <!--<mu-infinite-scroll :scroller="scroller" :loading="loading" @load="loadMore" v-if="isMore"/>-->
     <mu-infinite-scroll v-if="isMore" :scroller="scroller" :loading="loading" @load="loadMore"
                         loadingText="数据加载中..."/>
@@ -143,7 +141,7 @@
     },
     created() {
       if (this.flag) {
-        this.getdata();
+        this.getData();
       }
     },
     methods: {
@@ -155,10 +153,6 @@
         this.page = defaultStartPage;
         this.data = [];
       },
-      refresh() {
-        this.init();
-        this.getdata();
-      },
       getPicsData() {
         this.loading = true;
         API.post(this.url, null)
@@ -168,7 +162,7 @@
           console.log(err);
         })
       },
-      getdata() {
+      getData() {
         this.loading = true;
         // 注意判断完成切换类型是点击顶部栏还是下拉触发的方式
         if (this.isTab == true) {
@@ -218,15 +212,17 @@
         if (this.isMore) {
           this.loading = true
           setTimeout(() => {
-            this.getdata();
+            this.getData();
             this.loading = false
           }, 2000)
         }
       },
       refresh() {
+        console.log('refresh')
         this.refreshing = true
         setTimeout(() => {
-          this.getdata();
+          this.init();
+          this.getData();
           this.refreshing = false
         }, 500)
       }

@@ -3,48 +3,25 @@
     <app-bar :title="title"></app-bar>
     <div class="question-search">
       <input type="search" v-model="search_word">
-      <div @click="goSearch(search_word)">
+      <div @click="goSearch(search_word,isShow)">
         <img-wrapper :url="icon_search" classStyle="icon"></img-wrapper>
       </div>
     </div>
     <ul class="question-tab" v-if="role == 1">
-      <li class="active question-tab-li" @click="toList(1)">未回答（{{left_num}}）</li>
-      <li class="question-tab-li" @click="toList(2)">已回答（{{right_num}}）</li>
+      <li class="active question-tab-li" @click="getList(1)">未回答（{{left_num}}）</li>
+      <li class="question-tab-li" @click="getList(2)">已回答（{{right_num}}）</li>
     </ul>
     <ul class="question-tab" v-if="role == 0">
-      <li class="active question-tab-li" @click="toList(3)">提问（{{left_num}}）</li>
-      <li class="question-tab-li" @click="toList(4)">回答（{{right_num}}）</li>
+      <li class="active question-tab-li" @click="getList(3)">提问（{{left_num}}）</li>
+      <li class="question-tab-li" @click="getList(4)">回答（{{right_num}}）</li>
     </ul>
-    <auto-list-view2 v-show="isShow === 1" :url="url1" :answered_list="answered_list_1" type="user_question"></auto-list-view2>
+    <auto-list-view2 :url="url" :type="list_type" :ex_params="ex_params" :flag="flag" :isTab="isTab"></auto-list-view2>
 
-    <auto-list-view2 v-show="isShow === 2" :url="url2" :answered_list="answered_list_2" type="user_question">
-
-    </auto-list-view2>
-    <auto-list-view2 v-show="isShow === 3" :url="url3" :answered_list="answered_list_2" type="list"  @onItemClick="onItemClick" :ex_params="ex_params">
-      <template slot="item" slot-scope="props">
-        <div class="card">
-          <div class="title-view">
-            <div class="title">{{props.item.title}}</div>
-            <span class="reward shadow"
-                  v-if="parseFloat(props.item.q_reward) > 0">{{props.item.q_reward}}</span>
-          </div>
-          <div class="card-content">{{props.item.content}}</div>
-          <div class="footer-view">
-            <div class="avatar">
-              <img-wrapper v-for="avatar,index in props.item.avatar" :url="avatar" :key="index"
-                           classStyle="avatar"></img-wrapper>
-            </div>
-            <div class="pv">{{props.item.pv}}浏览</div>
-          </div>
-        </div>
-      </template>
-    </auto-list-view2>
-    <auto-list-view2 v-show="isShow === 4" :url="url4" :answered_list="answered_list_2" type="user_question"></auto-list-view2>
   </div>
 </template>
 
 <script>
-  import {Constants, mixins, API,EventBus} from '../../../config/index';
+  import {Constants, mixins, API, EventBus} from '../../../config/index';
   import AppBar from "../../../components/commons/AppBar.vue";
   import ImgWrapper from "../../../components/commons/ImgWrapper.vue";
   import AutoListView2 from "../../../components/commons/AutoListView2"
@@ -61,27 +38,37 @@
     mixins: [mixins.base, mixins.wx],
     data() {
       return {
-        title: '我得问题',
+        title: '我的问答',
         icon_search: require('../../../assets/img/icon_search.svg'),
         answered_list: [],
-        left_num:null,
-        right_num:null,
+        left_num: null,
+        right_num: null,
         search_word: '',
         answered_list_1: [],
         answered_list_2: [],
-        url: '',
+        urls: [
+          Constants.Method.get_question_unanswered,
+          Constants.Method.get_question_answered,
+          Constants.Method.get_my_question,
+          Constants.Method.get_my_answer
+        ],
         isShow: 1,
-        url1: '',
-        url2: '',
-        url3: '',
-        url4: '',
-        role:0,
-        ex_params:{}
+        url: '',
+        role: 0,
+        ex_params: {
+          key_word: ''
+        },
+        list_type: 'question_list',
+        flag: {
+          flag:null
+        },
+        isTab:false,
+        list_type_num:null
       }
     },
     created() {
 
-      this.role =  window.localStorage.getItem('role')
+      this.role = window.localStorage.getItem(Constants.LocalStorage.role)
       this.init(this.role)
       // this.url = Constants.Method.get_question_unanswered
 
@@ -92,42 +79,60 @@
 
     },
     methods: {
-      init(this_role){
+      init(this_role) {
         console.log('init')
         console.log(this_role)
-        if(this_role ==1){
-          this.isShow = 1
+        if (this_role == 1) {
           this.getNum()
-          this.url1 = Constants.Method.get_question_unanswered
-          this.url2 = Constants.Method.get_question_answered
+          this.url = Constants.Method.get_question_unanswered
+          // this.url2 = Constants.Method.get_question_answered
+          this.list_type = 'answer_list'
+          this.flag = this.url
+          this.list_type_num = 1
+
         }
-        if(this_role == 0){
-          this.isShow = 3
+        if (this_role == 0) {
           this.getNum()
-          this.url3 = Constants.Method.get_my_question;
-          this.url4 = Constants.Method.get_my_answer
+          this.url = Constants.Method.get_my_question;
+          this.list_type = 'question_list'
+
+          // this.url = Constants.Method.get_my_answer
+          // this.list_type = 'answer_list'
+          this.flag = this.url
+          this.list_type_num = 3
+
         }
       },
-      toList(type) {
+      getList(type, key_word) {
+        this.isTab = true;
+        console.log(type)
+        this.ex_params = {
+          key_word
+        }
         if (type === 1) {
-          this.isShow = 1
-          this.url1 = Constants.Method.get_question_unanswered
+          this.url = Constants.Method.get_question_unanswered
+          this.list_type = 'answer_list'
+          this.flag = this.url
         }
         if (type === 2) {
-          this.isShow = 2
-          this.url2 = Constants.Method.get_question_answered
+          this.url = Constants.Method.get_question_answered
+          this.list_type = 'answer_list'
+          this.flag = this.url
         }
         if (type === 3) {
-          this.isShow = 3
-          this.url3 = Constants.Method.get_my_question;
+          this.url = Constants.Method.get_my_question
+          this.list_type = 'question_list'
+          this.flag = this.url
         }
         if (type === 4) {
-          this.isShow = 4
-          this.url4 = Constants.Method.get_my_answer
+          this.url = Constants.Method.get_my_answer
+          this.list_type = 'answer_list'
+          this.flag = this.url
         }
+        this.list_type_num = type
       },
-      onItemClick(item){
-        console.log(11)
+      onItemClick(item) {
+        console.log(item)
         this.pushPage({
           name: Constants.PageName.qaDetail,
           query: {
@@ -150,17 +155,17 @@
           }, true)
         }
       },
-      getNum(){
-        let data = {
+      getNum() {
+        let data = {}
 
-        }
-        function getLeftNum(){
-          return API.post(Constants.Method.get_my_left_num,data)
+        function getLeftNum() {
+          return API.post(Constants.Method.get_my_left_num, data)
         }
 
         function getRightNum() {
-          return API.post(Constants.Method.get_my_right_num,data)
+          return API.post(Constants.Method.get_my_right_num, data)
         }
+
         // API.all([getLeftNum(),getRightNum()])
         //     .then(API.spread((res1,res2)=>{
         //       console.log(res1);
@@ -170,36 +175,19 @@
         //       console.log(err1);
         //       console.log(err2);
         //     })
-        getLeftNum().then((result)=>{
+        getLeftNum().then((result) => {
           console.log(result);
           this.left_num = result.data.num
         })
-        getRightNum().then((result)=>{
+        getRightNum().then((result) => {
 
           console.log(result);
           this.right_num = result.data.num
         })
 
       },
-      getData(type, fn) {
-        //  未回答
-        let data = {
-
-        }
-        // 未回答
-        if (type === 1) {
-        }
-        // 已回答
-        if (type === 2) {
-        }
-
-        if(type === 3){
-        }
-        if(type === 4){
-        }
-      },
       goSearch(word) {
-        console.log(111)
+        console.log(word)
         word = word.replace(/^\s+|\s+$/g, "")
         if (!word) {
           console.log('不能为空')
@@ -208,23 +196,17 @@
           });
           return;
         }
-        let data = {
-              key_word: word,
+        if(!this.list_type_num){
+          console.log('未知错误')
+          return
         }
-        API.post(Constants.Method.get_question_unanswered, data)
-            .then((result) => {
-              console.log(result);
-              this.answered_list = result.data.question_list
-              if (result.data.total === 0) {
-                console.log('no datas');
-                EventBus.$emit(Constants.EventBus.showToast, {
-                  message: '没有找到搜索结果'
-                });
-              }
-            })
-            .catch((err)=>{
-              console.log(err);
-            })
+        this.getList(this.list_type_num,word)
+
+        // switch (Number(list_num)) {
+        //   case 1:
+        //
+        // }
+        // this.reData = true
       }
     }
 
@@ -293,125 +275,9 @@
       width: 45%;
       line-height: px2rem(40);
       &.active {
-        color:#1cd3bf;
+        color: #1cd3bf;
         border-bottom: px2rem(3) solid #1cd3bf;
 
-      }
-    }
-  }
-
-  /*question-card*/
-  .question-card {
-    background-color: #fff;
-    width: 100%;
-    padding: px2rem(10) px2rem(20);
-    margin-bottom: px2rem(10);
-    z-index: 1;
-
-    .view-top {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      .username {
-        flex: 1
-      }
-      .reward {
-        font-size: px2rem(12);
-        line-height: 1;
-        background-color: RGB(255, 205, 0);
-        color: white;
-        padding: px2rem(4) px2rem(10);
-        border-radius: px2rem(15);
-      }
-    }
-    .title {
-
-      font-size: px2rem(16);
-      font-weight: bold;
-      color: #666;
-      padding: px2rem(10) 0;
-    }
-    .question-content {
-      font-size: px2rem(14)
-    }
-    .question-info {
-      font-size: px2rem(14);
-      color: #007aff;
-    }
-
-    .view-footer {
-      padding-top: px2rem(20);
-      padding-bottom: px2rem(10);
-      border-bottom: px2rem(1) solid #ccc;
-      display: flex;
-      div:nth-child(2) {
-        flex: 1;
-        padding-left: px2rem(30);
-      }
-
-    }
-    /*11111111*/
-    .card-tags {
-      display: flex;
-      flex-wrap: wrap;
-      padding-top: px2rem(10);
-      .tag {
-        border: px2rem(1) solid #ccc;
-        padding: px2rem(3) px2rem(6);
-        margin-left: px2rem(10);
-        margin-bottom: px2rem(6);
-        font-size: px2rem(12);
-      }
-    }
-  }
-
-  .card {
-    background-color: white;
-    width: 100%;
-    padding: px2rem(10);
-    border-radius: px2rem(3);
-    .title-view {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      .title {
-        font-size: px2rem(16);
-        flex-grow: 1;
-        font-weight: 600;
-        color:#666
-      }
-      .reward {
-        font-size: px2rem(12);
-        line-height: 1;
-        background-color: RGB(255, 205, 0);
-        color: white;
-        padding: px2rem(4) px2rem(10);
-        border-radius: px2rem(13);
-      }
-      .reward:before {
-        content: '¥';
-        font-size: px2rem(10);
-      }
-    }
-
-    &-content {
-      color: #666666;
-      font-size: px2rem(14);
-      padding: px2rem(10) 0;
-      border-bottom: px2rem(1) solid $divider;
-    }
-
-    .footer-view {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      color: $fontcolor_gray;
-      padding-top: px2rem(10);
-      font-size: px2rem(10);
-      .avatar {
-        flex-grow: 1;
-      }
-      .pv {
       }
     }
   }

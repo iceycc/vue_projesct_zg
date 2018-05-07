@@ -4,7 +4,7 @@ let crtTime = value => {
   return moment(date).format("YYYY-MM-DD HH:mm:ss")
 }
 let chu100 = value => {
-      return value * 0.01
+      return value * 0.01 + '.00'
 }
 export {
   crtTime,

@@ -39,9 +39,7 @@
       };
     },
     updated() {
-      EventBus.$on(Constants.EventBus.add_red, function (value) {
-        console.log(value)
-      })
+
     },
     // watch: {
     //   '$route' (to, from){
@@ -150,11 +148,6 @@
           this.toast.show = false;
         }, 2000);
       },
-      showRed() {
-        EventBus.$on(Constants.EventBus.add_red, function (value) {
-          console.log(value)
-        })
-      }
     }
   };
 </script>

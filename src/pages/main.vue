@@ -46,7 +46,8 @@
           <div class="icon-view">
             <div style="visibility: hidden" class="msg-infos">
               <div>更快更多更优质回答</div>
-              <div>查看更多<a href="javascript:;" @click.stop="webpage" style="text-decoration: underline;color:#328afb">专属权利</a></div>
+              <div>查看更多<a href="javascript:;" @click.stop="webpage" style="text-decoration: underline;color:#328afb">专属权利</a>
+              </div>
             </div>
             <div @click="gotoAsk(1)">
               <img-wrapper :url="icon2" classStyle="icon"></img-wrapper>
@@ -65,7 +66,7 @@
 
 <script>
   //
-  import {Constants, EventBus, mixins,API} from '../config/index';
+  import {Constants, EventBus, mixins, API} from '../config/index';
   import ImgWrapper from "../components/commons/ImgWrapper.vue";
 
   export default {
@@ -76,7 +77,7 @@
     name: 'main',
     data() {
       return {
-        ask_text:'提问',
+        ask_text: '提问',
         toast: {
           show: false,
           message: '',
@@ -90,106 +91,82 @@
         tab2: [require('../assets/img/icon_tab_ask.svg'), require('../assets/img/icon_tab_ask.svg')],
         tab3: [require('../assets/img/icon_tab_notifi.svg'), require('../assets/img/icon_tab_notifi_ed.svg')],
         tab4: [require('../assets/img/icon_tab_user.svg'), require('../assets/img/icon_tab_user_ed.svg')],
-        icon_ask_close:require('../assets/img/icon_ask_close.svg'),
+        icon_ask_close: require('../assets/img/icon_ask_close.svg'),
         showAsk: false,
         style: {},
         notice_isread_num: 0,
         isreadShow: false,
-        to_doc:{},
-        role:0
+        to_doc: {},
+        role: 0
       };
     },
     created() {
+      this.getUserInfos()
+      this.role = window.localStorage.getItem(Constants.LocalStorage.role)
+
       let str = window.location.hash.toString()
-      if(typeof str == 'string'){
+      if (typeof str == 'string') {
         let sign = str.split('=')[1]
-
-        sign = '215b54bc24847bdaa7344b2504514881'
+        // sign = '215b54bc24847bdaa7344b2504514881'
         // sign = 'e0c4bdf36c78b9faac7ab659341fb033' // a
-        // sign = 'a39c64680e64ee62b6a932a0a6c3942f' // a
-
-        if(sign){
+        // sign = 'a39c64680e64ee62b6a932a0a6c3942f'// guanjia
+        // sign = '195b6cf7d91dcbe38cde92a25dd5202c'  // 晓雅
+        if (sign) {
           // EventBus.$emit(Constants.EventBus.sign,"text")
-          window.localStorage.setItem(Constants.LocalStorage.sign,sign)
+          window.localStorage.setItem(Constants.LocalStorage.sign, sign)
           this.pushPage({
-            name:Constants.PageName.qaIndex
+            name: Constants.PageName.qaIndex
           })
         }
       }
-
-      this.role = window.localStorage.getItem('role')
-
-      this.getUserInfos()
-
-      this.to_doc ={name:Constants.PageName.qaDoc,params:{type:2}}
-
-
+      EventBus.$on(Constants.EventBus.inform_num, (val) => {
+        if (val) {
+          this.isreadShow = val > 0
+        }
+      })
+      this.to_doc = {name: Constants.PageName.qaDoc, params: {type: 2}}
 
       if (this.$route.params.isLogin) {
         EventBus.$emit(Constants.EventBus.login);
       }
-      if (Constants.EventBus.add_red) {
-        EventBus.$on(Constants.EventBus.add_red, function (value) {
-        })
-      }
     },
-    watch:{
+    watch: {
       // 坑 监视路由
-      "$route":"getUserData"
+      "$route": "getUserData"
     },
-      mounted() {
+    mounted() {
+
       this.style = {
         height: (this.$el.offsetHeight - this.$refs['bottom'].$el.offsetHeight) + 'px'
       };
     },
-    activated(){
-      // console.log('activated');
-      EventBus.$on(Constants.EventBus.inform_num,(val)=>{
-        this.isreadShow = val > 0
-      })
-      // this.isreadShow = window.localStorage.getItem(Constants.LocalStorage.inform_num) > 0
-    },
     methods: {
-      getUserInfos(uid, success) {
-        API.post(Constants.Method.profile, {uid: uid})
-            .then((result) => {
-              console.log(result)
-              let userInfos = result.data
-              this.$ls.set(Constants.LocalStorage.role, userInfos.role);
-              this.role = userInfos.role;
-              this.$ls.set(Constants.LocalStorage.question_num, userInfos.question_num)
-              this.$ls.set(Constants.LocalStorage.inform_num, userInfos.inform_num)
-              this.$ls.set(Constants.LocalStorage.collect_num, userInfos.collect_num)
-
-              this.$ls.set(Constants.LocalStorage.uid, userInfos.uid)
-              success && success(result)
-            })
-            .catch((err) => {
-              console.log(err);
-            });
+      getUserInfos(success) {
+        API.post(Constants.Method.profile, {})
+          .then((result) => {
+            let userInfos = result.data
+            this.$ls.set(Constants.LocalStorage.role, userInfos.role);
+            this.role = userInfos.role;
+            this.$ls.set(Constants.LocalStorage.question_num, userInfos.question_num)
+            this.$ls.set(Constants.LocalStorage.inform_num, userInfos.inform_num)
+            this.$ls.set(Constants.LocalStorage.collect_num, userInfos.collect_num)
+            this.$ls.set(Constants.LocalStorage.uid, userInfos.uid)
+            this.isreadShow = userInfos.inform_num > 0
+            success && success(result)
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       },
-      webpage(){
-        this.$router.push({name:Constants.PageName.qaDoc,params:{type:2}})
+      webpage() {
+        this.$router.push({name: Constants.PageName.qaDoc, params: {type: 2}})
       },
-      getUserData(to,from){
+      getUserData(to, from) {
+        if (to.name === Constants.PageName.qaUser) return
+        this.getUserInfos()
         this.showAsk = false
-        console.log('路由改变了')
-        EventBus.$on(Constants.EventBus.inform_num,(val)=>{
-          this.isreadShow = val > 0
-        })
+
       },
-      // isReadShow() {
-      //   EventBus.$on('notice_isread_num',(count)=>{
-      //     if (count > 0) {
-      //       this.isreadShow = true
-      //     }
-      //
-      //     if (count == 0) {
-      //       this.isreadShow = false
-      //     }
-      //   })
-      //
-      // },
       toggleAsk() {
         this.showAsk = !this.showAsk;
       },
@@ -203,13 +180,14 @@
       },
       handleChange(value) {
         if (value == 2) {
-          if(this.role == 0){
+          if (this.role == 0) {
             this.toggleAsk();
-          }else if(this.role == 1){
+          } else if (this.role == 1) {
             EventBus.$emit(Constants.EventBus.showToast, {
               message: '管家没有提问权限'
             });
-          }else {
+          } else {
+
             EventBus.$emit(Constants.EventBus.showToast, {
               message: '没有提问权限'
             });
@@ -250,11 +228,13 @@
     background: #f2f2f2;
     padding-bottom: px2rem(70);
   }
-  .mu-bottom-nav{
+
+  .mu-bottom-nav {
     position: fixed;
     bottom: 0;
-    border-top:1px solid #ccc
+    border-top: 1px solid #ccc
   }
+
   .sub-page {
     flex-grow: 1;
     /*padding-bottom: px2rem(120);*/
@@ -264,7 +244,8 @@
     width: 25px;
     height: 25px;
   }
-  $ask_with:55px;
+
+  $ask_with: 55px;
   .btn_ask {
     position: absolute;
     width: $ask_with;
@@ -272,10 +253,10 @@
     bottom: 20px;
     left: 50%;
     margin-left: -$ask_with/2;
-    padding-top:($ask_with - 40px)/2;
+    padding-top: ($ask_with - 40px)/2;
     background: #fff;
-    border-radius:$ask_with/2;
-    border-top:1px solid #ccc;
+    border-radius: $ask_with/2;
+    border-top: 1px solid #ccc;
     .askicon {
       width: 40px;
       height: 40px;
@@ -298,11 +279,11 @@
       .icon-view {
         // 注意 qaDetail也有相同的样式
         padding-top: px2rem(60);
-        position:relative;
+        position: relative;
         display: flex;
         flex-direction: column;
         align-items: center;
-        .msg-infos{
+        .msg-infos {
           position: absolute;
           top: px2rem(-8);
           left: px2rem(20);
@@ -314,7 +295,7 @@
           padding-left: px2rem(9);
           background: url("../assets/img/bg_text_box.png") no-repeat 0 0;
           background-size: px2rem(140) px2rem(80);
-          background-origin:border-box ;
+          background-origin: border-box;
         }
       }
 
@@ -332,19 +313,19 @@
         text-align: center;
       }
     }
-    .ask-close{
+    .ask-close {
       position: absolute;
       bottom: 0;
       width: 100%;
       height: px2rem(55);
       border-top: 1px solid #ccc;
-      text-align:center;
+      text-align: center;
       font-size: 0;
-      &:after{
+      &:after {
         display: inline-block;
         vertical-align: middle;
-        content:'';
-        height:100%;
+        content: '';
+        height: 100%;
       }
     }
     .close {

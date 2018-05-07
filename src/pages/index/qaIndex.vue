@@ -54,7 +54,7 @@
             <div class="title">{{props.item.title}}</div>
             <!--金额 如果有的话显示-->
             <span class="reward shadow"
-                  v-if="parseFloat(props.item.q_reward) > 0">￥{{props.item.q_reward}}</span>
+                  v-if="parseFloat(props.item.q_reward) > 0">￥{{props.item.q_reward | chu100}}</span>
           </div>
           <!--内容-->
           <div class="card-content">{{props.item.content}}</div>
@@ -115,6 +115,7 @@
       }
     },
     created() {
+      console.log('index created')
       API.post(Constants.Method.get_banner_list, {})
           .then((result) => {
             this.banners = result.data;

@@ -11,7 +11,7 @@
         <!--问题指向11-->
         <!--1 回答 2采纳 3点赞回答 4点赞评论 5评论回答 6评论评论-->
         <p>
-          <span class="username">{{item.from_user}}</span>
+          <span class="username">{{item.from_name}}</span>
           <span class="notice_infos">{{notice_infos[item.type]}}</span>
           <span class="no-date">{{item.addtime | crtTime }}</span>
         </p>
@@ -64,7 +64,6 @@
     activated() {// 组件激活
       this.datas = []
       this.page = defaultStartPage
-      console.log('activated')
       this.getData()
     },
 
@@ -160,7 +159,7 @@
   .info-box {
     /*border-bottom: px2rem(2)  solid #111adadad;*/
     margin: px2rem(8);
-    padding: 0 px2rem(12);
+    padding: 0 px2rem(12) px2rem(20);
     color: #333;
     background: #fff;
     p {
@@ -192,7 +191,8 @@
     .infos-text {
       color: #666;
       font-size: px2rem(12);
-      padding: px2rem(4) 0 px2rem(20);
+      padding: px2rem(4) 0;
+      @extend .line_three
 
     }
   }

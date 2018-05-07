@@ -6,7 +6,17 @@ $fontcolor_gray_line: #ddd;
 $fontcolor_red: #fe4c4c;
 $fontcolor_blue: #0072ff;
 $fontcolor: #666666;
-
+.line_one {
+  overflow: hidden;
+  text-overflow:ellipsis;
+  white-space: nowrap;
+}
+.line_three{
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
 
 $bgImage: linear-gradient(to top, #11cdcd, #0edda2);
 
@@ -15,5 +25,7 @@ $divider: rgb(242, 242, 242);
 @function px2rem($px) {
   @return $px*320/$designWidth/20 + rem;
 }
+
+
 
 

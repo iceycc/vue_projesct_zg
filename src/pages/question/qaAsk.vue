@@ -76,7 +76,7 @@
     name: Constants.PageName.qaIndex,
     data() {
       return {
-        type: 0,//1付费
+        type: 1,//1付费
         qa: {
           title: '',
           content: '',
@@ -126,10 +126,11 @@
       }
     },
     created() {
-      this.current_uid = window.localStorage.getItem('uid')
+      this.current_uid = window.localStorage.getItem(Constants.LocalStorage.uid)
       this.initWX(() => {
         console.log('wx success');
       });
+      this.type = this.$route.params.type;
 
       /**
        * 如果是微信内,则不显示appBar
@@ -139,16 +140,12 @@
     },
     activated() {  // 组件激活时
 
-      if (this.$route.params && this.$route.params.type) {
-        this.type = this.$route.params.type;
-      }
+      this.type = this.$route.params.type;
       // 判断下是 钱包明细来的 还是 提问悬赏来的
       if (this.type === 1) {
         this.title = '悬赏提问';
         window.document.title = '悬赏提问';//修改网页标题
         this.showMask = true;
-        console.log(!this.showMask)
-        console.log(this.title)
         // console.log(this.goBack)
         // if (this.showMask && this.title == '悬赏提问' && this.goBack) {
         //   // todo 难题
@@ -165,7 +162,6 @@
     },
     methods: {
       goBack() {
-
         if (this.title == '免费提问' || this.showMask || this.title == '提问') {
           this.$router.go(-1)
         }
@@ -189,8 +185,11 @@
       },
       submit: function () {
         // 判断是否是从钱包详情页过来的
+        console.log('this.$route.params')
+
+        console.log(this.$route.params)
         if (this.$route.params) {
-          this.is_wallet = this.$route.params.is_walle || false//是否是钱包支付。
+          this.is_wallet = this.$route.params.is_wallet//是否是钱包支付。
           this.money_sum = this.$route.params.money_sum || 0//钱包零钱总数
         }
         this.qa.title = this.qa.title.replace(/^\s+|\s+$/g, "");
@@ -212,7 +211,7 @@
           });
           return;
         }
-        if (this.money_sum && this.qa.reward > this.money_sum) {
+        if (this.money_sum && this.qa.reward > this.money_sum * 0.01) {
           EventBus.$emit(Constants.EventBus.showToast, {
             message: '您的钱包余额不足'
           });
@@ -274,12 +273,14 @@
                 });
               }, 2000);
             }
-            // 如果是付费回答
+            // 如果是付费回答 但不是从钱包来的
             if (data.reward > 0 && !this.is_wallet) {
               console.log('xxxxx')
               let options = {
                 question_id: this.insert_id,
-                reward: data.reward
+                reward: data.reward,
+                is_wallet:this.is_wallet
+
               }
               API.post(Constants.Method.wxpay, options)
                 .then((result) => {
@@ -385,7 +386,7 @@
       }
     },
     deactivated() {  //success 组件停用时调用！！！
-      this.type = 0  //
+      this.type = 1  //
       console.log('组件停用')
       // 清除数据
       this.qa = {

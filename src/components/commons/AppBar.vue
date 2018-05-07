@@ -34,6 +34,7 @@
       };
     },
     activated(){
+      this.mode='page'
       // console.log(this.mode)
     },
     created() {
@@ -62,16 +63,16 @@
         this.$router.push({name: 'search'});
       },
       goBack() {
-        console.log(this.mode)
         switch (this.mode) {
           case 'zsql':
-
-            this.pushPage({
-              name: Constants.PageName.qaAsk,
-              params: {
-                type:1
-              }
-            });
+            // this.$router.goBack({
+            //   name: Constants.PageName.qaAsk,
+            //   params: {
+            //     type:1
+            //   }
+            // });
+            this.$router.go(-1);
+            break;
           case 'page':
             this.$router.go(-1);
             break;

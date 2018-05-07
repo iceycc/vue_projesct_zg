@@ -18,7 +18,7 @@
         <div class="divider"></div>
         <div class="item" @click="gotoQuestion">
           <img-wrapper :url="icon_qu" classStyle="icon"></img-wrapper>
-          <div class="name">我的问题</div>
+          <div class="name">我的问答</div>
           <div class="num" v-bind:class="{'red-point':data.red_dot > 0}">
             {{my_question}}
           </div>
@@ -100,24 +100,12 @@
 
 
     activated() {
-      console.log("user组件激活")
+      this.my_question = window.localStorage.getItem(Constants.LocalStorage.question_num)
+      this.collect_num = window.localStorage.getItem(Constants.LocalStorage.collect_num)
       this.click_num = 0
       API.post(Constants.Method.profile)
         .then((result) => {
           this.data = result.data;
-          console.log(result);
-          this.collect_num = this.data.collect_num
-          this.my_question = this.data.question_num
-
-          // 有待优化 监听 ask页面我得问题数量的变化 1
-          EventBus.$on('my_question_num', content => {
-            this.my_question = content || this.my_question
-          })
-          // 有待优化 监听 ask页面我得问题数量的变化 1
-          EventBus.$on(Constants.EventBus.collect_num, content => {
-            this.collect_num = content || this.collect_num
-          })
-          window.localStorage.setItem(Constants.LocalStorage.collect_num, this.collect_num)
         })
         .catch((err) => {
           console.log(err);

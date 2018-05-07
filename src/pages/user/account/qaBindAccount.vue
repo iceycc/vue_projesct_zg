@@ -62,7 +62,7 @@
                 },1000)
               }else {
                 EventBus.$emit(Constants.EventBus.showToast, {
-                  message: '账户密码错误请重新输入'
+                  message: '账户或密码错误请重新输入'
                 });
               }
             })

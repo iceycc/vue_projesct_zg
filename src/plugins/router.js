@@ -71,7 +71,7 @@ let routes = [
     path: '/' + Constants.PageName.qaQuestion,
     name: Constants.PageName.qaQuestion,
     component: Pages[Constants.PageName.qaQuestion],
-    meta: {keepAlive: false, title: '我的问题',needLogin: true},
+    meta: {keepAlive: false, title: '我的问答',needLogin: true},
     // children:[
     //   {
     //     path:Constants.PageName.qaQuestionList,

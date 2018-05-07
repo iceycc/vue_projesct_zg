@@ -165,7 +165,6 @@ export const EventBus = {
   setTitle: 'setTitle',
   setTitleLeftIcon: 'setTitleLeftIcon',
   update_main_tab_index: 'update_main_tab_index',
-  add_red: 'is_read_num',
   inform_num: 'inform_num', // 当前收藏数
   sign: 'sign', //
 };

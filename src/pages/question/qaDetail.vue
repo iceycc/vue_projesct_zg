@@ -49,19 +49,18 @@
 
         <div>{{ question.addtime | crtTime }}</div>
       </div>
-      <div class="card-tags" v-if="question.tab && question.tab.length > 0">
-        <div class="tag" v-for="item in question.tab" v-if="question.tab[0] !==''">
+      <div class="card-tags" v-if="question.label && question.label.length > 0">
+        <div class="tag" v-for="item in question.label" v-if="question.label[0] !==''">
           {{item}}
         </div>
       </div>
 
     </div>
-    <!--评论列表-->
-
+    <!--回答列表-->
         <template v-for="item, index in answer_list">
           <div class="item" @click="onItemClick(index)">
             <div class="card-re">
-              <!--评论 人 头像 名称 用户等级 是否采纳 11-->
+              <!--回答 人 头像 名称 用户等级 是否采纳 11-->
               <div class="view1 horizontal-view">
                 <img-wrapper
                     :url="item.a_avatar == 'http://m.uzhuang.com/res/images/userface.png' ? a_avatar : item.answerer_avatar "
@@ -71,7 +70,7 @@
 
                 <div class="vertical-view">
                   <div class="name" @click.stop="ifGoDetail(item.answerer_id,item.answerer_role,item.answerer_name)">
-                    {{item.answerer_role == 1 && role == 1 ? '匿名用户': item.answerer_name }}
+                    {{item.answerer_role == 1 && role == 1 && current_uid != item.answerer_id? '匿名用户': item.answerer_name }}
                     <!--显示颜色从组件内根据角色名匹配的-->
                     <uz-lable v-if="question.q_reward > 0"
                               :role="item.answerer_id === question.asker_id ? '赏金发起人' : item.answerer_rank"></uz-lable>
@@ -803,7 +802,7 @@
       }
       .accepted, .get_reward {
         position: absolute;
-        top: px2rem(15);
+        top: px2rem(0);
         width: px2rem(50);
         height: px2rem(50);
         opacity: 1;

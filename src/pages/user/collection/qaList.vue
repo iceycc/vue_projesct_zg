@@ -5,17 +5,21 @@
       <template slot="item" slot-scope="props">
         <div class="card">
           <div class="title-view">
-            <div class="title">{{props.item.title}}</div>
+            <div class="title line_one">{{props.item.title}}</div>
             <span class="reward shadow"
                   v-if="parseFloat(props.item.q_reward) > 0">{{props.item.q_reward}}</span>
           </div>
-          <div class="card-content">{{props.item.content}}</div>
+          <div class="card-content line_three">{{props.item.content}}</div>
           <div class="footer-view">
             <div class="avatar">
               <img-wrapper v-for="avatar,index in props.item.avatar" :url="avatar" :key="index"
                            classStyle="avatar"></img-wrapper>
+              等回答了该问题
             </div>
             <div class="pv">{{props.item.pv}}浏览</div>
+          </div>
+          <div class="card-tags" v-if="props.item.label.length && props.item.label.length > 0">
+            <div class="tag" v-for="value,index in props.item.label" :key="index" v-if="value !== '' ">{{value}}</div>
           </div>
         </div>
       </template>
@@ -132,7 +136,7 @@
     &-content {
       color: #666666;
       font-size: px2rem(14);
-      padding: px2rem(10) 0;
+      margin: px2rem(10) 0;
       border-bottom: px2rem(1) solid $divider;
     }
 
@@ -150,5 +154,16 @@
       }
     }
   }
-
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    padding-top: px2rem(10);
+    .tag {
+      border: px2rem(1) solid #ccc;
+      padding: px2rem(3) px2rem(6);
+      margin-left: px2rem(10);
+      margin-bottom: px2rem(6);
+      font-size: px2rem(12);
+    }
+  }
 </style>
