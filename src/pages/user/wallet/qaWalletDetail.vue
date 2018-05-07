@@ -109,14 +109,6 @@
     computed: {},
     created() {
       this.current_uid = window.localStorage.getItem('uid')
-      API.post(Constants.Method.wallet, null)
-          .then((result) => {
-            console.log(result);
-          })
-          .catch((err)=>{
-            console.log(err);
-          });
-
       this.getList();
     },
     methods: {

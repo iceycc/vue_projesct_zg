@@ -11,7 +11,7 @@
           </div>
           <div class="card-content line_three">{{props.item.content}}</div>
           <div class="footer-view">
-            <div class="avatar">
+            <div class="avatar" v-if="props.item.avatar.length>0">
               <img-wrapper v-for="avatar,index in props.item.avatar" :url="avatar" :key="index"
                            classStyle="avatar"></img-wrapper>
               等回答了该问题
@@ -148,6 +148,7 @@
       padding-top: px2rem(10);
       font-size: px2rem(10);
       .avatar {
+        vertical-align: middle;
         flex-grow: 1;
       }
       .pv {
@@ -161,7 +162,7 @@
     .tag {
       border: px2rem(1) solid #ccc;
       padding: px2rem(3) px2rem(6);
-      margin-left: px2rem(10);
+      margin-right: px2rem(10);
       margin-bottom: px2rem(6);
       font-size: px2rem(12);
     }

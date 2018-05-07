@@ -32,7 +32,6 @@ let routes = [
       title: '诸葛装修',
       keepAlive: false,
       needLogin: false
-
     },
     children: [
       {
@@ -71,7 +70,7 @@ let routes = [
     path: '/' + Constants.PageName.qaQuestion,
     name: Constants.PageName.qaQuestion,
     component: Pages[Constants.PageName.qaQuestion],
-    meta: {keepAlive: false, title: '我的问答',needLogin: true},
+    meta: {keepAlive: true, title: '我的问答',needLogin: true},
     // children:[
     //   {
     //     path:Constants.PageName.qaQuestionList,

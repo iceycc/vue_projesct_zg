@@ -101,9 +101,6 @@
       };
     },
     created() {
-      this.getUserInfos()
-      this.role = window.localStorage.getItem(Constants.LocalStorage.role)
-
       let str = window.location.hash.toString()
       if (typeof str == 'string') {
         let sign = str.split('=')[1]
@@ -114,9 +111,14 @@
         if (sign) {
           // EventBus.$emit(Constants.EventBus.sign,"text")
           window.localStorage.setItem(Constants.LocalStorage.sign, sign)
-          this.pushPage({
-            name: Constants.PageName.qaIndex
+          this.getUserInfos(()=>{
+            this.role = window.localStorage.getItem(Constants.LocalStorage.role)
           })
+          setTimeout(()=>{
+            this.pushPage({
+              name: Constants.PageName.qaIndex
+            })
+          },100)
         }
       }
       EventBus.$on(Constants.EventBus.inform_num, (val) => {
@@ -162,6 +164,7 @@
         this.$router.push({name: Constants.PageName.qaDoc, params: {type: 2}})
       },
       getUserData(to, from) {
+
         if (to.name === Constants.PageName.qaUser) return
         this.getUserInfos()
         this.showAsk = false

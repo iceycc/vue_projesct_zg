@@ -77,7 +77,7 @@ export const Method = {
     // 未回答 get_question_unanswered   uid page
     get_question_unanswered: Method_Class.member + "unanswered-list",
     // 回答  get_question_answered   uid page
-    get_question_answered: Method_Class.member + "answered-list",
+    get_question_answered: Method_Class.member + "member-answered-list",
     // 个人
     // 回答
     get_my_answer: Method_Class.member + "member-answered-list",

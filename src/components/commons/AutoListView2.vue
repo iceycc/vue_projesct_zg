@@ -1,7 +1,7 @@
 <template>
   <div class="scroll-view">
     <mu-list>
-      <mu-refresh-control :refreshing="refreshing" :trigger="trigger" @refresh="refresh"/>
+      <!--<mu-refresh-control :refreshing="refreshing" :trigger="trigger" @refresh="refresh"/>-->
       <div class="no-data" v-if="answered_list && answered_list.length == 0 ">
         {{infoMsg}}
       </div>
@@ -22,60 +22,59 @@
             <!--问题内容-->
             <div class="question-content">{{item.question.content}}</div>
           </div>
+          <!---->
+          <div class="card-tags" v-if="item.question.label.length || item.question.label.length > 0">
+            <div class="tag" v-for="value,index in item.question.label" :key="index" v-if="value !== '' ">{{value}}
+            </div>
+          </div>
           <div class="line"></div>
           <!--回答相关-->
           <div class="answer-info">
-            <div class="question-notice" v-if="item.answer.length ===0  && item.question.reward > 0">
+            <div class="question-notice" v-if="item.answer.length >=0 && item.question.reward > 0">
               还没有对该问题进行回答,赶紧回答领取赏金吧!
             </div>
             <div class="question-notice" v-if="item.answer.length ===0  && item.question.reward === 0">
               亲，虽然我不是付费问题，可是我一直在等你答复哦！
             </div>
-            <p>{{item.answer.content}}</p>
+            <p class="answer-content">{{item.answer.content}}</p>
           </div>
-          <!---->
-          <div class="view-footer" v-if="item.answer && item.answer.length > 0">
+
+          <div class="view-footer" v-if="item.answer.addtime > 0">
             <div>{{item.answer.laud}}点赞</div>
-            <div>{{item.answer.pv}}浏览</div>
+            <div>{{item.answer.pv ? item.answer.pv : 0}}浏览</div>
             <div>{{item.answer.addtime | crtTime}}</div>
-          </div>
-          <div class="card-tags" v-if="item.question.label.length || item.question.label.length > 0">
-            <div class="tag" v-for="value,index in item.question.label" :key="index" v-if="value !== '' ">{{value}}
-            </div>
           </div>
         </div>
       </div>
 
       <div v-if="type == 'question_list'">
-        <div class="no-data" v-if="!answered_list">
-          {{infoMsg}}
-        </div>
-        <div class="question-list-card item" @click="onItemClick(index)"
+        <div class="question-list-card item" @click="goQuestionDetail(item)"
              v-for="item, index in answered_list"
              :isTab="isTab"
-
         >
           <div class="title-view">
             <div class="title">{{item.title}}</div>
             <span class="reward shadow"
-                  v-if="parseFloat(item.q_reward) > 0">{{item.q_reward | chu100}}</span>
+                  v-if="parseFloat(item.reward) > 0">{{item.reward | chu100}}</span>
           </div>
           <div class="card-content">{{item.content}}</div>
-          <div class="footer-view">
-            <div class="avatar">
-              <img-wrapper v-for="avatar,index in item.avatar" :url="avatar" :key="index"
-                           classStyle="avatar"></img-wrapper>
-            </div>
-            <div class="pv">{{item.pv}}浏览</div>
-          </div>
           <div class="card-tags" v-if="item.label && item.label.length > 0">
             <div class="tag" v-for="value,index in item.label" :key="index" v-if="value !== '' ">{{value}}</div>
+          </div>
+          <div class="footer-view">
+            <div class="avatar">
+                <div v-if="item.avatar.length>0">
+                  <img-wrapper v-for="avatar,index in item.avatar" :url="avatar" :key="index"
+                               classStyle="avatar"></img-wrapper>
+                  等回答了该问题
+                </div>
+            </div>
+            {{item.pv}}浏览
           </div>
         </div>
       </div>
     </mu-list>
-    <mu-infinite-scroll :scroller="scroller" :loading="loading" @load="loadMore"
-                        loadingText="数据加载中..." v-if="isMore"/>
+    <mu-infinite-scroll :scroller="scroller" :loading="loading" @load="loadMore" v-if="isMore"/>
   </div>
 </template>
 
@@ -90,7 +89,7 @@
     data() {
       return {
         // answered_list:[]
-        infoMsg: '正在努力加载数据...',
+        infoMsg: '正在加载中...',
 
         page: defaultStartPage,
         answered_list: [],
@@ -103,36 +102,33 @@
     },
     watch: {
       flag: function (curVal, oldVal) {
-        // if (curVal) {
-        //   this.refresh();
-        // } else {
-        //   this.init();
-        // }
-      },
-      ex_params: function (curVal, oldVal) {
-        if(curVal){
           this.init();
           this.refresh();
-        }
+      },
+      ex_params: function (curVal, oldVal) {
+        // if(curVal){
+        //   this.init();
+        //   this.refresh();
+        // }
 
       },
       isTab: function (curVal, oldVal) {
-        if(curVal){
-          this.init();
-          this.refresh();
-        }
+        // if(curVal){
+        //   this.init();
+        //   this.refresh();
+        // }
       },
 
     },
     created() {
+      console.log('created')
       if (this.flag) {
+
         this.getData()
       }
-
     },
     mounted() {
       console.log('mounted')
-
       this.trigger = this.$el
       this.scroller = this.$el
       this.scroller.onscroll = () => {
@@ -150,12 +146,13 @@
     },
     methods: {
       init() {
+        this.infoMsg = '正在加载中...'
         this.isMore = true;
         this.page = defaultStartPage;
         this.answered_list = [];
       },
       onItemClick(index) {
-        console.log(11)
+        console.log(index)
 
         this.$emit('onItemClick', this.answered_list[index], index);
       },
@@ -196,10 +193,11 @@
       goQuestionDetail(item) {
         console.log('item.id')
         console.log(item)
+        let id =  item.question ? item.question.id : item.id
         this.pushPage({
           name: Constants.PageName.qaDetail,
           query: {
-            id: item.question.id
+            id: id
           }
         });
       },
@@ -327,6 +325,9 @@
         right: -$yuan_width_2;
       }
     }
+    .answer-content{
+      font-size: px2rem(14);
+    }
     .question-info, .answer-info {
       padding: px2rem(15) px2rem(20);
       p {
@@ -350,15 +351,15 @@
       color: #007aff;
     }
     .view-footer {
-      padding: px2rem(5) px2rem(20) px2rem(0);
+      /*border-top:1px solid #ccc;*/
+      padding: px2rem(5) px2rem(20) px2rem(10);
+      font-size:px2rem(12);
       display: flex;
       div:nth-child(2) {
         flex: 1;
         padding-left: px2rem(30);
       }
-
     }
-    /*11111111*/
     .card-tags {
       display: flex;
       flex-wrap: wrap;
@@ -373,7 +374,7 @@
     }
   }
 
-  .question-list-card {
+  .question-list-card{
     background-color: white;
     width: 100%;
     padding: px2rem(10);
@@ -403,7 +404,14 @@
         font-size: px2rem(10);
       }
     }
-
+    .view-footer {
+      /*border-top:1px solid #ccc;*/
+      display: flex;
+      div:nth-child(2) {
+        flex: 1;
+        padding-left: px2rem(30);
+      }
+    }
     &-content {
       color: $content-color;
       font-size: px2rem(14);
@@ -419,7 +427,10 @@
       color: $fontcolor_gray;
       padding-top: px2rem(10);
       font-size: px2rem(10);
+      margin-top: px2rem(10);
+      border-top: 1px solid #ccc;
       .avatar {
+        vertical-align: middle;
         flex-grow: 1;
       }
       .pv {
@@ -431,8 +442,8 @@
       padding-top: px2rem(10);
       .tag {
         border: px2rem(1) solid #ccc;
-        padding: px2rem(3) px2rem(6);
-        margin-left: px2rem(10);
+        padding: px2rem(1) px2rem(6);
+        margin-right: px2rem(10);
         margin-bottom: px2rem(6);
         font-size: px2rem(12);
       }

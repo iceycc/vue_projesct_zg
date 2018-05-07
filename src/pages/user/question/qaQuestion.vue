@@ -2,8 +2,8 @@
   <div class="content">
     <app-bar :title="title"></app-bar>
     <div class="question-search">
-      <input type="search" v-model="search_word">
-      <div @click="goSearch(search_word,isShow)">
+      <input type="search" v-model="search_word" @keyup.enter="goSearch(search_word)">
+      <div @click="goSearch(search_word)">
         <img-wrapper :url="icon_search" classStyle="icon"></img-wrapper>
       </div>
     </div>
@@ -15,6 +15,8 @@
       <li class="active question-tab-li" @click="getList(3)">提问（{{left_num}}）</li>
       <li class="question-tab-li" @click="getList(4)">回答（{{right_num}}）</li>
     </ul>
+
+
     <auto-list-view2 :url="url" :type="list_type" :ex_params="ex_params" :flag="flag" :isTab="isTab"></auto-list-view2>
 
   </div>
@@ -39,7 +41,7 @@
     data() {
       return {
         title: '我的问答',
-        icon_search: require('../../../assets/img/icon_search.svg'),
+        icon_search: require('../../../assets/img/icon_search2.svg'),
         answered_list: [],
         left_num: null,
         right_num: null,
@@ -63,7 +65,8 @@
           flag:null
         },
         isTab:false,
-        list_type_num:null
+        list_type_num:null,
+        watch_count:0,
       }
     },
     created() {
@@ -73,10 +76,26 @@
       // this.url = Constants.Method.get_question_unanswered
 
     },
+    activated(){
+      this.getNum()
+
+    },
     mounted() {
-
       this.cicikTabs()
-
+    },
+    computed:{
+      num_total:function () {
+        return [this.left_num + this.right_num,this.search_word]
+      }
+    },
+    watch:{
+      num_total:function (curVal,oldVal) {
+        this.watch_count ++
+        if(this.watch_count>2){
+          this.getList(this.list_type_num,this.search_word)
+          this.watch_count =0
+        }
+      }
     },
     methods: {
       init(this_role) {
@@ -87,7 +106,10 @@
           this.url = Constants.Method.get_question_unanswered
           // this.url2 = Constants.Method.get_question_answered
           this.list_type = 'answer_list'
-          this.flag = this.url
+          this.flag = {
+            url:this.url,
+            ex_params:this.ex_params
+          }
           this.list_type_num = 1
 
         }
@@ -98,7 +120,10 @@
 
           // this.url = Constants.Method.get_my_answer
           // this.list_type = 'answer_list'
-          this.flag = this.url
+          this.flag = {
+            url:this.url,
+            ex_params:this.ex_params
+          }
           this.list_type_num = 3
 
         }
@@ -106,28 +131,41 @@
       getList(type, key_word) {
         this.isTab = true;
         console.log(type)
+
         this.ex_params = {
           key_word
         }
         if (type === 1) {
           this.url = Constants.Method.get_question_unanswered
           this.list_type = 'answer_list'
-          this.flag = this.url
+          this.flag = {
+            url:this.url,
+            ex_params:this.ex_params
+          }
         }
         if (type === 2) {
           this.url = Constants.Method.get_question_answered
           this.list_type = 'answer_list'
-          this.flag = this.url
+          this.flag = {
+            url:this.url,
+            ex_params:this.ex_params
+          }
         }
         if (type === 3) {
           this.url = Constants.Method.get_my_question
           this.list_type = 'question_list'
-          this.flag = this.url
+          this.flag = {
+            url:this.url,
+            ex_params:this.ex_params
+          }
         }
         if (type === 4) {
           this.url = Constants.Method.get_my_answer
           this.list_type = 'answer_list'
-          this.flag = this.url
+          this.flag = {
+            url:this.url,
+            ex_params:this.ex_params
+          }
         }
         this.list_type_num = type
       },
@@ -249,12 +287,11 @@
       height: 100%;
       border-radius: px2rem(30);
       border: px2rem(1) solid #ccc;
-      padding: 0 px2rem(10);
-
+      padding-left:px2rem(45);
     }
     .icon {
       position: absolute;
-      right: px2rem(15);
+      left: px2rem(25);
       top: px2rem(18);
     }
   }

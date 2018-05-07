@@ -19,9 +19,9 @@
 </template>
 
 <script>
-  import {Constants, EventBus, mixins, API} from '../config/index';
-  import ComponentTemplate from "../components/template";
-  import AutoListView from "../components/commons/AutoListView";
+  import {Constants, EventBus, mixins, API} from '../config/index'
+  import ComponentTemplate from "../components/template"
+  import AutoListView from "../components/commons/AutoListView"
 
   export default {
 
@@ -51,36 +51,12 @@
     },
     methods: {
       gotoLogin() {
+        window.localStorage.clear()
         window.location.href = 'http://wx.uzhuang.com/index.php?r=wx/oauth2'
       },
-      gotoMain(uid) {
-        this.$ls.remove(Constants.LocalStorage.uid);
-        this.getUserInfos(uid, () => {
-          this.$ls.set(Constants.LocalStorage.uid, uid);
-          // this.$router.replace({
-          //   name: Constants.PageName.qaIndex,
-          //   params: {
-          //     sign:uid,
-          //     isLogin: true
-          //   }
-          // });
-        })
+      gotoMain() {
+        window.localStorage.clear();
       },
-      getUserInfos(uid, success) {
-        API.post(Constants.Method.profile, {})
-          .then((result) => {
-            let userInfos = result.data
-            this.$ls.set(Constants.LocalStorage.role, userInfos.role);
-            this.$ls.set(Constants.LocalStorage.question_num, userInfos.question_num)
-            this.$ls.set(Constants.LocalStorage.inform_num, userInfos.inform_num)
-            this.$ls.set(Constants.LocalStorage.collect_num, userInfos.collect_num)
-            this.$ls.set(Constants.LocalStorage.collect_num, userInfos.uid)
-            success && success(result)
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
     }
   };
 </script>
