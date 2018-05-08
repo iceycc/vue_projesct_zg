@@ -9,7 +9,11 @@
             <span class="reward shadow"
                   v-if="parseFloat(props.item.q_reward) > 0">{{props.item.q_reward}}</span>
           </div>
+
           <div class="card-content line_three">{{props.item.content}}</div>
+          <div class="card-tags" v-if="props.item.label.length && props.item.label.length > 0">
+            <div class="tag" v-for="value,index in props.item.label" :key="index" v-if="value !== '' ">{{value}}</div>
+          </div>
           <div class="footer-view">
             <div class="avatar" v-if="props.item.avatar.length>0">
               <img-wrapper v-for="avatar,index in props.item.avatar" :url="avatar" :key="index"
@@ -18,9 +22,7 @@
             </div>
             <div class="pv">{{props.item.pv}}浏览</div>
           </div>
-          <div class="card-tags" v-if="props.item.label.length && props.item.label.length > 0">
-            <div class="tag" v-for="value,index in props.item.label" :key="index" v-if="value !== '' ">{{value}}</div>
-          </div>
+
         </div>
       </template>
     </auto-list-view>
@@ -137,7 +139,6 @@
       color: #666666;
       font-size: px2rem(14);
       margin: px2rem(10) 0;
-      border-bottom: px2rem(1) solid $divider;
     }
 
     .footer-view {
@@ -147,6 +148,7 @@
       color: $fontcolor_gray;
       padding-top: px2rem(10);
       font-size: px2rem(10);
+      border-top: px2rem(1) solid $divider;
       .avatar {
         vertical-align: middle;
         flex-grow: 1;
@@ -161,7 +163,7 @@
     padding-top: px2rem(10);
     .tag {
       border: px2rem(1) solid #ccc;
-      padding: px2rem(3) px2rem(6);
+      padding: px2rem(1) px2rem(6);
       margin-right: px2rem(10);
       margin-bottom: px2rem(6);
       font-size: px2rem(12);

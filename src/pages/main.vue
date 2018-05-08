@@ -164,7 +164,6 @@
         this.$router.push({name: Constants.PageName.qaDoc, params: {type: 2}})
       },
       getUserData(to, from) {
-
         if (to.name === Constants.PageName.qaUser) return
         this.getUserInfos()
         this.showAsk = false

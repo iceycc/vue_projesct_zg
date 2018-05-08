@@ -82,9 +82,9 @@
           content: '',
           reward: 5,
         },
-        localIds: [],
+        localIds: [],//需要上传的ID
         localIdIndex: 0,
-        serverIds: [],
+        serverIds: [],//返回图片的服务器端ID
         showMask: false,
         last_num: img_max,
         current_uid: null,
@@ -139,7 +139,14 @@
       this.showAppBar = !/MicroMessenger/.test(navigator.userAgent);
     },
     activated() {  // 组件激活时
-
+      // 清除数据
+      this.qa = {
+        title: '',
+        content: '',
+        reward: 5,
+      }
+      this.localIds = []
+      this.serverIds =[]
       this.type = this.$route.params.type;
       // 判断下是 钱包明细来的 还是 提问悬赏来的
       if (this.type === 1) {
@@ -225,7 +232,7 @@
             reward: 0,
             pay_type: 0
           };
-          // todo 1st 付费支付接口调试
+
           // 免费支付：    reward = 0   pay_type = 0
           if (this.type === 0) {
             data.reward = 0;
@@ -280,7 +287,6 @@
                 question_id: this.insert_id,
                 reward: data.reward,
                 is_wallet:this.is_wallet
-
               }
               API.post(Constants.Method.wxpay, options)
                 .then((result) => {
@@ -388,20 +394,9 @@
     deactivated() {  //success 组件停用时调用！！！
       this.type = 1  //
       console.log('组件停用')
-      // 清除数据
-      this.qa = {
-        title: '',
-        content: '',
-        reward: 5,
-      }
+
     },
-    // activated(){
-    //   console.log('组件激活')
-    // },
-    // beforeEach(){
-    //   console.log('离开组件')
-    //   this.type=0  //
-    // },
+
     beforeRouteLeave(to, from, next) {
 
       // todo 这里不是很合理  离开组件时 添加自己的问题数

@@ -13,7 +13,7 @@
         <p>
           <span class="username">{{item.from_name}}</span>
           <span class="notice_infos">{{notice_infos[item.type]}}</span>
-          <span class="no-date">{{item.addtime | crtTime }}</span>
+          <span class="no-date">{{item.addtime | crtTime1 }}</span>
         </p>
         <div class="infos-text">{{item.content}}</div>
         <!--<div></div>-->
@@ -95,7 +95,6 @@
       },
       getData() {
         var data = {
-          uid: window.localStorage.getItem('uid'),
           page: this.page
         }
         API.post(Constants.Method.get_notice_list, data)

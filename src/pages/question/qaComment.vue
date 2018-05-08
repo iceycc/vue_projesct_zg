@@ -8,7 +8,9 @@
         <div class="vertical-view">
           <div class="name" @click="ifGoDetail(answer.uid,answer.answerer_role,answer.answerer_name)">
             {{answer.answerer_role == 1 && role == 1 ? '匿名用户': answer.answerer_name }}
-            <uz-lable v-if="answer.answerer_rank" :role="answer.answerer_rank"></uz-lable>
+            <template v-if="!(answer.answerer_role == 1 && role == 1)">
+              <uz-lable v-if="answer.answerer_rank" :role="answer.answerer_rank"></uz-lable>
+            </template>
           </div>
           <div class="date">{{answer.addtime | crtTime}}</div>
         </div>
@@ -39,9 +41,13 @@
                 <div class="vertical-view">
                   <div class="name huifu-name">
                     <!--如果是管家用户名 进入管家详情 但是管家不能访问管家-->
-                    <span @click="ifGoDetail(item.from_user_id,item.role)">{{item.from_user_name}} </span>
+                    <span @click="ifGoDetail(item.from_user_id,item.role)">
+                      {{item.from_user_role ==1 && role ==1 &&item.from_user_id != current_uid ? '匿名用户':item.from_user_name}}
+                    </span>
                     <span class="huifu-text"> 回复 </span>
-                    <span>{{item.to_user_name ? item.to_user_name + " ：": answer.answerer_name + " ："}}</span>
+                    <span>{{item.to_user_name ?
+                      (item.to_user_role ==1 && role ==1 && item.to_user_id != current_uid ? '匿名用户':item.from_user_name)
+                      : answer.answerer_name }} ：</span>
                   </div>
                 </div>
               </div>

@@ -77,7 +77,6 @@
 </template>
 
 <script>
-  // todo 001 重构request 和 mixins 函数
   import {Constants, EventBus,mixins,API} from '../../config/index';
   import AutoListView from "../../components/commons/AutoListView";
   import ImgWrapper from "../../components/commons/ImgWrapper";
@@ -200,7 +199,6 @@
 <!-- Add "scoped" attribute to limit CSS to this component only 11-->
 <style lang="scss" scoped>
   @import "../../assets/scss/px2rem";
-
   .content {
     position: relative;
     background-color: $divider;
@@ -295,6 +293,7 @@
         color: white;
         padding: px2rem(4) px2rem(10);
         border-radius: px2rem(13);
+        margin-left: px2rem(15);
       }
     }
 

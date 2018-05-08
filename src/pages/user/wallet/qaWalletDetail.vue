@@ -2,7 +2,7 @@
   <div class="content">
     <app-bar :title="title"></app-bar>
     <auto-list-view :url="url" :flag="flag" :isNeedDivider="false" @onItemClick="onItemClick" type="list">
-      <template slot="item" slot-scope="props" v-if="props.item.money>0">
+      <template slot="item" slot-scope="props" v-if="props.item.money > 0">
         <div class="card" style="display: flex">
           <div class="title-view" style="flex: 7">
             <div v-if="props.item.way == 1" class="title">&nbsp; 提现</div>

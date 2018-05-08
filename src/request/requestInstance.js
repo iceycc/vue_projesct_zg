@@ -37,7 +37,7 @@ _axios.interceptors.response.use( (response)=>{
     EventBus.$emit(Constants.EventBus.showToast,{
       message:"登陆已经过期，请重新登陆"
     })
-    window.localStorage.removeItem(Constants.LocalStorage.sign)
+    window.localStorage.clear()
     return
   }
   else {

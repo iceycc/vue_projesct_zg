@@ -41,7 +41,7 @@
     </div>
     <!--<mu-infinite-scroll :scroller="scroller" :loading="loading" @load="loadMore" v-if="isMore"/>-->
     <mu-infinite-scroll v-if="isMore" :scroller="scroller" :loading="loading" @load="loadMore"
-                        loadingText="数据加载中..."/>
+                        loadingText=""/>
   </div>
 </template>
 

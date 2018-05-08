@@ -78,14 +78,14 @@
         API.get(Constants.Method.wxtx,null)
             .then((result) => {
               console.log(result.data);
-              if (result.data.code === 0) {
+              if (result.code === 0) {
                 EventBus.$emit(Constants.EventBus.showToast, {
                   message: '提现成功'
                 });
                 this.$router.replace({name: Constants.PageName.qaWithdraw})
               } else {
                 EventBus.$emit(Constants.EventBus.showToast, {
-                  message: '提现失败'
+                  message: result.data.message
                 });
               }
             }).catch((err)=>{

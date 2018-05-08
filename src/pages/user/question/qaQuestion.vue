@@ -1,12 +1,14 @@
 <template>
   <div class="content">
-    <app-bar :title="title"></app-bar>
-    <div class="question-search">
-      <input type="search" v-model="search_word" @keyup.enter="goSearch(search_word)">
-      <div @click="goSearch(search_word)">
-        <img-wrapper :url="icon_search" classStyle="icon"></img-wrapper>
+    <!--<app-bar :title="title"></app-bar>-->
+    <div class="fixed-top">
+      <div class="question-search">
+        <input type="search" v-model="search_word" @keyup.enter="goSearch(search_word)" placeholder="请输入问题名称">
+        <div @click="goSearch(search_word)">
+          <img-wrapper :url="icon_search" classStyle="icon"></img-wrapper>
+        </div>
       </div>
-    </div>
+
     <ul class="question-tab" v-if="role == 1">
       <li class="active question-tab-li" @click="getList(1)">未回答（{{left_num}}）</li>
       <li class="question-tab-li" @click="getList(2)">已回答（{{right_num}}）</li>
@@ -15,9 +17,11 @@
       <li class="active question-tab-li" @click="getList(3)">提问（{{left_num}}）</li>
       <li class="question-tab-li" @click="getList(4)">回答（{{right_num}}）</li>
     </ul>
+    </div>
+    <div class="card-box">
+      <auto-list-view2 :url="url" :type="list_type" :ex_params="ex_params" :flag="flag" :isTab="isTab"></auto-list-view2>
+    </div>
 
-
-    <auto-list-view2 :url="url" :type="list_type" :ex_params="ex_params" :flag="flag" :isTab="isTab"></auto-list-view2>
 
   </div>
 </template>
@@ -41,7 +45,7 @@
     data() {
       return {
         title: '我的问答',
-        icon_search: require('../../../assets/img/icon_search2.svg'),
+        icon_search: require('../../../assets/img/icon_search3.svg'),
         answered_list: [],
         left_num: null,
         right_num: null,
@@ -77,7 +81,7 @@
 
     },
     activated(){
-      this.getNum()
+      // this.getNum()
 
     },
     mounted() {
@@ -105,10 +109,11 @@
           this.getNum()
           this.url = Constants.Method.get_question_unanswered
           // this.url2 = Constants.Method.get_question_answered
-          this.list_type = 'answer_list'
+          this.list_type = 'unanswer_list'
           this.flag = {
             url:this.url,
-            ex_params:this.ex_params
+            ex_params:this.ex_params,
+            isTab:3
           }
           this.list_type_num = 1
 
@@ -122,7 +127,8 @@
           // this.list_type = 'answer_list'
           this.flag = {
             url:this.url,
-            ex_params:this.ex_params
+            ex_params:this.ex_params,
+            isTab:1
           }
           this.list_type_num = 3
 
@@ -137,10 +143,11 @@
         }
         if (type === 1) {
           this.url = Constants.Method.get_question_unanswered
-          this.list_type = 'answer_list'
+          this.list_type = 'unanswer_list'
           this.flag = {
             url:this.url,
-            ex_params:this.ex_params
+            ex_params:this.ex_params,
+            isTab:1
           }
         }
         if (type === 2) {
@@ -148,7 +155,8 @@
           this.list_type = 'answer_list'
           this.flag = {
             url:this.url,
-            ex_params:this.ex_params
+            ex_params:this.ex_params,
+            isTab:2
           }
         }
         if (type === 3) {
@@ -156,7 +164,8 @@
           this.list_type = 'question_list'
           this.flag = {
             url:this.url,
-            ex_params:this.ex_params
+            ex_params:this.ex_params,
+            isTab:3
           }
         }
         if (type === 4) {
@@ -164,7 +173,8 @@
           this.list_type = 'answer_list'
           this.flag = {
             url:this.url,
-            ex_params:this.ex_params
+            ex_params:this.ex_params,
+            isTab:4
           }
         }
         this.list_type_num = type
@@ -275,7 +285,17 @@
       margin-top: px2rem(40);
     }
   }
-
+  .card-box{
+    margin-top: px2rem(115);
+    height: 100%;
+    padding-bottom:px2rem(115) ;
+  }
+  .fixed-top{
+    width: 100%;
+    top: px2rem(0);
+    position: fixed;
+    background: #fff;
+  }
   /*search 1111  */
   .question-search {
     position: relative;
@@ -301,13 +321,12 @@
     display: flex;
     list-style: none;
     width: 100%;
-    height: px2rem(60);
+    height: px2rem(40);
     text-align: center;
     background: #fff;
-    margin: px2rem(10) 0;
     li {
       flex: 1;
-      margin: 0 px2rem(30);
+      margin: 0 px2rem(40);
       box-sizing: border-box;
       width: 45%;
       line-height: px2rem(40);

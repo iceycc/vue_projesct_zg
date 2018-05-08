@@ -1,6 +1,10 @@
 import moment from 'moment'
 let crtTime = value => {
   var date = new Date(value * 1000);
+  return moment(date).format("MM-DD HH:mm:ss")
+}
+let crtTime1 = value => {
+  var date = new Date(value * 1000);
   return moment(date).format("YYYY-MM-DD HH:mm:ss")
 }
 let chu100 = value => {
@@ -8,5 +12,6 @@ let chu100 = value => {
 }
 export {
   crtTime,
+  crtTime1,
   chu100
 }

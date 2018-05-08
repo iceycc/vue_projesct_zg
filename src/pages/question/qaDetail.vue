@@ -3,13 +3,11 @@
     <!--标题 问题详情-->
     <mu-appbar title="问答详情" v-if="showAppBar">
       <mu-icon-button icon="arrow_back" slot="left" @click="goBack"></mu-icon-button>
-
     </mu-appbar>
-
     <!--顶部问题详情-->
     <div class="card" v-if="question">
       <!--用户头像 名称 赏金-->
-      <div class="view1">
+      <div class="view1" v-if="!if_my_question">
         <img-wrapper :url="question.asker_avatar" classStyle="avatar"
                      @onClick="ifGoDetail(question.asker_id,null,null)"></img-wrapper>
         <div class="username">{{question.asker_name}}</div>
@@ -17,7 +15,11 @@
               v-if="parseFloat(question.reward) > 0">¥{{question.reward | chu100}}</span>
       </div>
       <!--问题标题-->
-      <div class="card-title">{{question.title}}</div>
+      <div class="card-title">
+        <span class="left">{{question.title}}</span>
+        <span class="reward shadow"
+              v-if="parseFloat(question.reward) > 0 && if_my_question">¥{{question.reward | chu100}}</span>
+      </div>
 
       </div>
     <div class="scroll-view">
@@ -31,7 +33,6 @@
           <div v-for="item,index in question.attach" :key="index" v-if=" item != ''" class="cc-img">
             <img :src="item" alt="" @click="showBigImg(item,question.attach)">
           </div>
-
         </div>
       </div>
       <!--展示 浏览数 回答数 收藏 时间-->
@@ -57,9 +58,78 @@
 
     </div>
     <!--回答列表-->
-        <template v-for="item, index in answer_list">
-          <div class="item" @click="onItemClick(index)">
-            <div class="card-re">
+        <!--我在自己的回答-->
+        <template v-if="if_my_answer === 1 && if_show">
+          <div class="card-re" @click="onItemClick(my_answer.id)">
+            <!--回答 人 头像 名称 用户等级 是否采纳 11-->
+            <div class="view1 horizontal-view">
+              <div class="vertical-view">
+                <div class="date">{{my_answer.addtime | crtTime}}</div>
+              </div>
+              <div class="accept" v-if="question.asker_id == current_uid  && my_answer.answerer_id !== question.asker_id && !isAdoption"
+                   @click.stop="openAdoption(index)">采纳
+              </div>
+
+              <div class="accepted" v-if="my_answer.adoption =='1'"><img src="../../assets/img/accepted@2x.png"
+                                                                    alt=""></div>
+              <div class="get_reward" v-if="my_answer.adoption =='1' && question.reward > 0"><img
+                src="../../assets/img/get_reward.png" alt=""></div>
+            </div>
+            <!--评论内容-->
+            <div class="context">{{my_answer.content}}</div>
+            <!--获取评论下的评论 -->
+            <div v-if="my_answer.hot_commnet && my_answer.hot_commnet.commenter_id" class="hotcomment">
+              <div class="title">{{my_answer.hot_commnet.commenter_role == 1 && role == 1 && current_uid != my_answer.hot_commnet.commenter_id ? '匿名用户' : my_answer.hot_commnet.commenter_name}}
+                <template v-if="!(my_answer.hot_commnet.commenter_role == 1 && role == 1 && current_uid != my_answer.hot_commnet.commenter_id)">
+                  <uz-lable v-if="question.q_reward > 0"
+                            :role="my_answer.hot_commnet.commenter_id === question.asker_id ? '赏金发起人' : my_answer.hot_commnet.commenter_rank"></uz-lable>
+                  <uz-lable v-else :role="my_answer.hot_commnet.commenter_id === question.asker_id ? '问题发起人' : my_answer.hot_commnet.commenter_rank"></uz-lable>
+                </template>
+                :{{my_answer.hot_commnet.content}}
+              </div>
+              <div class="count">查看全部{{my_answer.hot_commnet.total}}条回复</div>
+            </div>
+            <!--底部信息展示-->
+            <div class="view2 horizontal-view">
+              <!--点赞功能-->
+              <button class="like" v-bind:class="my_answer.is_like == 1 ? 'liked' : ''"
+                      @click.stop="like(my_answer.id,my_answer.is_like,'my_answer')"
+                      style="border: none;background: transparent;outline: none"
+                      :disabled="disabled"
+              >
+                <img-wrapper :url="my_answer.is_like == 1 ? icon4 : icon3 "
+                             classStyle="icon"></img-wrapper>
+                {{my_answer.laud}}
+              </button>
+              <!--编辑功能-->
+              <button class="like"
+                      @click.stop="editHandle(my_answer.id)"
+                      style="border: none;background: transparent;outline: none"
+                      :disabled="disabled"
+                      v-if="current_uid == my_answer.answerer_id"
+              >
+                <img-wrapper :url="icon_edit"
+                             classStyle="icon"></img-wrapper>
+                编辑
+              </button>
+              <div @click.stop="openClickDel(my_answer.id)" v-if="my_answer.answerer_id == current_uid && question.q_adoption !=my_answer.answerer_id && !isAdoption"> 删除
+              </div>
+              <mu-dialog :open="dialog2" title="提示" @close="close">
+                确定要删除该条回答吗
+                <mu-flat-button slot="actions" @click="close" primary label="取消"/>
+                <mu-flat-button slot="actions" primary @click="deleteHandle(1)" label="确定"/>
+              </mu-dialog>
+
+            </div>
+          </div>
+        </template>
+        <!---->
+        <div class="click-more" @click="showMore" v-if="if_my_answer === 1 && if_has_more">
+          {{is_more_answer?'查看其他回答':'关闭其他回答'}}
+        </div>
+        <!--全部回答-->
+        <template v-if="is_more_answer">
+            <div class="card-re" @click="onItemClick(item.id)" v-for="item, index in answer_list_filter">
               <!--回答 人 头像 名称 用户等级 是否采纳 11-->
               <div class="view1 horizontal-view">
                 <img-wrapper
@@ -72,9 +142,13 @@
                   <div class="name" @click.stop="ifGoDetail(item.answerer_id,item.answerer_role,item.answerer_name)">
                     {{item.answerer_role == 1 && role == 1 && current_uid != item.answerer_id? '匿名用户': item.answerer_name }}
                     <!--显示颜色从组件内根据角色名匹配的-->
-                    <uz-lable v-if="question.q_reward > 0"
-                              :role="item.answerer_id === question.asker_id ? '赏金发起人' : item.answerer_rank"></uz-lable>
-                    <uz-lable v-else :role="item.answerer_id ===question.asker_id ? '问题发起人' : item.answerer_rank"></uz-lable>
+                    <template v-if="!(item.answerer_role == 1 && role == 1 && current_uid != item.answerer_id)">
+                      <uz-lable v-if="question.q_reward > 0"
+                                :role="item.answerer_id === question.asker_id ? '赏金发起人' : item.answerer_rank"></uz-lable>
+                      <uz-lable v-else :role="item.answerer_id ===question.asker_id ? '问题发起人' : item.answerer_rank"></uz-lable>
+                    </template>
+
+
                   </div>
                   <div class="date">{{item.addtime | crtTime}}</div>
                 </div>
@@ -91,17 +165,30 @@
               <!--评论内容-->
               <div class="context">{{item.content}}</div>
               <!--获取评论下的评论 -->
-              <div v-if="item.hot_commnet.commenter_name" class="hotcomment">
-                <div class="title">{{item.hot_commnet.commenter_name}}
-                  <uz-lable v-if="question.q_reward > 0"
-                            :role="item.hot_commnet.commenter_id === question.asker_id ? '赏金发起人' : item.hot_commnet.commenter_rank"></uz-lable>
-                  <uz-lable v-else :role="item.hot_commnet.commenter_id === question.asker_id ? '问题发起人' : item.hot_commnet.commenter_rank"></uz-lable>
+              <div v-if="item.hot_commnet.commenter_id" class="hotcomment">
+                <div class="title">{{item.hot_commnet.commenter_role == 1 && role == 1 && current_uid != item.hot_commnet.commenter_id ? '匿名用户' : item.hot_commnet.commenter_name}}
+                  <template v-if="!(item.hot_commnet.commenter_role == 1 && role == 1 && current_uid != item.hot_commnet.commenter_id)">
+                    <uz-lable v-if="question.q_reward > 0"
+                              :role="item.hot_commnet.commenter_id === question.asker_id ? '赏金发起人' : item.hot_commnet.commenter_rank"></uz-lable>
+                    <uz-lable v-else :role="item.hot_commnet.commenter_id === question.asker_id ? '问题发起人' : item.hot_commnet.commenter_rank"></uz-lable>
+                  </template>
                   :{{item.hot_commnet.content}}
                 </div>
                 <div class="count">查看全部{{item.hot_commnet.total}}条回复</div>
               </div>
               <!--底部信息展示-->
               <div class="view2 horizontal-view">
+                <!--点赞功能-->
+                <button class="like" v-bind:class="item.is_like == 1 ? 'liked' : ''"
+                        @click.stop="like(item.id,item.is_like)"
+                        style="border: none;background: transparent;outline: none"
+                        :disabled="disabled"
+                >
+                  <img-wrapper :url="item.is_like == 1 ? icon4 : icon3 "
+                               classStyle="icon"></img-wrapper>
+                  {{item.laud}}
+
+                </button>
                 <!--编辑功能-->
                 <button class="like"
                         @click.stop="editHandle(item.id)"
@@ -113,17 +200,6 @@
                                classStyle="icon"></img-wrapper>
                   编辑
                 </button>
-                <!--点赞功能-->
-                <button class="like" v-bind:class="item.is_like == 1 ? 'liked' : ''"
-                        @click.stop="like(index,item.is_like)"
-                        style="border: none;background: transparent;outline: none"
-                        :disabled="disabled"
-                >
-                  <img-wrapper :url="item.is_like == 1 ? icon4 : icon3 "
-                               classStyle="icon"></img-wrapper>
-                  {{item.laud}}
-
-                </button>
                 <div @click.stop="openClickDel(item.id)" v-if="item.answerer_id == current_uid && question.q_adoption !=item.answerer_id && !isAdoption"> 删除
                 </div>
                 <mu-dialog :open="dialog2" title="提示" @close="close">
@@ -134,7 +210,6 @@
 
               </div>
             </div>
-          </div>
         </template>
       </mu-list>
     </div>
@@ -266,10 +341,23 @@
           'http://pic34.photophoto.cn/20150202/0005018384491898_b.jpg',
           'http://pic40.nipic.com/20140412/11857649_170524977000_2.jpg',
           'http://pic34.photophoto.cn/20150202/0005018384491898_b.jpg',
-        ]
+        ],
+        my_answer:[],
+        is_more_answer:true,
+        if_my_answer:0,// 是否需要优先显示自己的回答
+        my_answer_id:0,// 自己的回答id
+        if_my_question:false,
+        if_has_more:false,
+        if_show:true
       };
     },
-    computed: {},
+    computed: {
+      answer_list_filter:function () {
+          return this.answer_list.filter((val)=>{
+              return val.id !== this.my_answer_id
+          })
+      }
+    },
     created() {
       this.current_uid = window.localStorage.getItem(Constants.LocalStorage.uid)
       this.role = window.localStorage.getItem(Constants.LocalStorage.role)
@@ -277,7 +365,13 @@
       this.initWX(() => {
         console.log('wx success');
       });
-
+      if(this.$route.query.if_my_question){
+        this.if_my_question = true
+      }
+      if(this.$route.query.my_answer == 1 ){
+        this.is_more_answer = false
+        this.if_my_answer = 1
+      }
       this.ifGoHome = this.$route.query.go_home || false
 
       let newTime = new Date()
@@ -354,15 +448,21 @@
           urls: pics // 需要预览的图片http链接列表
         });
       },
-      deleteHandle() {
+      deleteHandle(type) {
 
         let data = {
             id: this.del_answer_id
         }
+        // if(){
+        //
+        // }
         API.post(Constants.Method.del_answer, data)
             .then((result) => {
               this.getAnswerList()
               this.dialog2 = false
+              if(type){
+                this.if_show = false
+              }
               EventBus.$emit(Constants.EventBus.showToast, {
                 message: "删除成功"
               });
@@ -374,6 +474,7 @@
       webpage() {
         this.$router.push({name: Constants.PageName.qaDoc, params: {type: 2}})
       },
+
       fenXiang() {
         let url = window.location.href
         wx.onMenuShareTimeline({
@@ -389,9 +490,18 @@
           }
         })
       },
+      showMore(){
+        this.is_more_answer = !this.is_more_answer
+      },
       getData() {
         this.getQuestion()
-        this.getAnswerList()
+        let num = this.$route.query.my_answer || 0
+        this.getAnswerList(num)
+        if(num ==1){
+          this.getAnswerList()
+        }
+
+
       },
       getQuestion(){
         let data = {
@@ -409,16 +519,23 @@
               console.log(err);
             });
       },
-      getAnswerList(){
+      getAnswerList(my_answer){
         let data = {
           id: this.$route.query.id,
+          my_answer:my_answer //1 只返回我的回答  0 返回全部回答
         };
         // 获取当前用户下的回答列表
         API.post(Constants.Method.get_answer_list,data)
             .then((result)=>{
               // 倒叙
+              console.log('result');
+              console.log(result);
               if(!result.data){
                 return
+              }
+              if(data.my_answer == 1){
+                this.my_answer = result.data[0]
+                this.my_answer_id = result.data[0].id
               }
               this.answer_list = result.data
               // 判断当前回答列表内是否有自己回答过的
@@ -429,11 +546,14 @@
               //     message:'你已经回答过改问题'
               //   })
               // }
-
+              this.if_has_more = this.answer_list.length > 1
               // 欧安的是否有采纳的
               // this.isAdoption = util.ifHaveVale(this.answer_list,'adoption','1')
               // 没有采纳的部分 按点赞排序
+
+              this.answer_list.reverse()
               this.answer_list = util.jsonSort(this.answer_list, 'laud', true);
+              // this.answer_list.reverse()
               // 获取采纳的序列号
               let _index =  util.getSuccIndex(this.answer_list,'adoption','1')
               if(_index !== -1){
@@ -522,21 +642,26 @@
               console.log(err);
             })
       },
-      like(index, liked) {
-
+      like(id, liked,type) {
+        console.log(type)
+        console.log(liked)
         if (timer) {
           clearTimeout(timer)
         }
         this.disabled = true
         let timer;
         let data = {
-           id: this.answer_list[index].id,
+           id: id,
         };
         switch (liked) {
           case '1':
             API.post(Constants.Method.un_like, data)
                 .then((result) => {
-                  this.getAnswerList()
+                  if(type == 'my_answer'){
+                    this.getAnswerList(1)
+                  }else {
+                    this.getAnswerList()
+                  }
                   timer = setTimeout(() => {
                     this.disabled = false
                   }, 1000)
@@ -548,7 +673,11 @@
           case '0':
             API.post(Constants.Method.like, data)
                 .then((result) => {
-                  this.getAnswerList()
+                  if(type == 'my_answer'){
+                    this.getAnswerList(1)
+                  }else {
+                    this.getAnswerList()
+                  }
                   timer = setTimeout(() => {
                     this.disabled = false
                   }, 1000)
@@ -558,7 +687,20 @@
                 })
             break;
           default:
-            console.log('操作太快')
+            API.post(Constants.Method.un_like, data)
+              .then((result) => {
+                if(type == 'my_answer'){
+                  this.getAnswerList(1)
+                }else {
+                  this.getAnswerList()
+                }
+                timer = setTimeout(() => {
+                  this.disabled = false
+                }, 1000)
+              })
+              .catch((err)=>{
+                console.log(err);
+              })
         }
       },
       toggleAsk() {
@@ -633,9 +775,9 @@
               console.log(err);
             });
       },
-      onItemClick(index) {
+      onItemClick(id) {
         let data = {
-          id: +this.answer_list[index].id
+          id: id
         };
 
         this.pushPage({
@@ -658,112 +800,129 @@
     flex-direction: column;
   }
 
-  .avatar {
-    width: px2rem(30);
-    height: px2rem(30);
-  }
 
   .card {
-    background-color: white;
-    width: 100%;
-    padding: px2rem(10) px2rem(20);
-    z-index: 1;
-    .card-title{
-      font-size: px2rem(16);
-      color:#333;
-      font-weight: 600;
-    }
-    .card-img {
-      display: flex;
-      overflow-x: scroll;
-      margin-top: px2rem(20);
-      height: px2rem(60);
-      font-size: 0;
-      .cc-img {
-        margin-right: px2rem(20);
-      }
-      img {
-        width: px2rem(80);
-        height: px2rem(60);
-      }
-    }
-    .view1 {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      .username {
-        font-size: px2rem(16);
-        color: #333;
-        flex-grow: 1;
-        margin-left: px2rem(10);
-      }
-      .reward {
-        font-size: px2rem(12);
-        line-height: 1;
-        background-color: RGB(255, 205, 0);
-        color: white;
-        padding: px2rem(4) px2rem(10);
-        border-radius: px2rem(15);
-      }
-    }
+       background-color: white;
+       width: 100%;
+       padding: px2rem(10) px2rem(20);
+       z-index: 1;
+       .card-title{
+         display: flex;
+         flex-direction: row;
+         align-items: center;
+         font-size: px2rem(16);
+         color:#333;
+         font-weight: 600;
+         .left{
+           flex: 1;
+         }
+         .reward {
+           font-size: px2rem(12);
+           line-height: 1;
+           background-color: RGB(255, 205, 0);
+           color: white;
+           padding: px2rem(4) px2rem(10);
+           border-radius: px2rem(15);
+           margin-left: px2rem(10);
+         }
+       }
 
-    &-title {
-      font-size: px2rem(14);
-      color: #333;
-      padding: px2rem(10) 0;
-    }
+       .avatar {
+         width: px2rem(30);
+         height: px2rem(30);
+       }
+       .card-img {
+         display: flex;
+         overflow-x: scroll;
+         margin-top: px2rem(20);
+         height: px2rem(60);
+         font-size: 0;
+         .cc-img {
+           margin-right: px2rem(20);
+         }
+         img {
+           width: px2rem(80);
+           height: px2rem(60);
+         }
+       }
 
-    &-content {
-      color: $fontcolor;
-      font-size: px2rem(14);
-    }
+       .view1 {
+         display: flex;
+         flex-direction: row;
+         align-items: center;
+         .username {
+           font-size: px2rem(16);
+           color: #333;
+           flex-grow: 1;
+           margin-left: px2rem(10);
+         }
+         .reward {
+           font-size: px2rem(12);
+           line-height: 1;
+           background-color: RGB(255, 205, 0);
+           color: white;
+           padding: px2rem(4) px2rem(10);
+           border-radius: px2rem(15);
+         }
+       }
 
-    .view2 {
-      position: relative;
-      color: $fontcolor_gray;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      padding: px2rem(10) 0;
-      border-bottom: px2rem(1) solid $divider;
-      font-size: px2rem(12);
-      .collect {
-        color: #aaa;
-      }
-      .collected {
-        color: #31ddaa
-      }
-      div:nth-child(1):after {
-        content: '•';
-        padding: 0 px2rem(5);
-      }
-      div:nth-child(2):after {
-        content: '•';
-        padding: 0 px2rem(5);
-      }
-      div:nth-child(4) {
-        flex-grow: 1;
-        text-align: right;
-      }
-    }
+       &-title {
+         font-size: px2rem(14);
+         color: #333;
+         padding: px2rem(10) 0;
+       }
 
-    &-tags {
-      display: flex;
-      flex-wrap: wrap;
-      flex-direction: row;
-      align-items: center;
-      margin-top: px2rem(10);
-      font-size: px2rem(12);
-      .tag {
-        color: $fontcolor_gray;
-        border: 1px solid #dedede;
-        padding: px2rem(2) px2rem(5);
-        margin-bottom: px2rem(4);
-        font-size: px2rem(12);
-        margin-right: px2rem(10);
-      }
-    }
-  }
+       &-content {
+         color: $fontcolor;
+         font-size: px2rem(14);
+       }
+
+       .view2 {
+         position: relative;
+         color: $fontcolor_gray;
+         display: flex;
+         flex-direction: row;
+         align-items: center;
+         padding: px2rem(10) 0;
+         border-bottom: px2rem(1) solid $divider;
+         font-size: px2rem(12);
+         .collect {
+           color: #aaa;
+         }
+         .collected {
+           color: #31ddaa
+         }
+         div:nth-child(1):after {
+           content: '•';
+           padding: 0 px2rem(5);
+         }
+         div:nth-child(2):after {
+           content: '•';
+           padding: 0 px2rem(5);
+         }
+         div:nth-child(4) {
+           flex-grow: 1;
+           text-align: right;
+         }
+       }
+
+       &-tags {
+         display: flex;
+         flex-wrap: wrap;
+         flex-direction: row;
+         align-items: center;
+         margin-top: px2rem(10);
+         font-size: px2rem(12);
+         .tag {
+           color: $fontcolor_gray;
+           border: 1px solid #dedede;
+           padding: px2rem(2) px2rem(5);
+           margin-bottom: px2rem(4);
+           font-size: px2rem(12);
+           margin-right: px2rem(10);
+         }
+       }
+     }
 
   .scroll-view {
     height: 100%;
@@ -775,10 +934,20 @@
     }
   }
 
+  .click-more{
+    background: #fff;
+    padding: px2rem(10);
+    margin: px2rem(10);
+    text-align: center;
+  }
   .card-re {
     background-color: white;
     padding: px2rem(10);
     margin: px2rem(10);
+    .avatar {
+      width: px2rem(30);
+      height: px2rem(30);
+    }
     .view1 {
       position: relative;
       align-items: center;

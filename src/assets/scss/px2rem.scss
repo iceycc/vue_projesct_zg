@@ -17,6 +17,21 @@ $fontcolor: #666666;
   -webkit-line-clamp: 3;
   overflow: hidden;
 }
+$placeholderColor:#aaa
+  ::-webkit-input-placeholder { /* WebKit browsers */
+    color:    $placeholderColor;
+  }
+  :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color:    $placeholderColor;
+    opacity:  1;
+  }
+  ::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color:    $placeholderColor;
+    opacity:  1;
+  }
+  :-ms-input-placeholder { /* Internet Explorer 10+ */
+    color:    $placeholderColor;
+  }
 
 $bgImage: linear-gradient(to top, #11cdcd, #0edda2);
 
