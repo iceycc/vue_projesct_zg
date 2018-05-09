@@ -5,6 +5,7 @@
       <div class="no-data" v-if="answered_list && answered_list.length == 0 ">
         {{infoMsg}}
       </div>
+      <!--已回答列表-->
       <div v-if="type == 'answer_list'">
         <div class="answer-list-card" @click="goQuestionDetail(item,'answer_list')" v-for="item,index in answered_list" :key="index"
              v-if="item.question && item.question.id !==''">
@@ -15,7 +16,7 @@
             <div class="view-top">
               <span class="title">{{item.question.title}}</span>
               <span class="reward"
-                    v-if="parseFloat(item.question.reward) > 0">¥{{item.question.reward | chu100}}</span>
+                    v-if="parseFloat(item.question.reward) > 0">{{item.answer.adoption > 0 ?'已悬赏':''}} ¥{{item.question.reward | chu100}}</span>
             </div>
             <!--问题内容-->
             <div class="question-content">{{item.question.content}}</div>
@@ -26,9 +27,12 @@
             </div>
           </div>
           <div class="line">
-            <div class="accepted" v-if="item.answer.adoption == 1"><img src="../../assets/img/accepted@2x.png"
-                                               alt=""></div>
-
+            <div class="img-box">
+              <div class="accepted" v-if="item.answer.adoption > 0"><img src="../../assets/img/accepted@2x.png"
+                                                                          alt=""></div>
+              <div class="get_reward" v-if="item.answer.adoption > 0 && item.question.reward > 0"><img
+                src="../../assets/img/get_reward.png" alt=""></div>
+            </div>
           </div>
           <!--回答相关-->
           <div class="answer-info">
@@ -42,6 +46,7 @@
           </div>
         </div>
       </div>
+      <!--管家未回答列表-->
       <div v-if="type == 'unanswer_list'">
         <template v-for="item,index in answered_list">
           <div class="unanswer-list-card" @click="goQuestionDetail(item)">
@@ -93,6 +98,7 @@
           </div>
         </template>
       </div>
+      <!--普通用户提问列表-->
       <div v-if="type == 'question_list'">
         <div class="question-list-card item" @click="goQuestionDetail(item,'question_list')"
              v-for="item, index in answered_list"
@@ -101,10 +107,11 @@
           <div class="title-view">
             <div class="title">{{item.title}}</div>
             <span class="reward shadow"
-                  v-if="parseFloat(item.reward) > 0">{{item.adoption ===1?'已悬赏':''}}￥{{item.reward | chu100}}</span>
+                  v-if="parseFloat(item.reward) > 0">{{item.adoption > 0 ?'已悬赏':''}} ￥{{item.reward | chu100}}</span>
           </div>
           <div class="card-content">{{item.content}}</div>
-          <div class="accepted" v-if="item.adoption === 1"><img src="../../assets/img/accepted@2x.png"
+          <!--采纳图标-->
+          <div class="accepted" v-if="item.adoption > 0"><img src="../../assets/img/accepted@2x.png"
                                                                 alt=""></div>
           <div class="card-tags" v-if="item.label && item.label.length > 0">
             <div class="tag" v-for="value,index in item.label" :key="index" v-if="value !== '' ">{{value}}</div>
@@ -281,7 +288,7 @@
 <style lang="scss">
   @import "../../assets/scss/px2rem";
   $title-color:#333;
-  $content-color:#888;
+  $content-color:#666;
   ul, li {
     margin: 0;
     padding: 0;
@@ -384,22 +391,25 @@
       &:after {
         right: -$yuan_width_2;
       }
-      .accepted{
+      .img-box{
         position: absolute;
         top: px2rem(-10);
         right: px2rem(20);
-        width: px2rem(50);
-        height: px2rem(50);
         opacity: 1;
-        img {
-          width: 100%;
-          height: 100%;
+        .accepted,.get_reward{
+          display:inline-block ;
+          width: px2rem(50);
+          height: px2rem(50);
+          img {
+            width: 100%;
+            height: 100%;
+          }
         }
-
       }
     }
     .answer-content{
       font-size: px2rem(14);
+      color:#999999
     }
     .question-info, .answer-info {
       padding: px2rem(15) px2rem(20);

@@ -129,7 +129,6 @@
             console.log(result);
             this.hot_words = this.hot_words.concat(result.data);
               this.getList();
-
           })
           .catch((err) => {
             console.log(err);

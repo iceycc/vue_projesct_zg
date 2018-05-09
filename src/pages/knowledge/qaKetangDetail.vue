@@ -30,6 +30,7 @@
 
 <script>
   import {Constants, EventBus, mixins,API} from '../../config/index';
+  import axios from 'axios';
   import ComponentTemplate from "../../components/template";
   import AutoListView from "../../components/commons/AutoListView";
   import ImgWrapper from "../../components/commons/ImgWrapper";
@@ -108,8 +109,9 @@
           cid: id,
           page: this.page
         }
-        API.post(Constants.Method.ketang_nodeList,data)
+        axios.get(Constants.Method.ketang_nodeList,{params:data})
             .then((result) => {
+              console.log(result);
               this.data_list = this.data_list.concat(result.data.data)
               // 判断数据是否存在且是否为空 控制加载是否继续
               if (result.data.data && result.data.data.length == 0) {

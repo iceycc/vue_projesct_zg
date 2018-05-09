@@ -53,10 +53,11 @@
         answered_list_1: [],
         answered_list_2: [],
         urls: [
-          Constants.Method.get_question_unanswered,
-          Constants.Method.get_question_answered,
-          Constants.Method.get_my_question,
-          Constants.Method.get_my_answer
+          '',
+          Constants.Method.get_question_unanswered,//管家未回答1
+          Constants.Method.get_question_answered,//管家已回答2
+          Constants.Method.get_my_question,//用户提问3
+          Constants.Method.get_my_answer//用户回答4
         ],
         isShow: 1,
         url: '',
@@ -77,12 +78,12 @@
 
       this.role = window.localStorage.getItem(Constants.LocalStorage.role)
       this.init(this.role)
+
       // this.url = Constants.Method.get_question_unanswered
 
     },
     activated(){
-      // this.getNum()
-
+      this.getNum()
     },
     mounted() {
       this.cicikTabs()
@@ -102,12 +103,12 @@
       }
     },
     methods: {
-      init(this_role) {
+      init(this_role,left_right) {
         console.log('init')
         console.log(this_role)
         if (this_role == 1) {
           this.getNum()
-          this.url = Constants.Method.get_question_unanswered
+          this.url = this.urls[1]
           // this.url2 = Constants.Method.get_question_answered
           this.list_type = 'unanswer_list'
           this.flag = {
@@ -120,7 +121,7 @@
         }
         if (this_role == 0) {
           this.getNum()
-          this.url = Constants.Method.get_my_question;
+          this.url = this.urls[3];
           this.list_type = 'question_list'
 
           // this.url = Constants.Method.get_my_answer

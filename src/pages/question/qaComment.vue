@@ -45,9 +45,7 @@
                       {{item.from_user_role ==1 && role ==1 &&item.from_user_id != current_uid ? '匿名用户':item.from_user_name}}
                     </span>
                     <span class="huifu-text"> 回复 </span>
-                    <span>{{item.to_user_name ?
-                      (item.to_user_role ==1 && role ==1 && item.to_user_id != current_uid ? '匿名用户':item.from_user_name)
-                      : answer.answerer_name }} ：</span>
+                    <span>{{item.to_user_role ==1 && role ==1 && item.to_user_id != current_uid ? '匿名用户':item.to_user_name}} ：</span>
                   </div>
                 </div>
               </div>
@@ -151,14 +149,12 @@
         }
       },
       getData() {
-        let options = {
-          params:{
+        let data = {
             id: this.$route.query.id,
             inform_id: this.$route.query.inform_id || 0,
-          }
         };
 
-        API.post(Constants.Method.get_answer, options.params)
+        API.get(Constants.Method.get_answer, {params:data})
             .then((result) => {
               this.answer = result.data
               if (this.answer == null) {
@@ -173,14 +169,12 @@
             });
       },
       getComment() {
-        let options = {
-          params:{
+        let data = {
             id: this.$route.query.id,
             inform_id: this.$route.query.inform_id || 0
-          }
         };
 
-        API.post(Constants.Method.get_comment_list, options.params)
+        API.get(Constants.Method.get_comment_list, {params:data})
             .then((result) => {
               this.comments = result.data;
               if (this.comments && this.comments.length > 0) {

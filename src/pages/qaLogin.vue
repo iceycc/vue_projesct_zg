@@ -48,11 +48,15 @@
         this.gotoLogin()
       }
 
+
     },
     methods: {
       gotoLogin() {
+        let redirect = this.$route.query.redirect
+        let id = this.$route.query.data ? this.$route.query.data.id : null
+        console.log(redirect);
         window.localStorage.clear()
-        window.location.href = 'http://wx.uzhuang.com/index.php?r=wx/oauth2'
+        window.location.href = `http://wx.uzhuang.com/index.php?r=wx/oauth2&redirect=${redirect}&id=${id}`
       },
       gotoMain() {
         window.localStorage.clear();

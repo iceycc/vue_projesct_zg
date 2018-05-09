@@ -7,7 +7,7 @@
       <!--<upload-view @upload="chooseImage" @remove="remove" :localIds="localIds"></upload-view>-->
     </div>
 
-    <div class="btn-submit" @click="submit(is_edit)">发布
+    <div class="btn-submit" @click.stop="submit(is_edit)">发布
     </div>
   </div>
 

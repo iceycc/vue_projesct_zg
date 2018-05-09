@@ -126,12 +126,12 @@
       }
     },
     created() {
-      this.current_uid = window.localStorage.getItem(Constants.LocalStorage.uid)
+
       this.initWX(() => {
         console.log('wx success');
       });
       this.type = this.$route.params.type;
-
+      this.current_uid = window.localStorage.getItem(Constants.LocalStorage.uid) || null
       /**
        * 如果是微信内,则不显示appBar
        * @type {boolean}

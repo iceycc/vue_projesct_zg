@@ -9,25 +9,24 @@
       </template>
     </div>
 
-    <auto-list-view :url="url" :flag="flag" :isNeedDivider="false" @onItemClick="onItemClick" v-if="isFirst">
-      <template slot="item" slot-scope="props">
+    <div v-if="isFirst" class="scroll-view">
+      <div @onItemClick="onItemClick" v-for="item,index in kt_lists">
         <div class="card">
           <div class="card-img">
-            <img :src="props.item.thumb" alt="">
+            <img :src="item.thumb" alt="">
           </div>
           <div class="title-view">
-            <div class="title">{{props.item.title}}</div>
+            <div class="title">{{item.title}}</div>
             <span class="reward shadow"
-                  v-if="parseFloat(props.item.q_reward) > 0">{{props.item.q_reward}}</span>
-            <div class="card-content">{{props.item.remark}}</div>
+                  v-if="parseFloat(item.q_reward) > 0">{{item.q_reward}}</span>
+            <div class="card-content">{{item.remark}}</div>
           </div>
         </div>
-      </template>
-
-    </auto-list-view>
-
+      </div>
+    </div>
     <div class="ketang_imgs" v-else>
-      <div v-for="item,key,index in pics" :key="key" class="ketang_img" @click="goKetangDetail($event,key)" v-if=" key != 32">
+      <div v-for="item,key,index in pics" :key="key" class="ketang_img" @click="goKetangDetail($event,key)"
+           v-if=" key != 32">
         <span class="title">{{picsTitle | forPicsTitle(index)}}</span>
         <img :src="item" alt=""></div>
     </div>
@@ -36,7 +35,8 @@
 </template>
 
 <script>
-  import {Constants, EventBus, mixins,API} from '../../config/index';
+  import {Constants, EventBus, mixins, API} from '../../config/index';
+  import axios from 'axios';
   import ComponentTemplate from "../../components/template";
   import AutoListView from "../../components/commons/AutoListView";
   import ImgWrapper from "../../components/commons/ImgWrapper";
@@ -45,12 +45,13 @@
     components: {
       ImgWrapper,
       AutoListView
+
     },
     mixins: [mixins.base, mixins.wx],
     name: Constants.PageName.qaknowledge,
     data() {
       return {
-        isFirst:true,
+        isFirst: true,
         url: '',
         category_index: 0,
         categorys: [{
@@ -63,18 +64,19 @@
           name: '装修后',
         }],
         flag: null,
-        pics:[],
-        picsTitle:[],
+        pics: [],
+        picsTitle: [],
+        kt_lists: [],
         // [@"收房",@"设计",@"建材",@"预算",@"合同”]  :66/67/32/68/69
         // [@"拆改",@"水电",@"防水",@"泥瓦",@"木工",@"油漆",@"竣工"] :70~76
         // [@"软装",@"风水",@"环保",@"家具",@"电器",@"入住",@"保养”]:81/87/82/33/35/83/170
-        picsTitlePrevious:['建材','收房','设计','预算','合同'],
-        picsTitleMiddle:['拆改','水电','防水','泥瓦','木工','油漆','竣工'],
-        picsTitleLast:['家具','电器','软装','风水','环保','入住','保养']
+        picsTitlePrevious: ['建材', '收房', '设计', '预算', '合同'],
+        picsTitleMiddle: ['拆改', '水电', '防水', '泥瓦', '木工', '油漆', '竣工'],
+        picsTitleLast: ['家具', '电器', '软装', '风水', '环保', '入住', '保养'],
       };
     },
-    filters:{
-      forPicsTitle:(val,index) => {
+    filters: {
+      forPicsTitle: (val, index) => {
         return val[index]
       }
     },
@@ -83,20 +85,24 @@
       this.selectHotWord(0);
     },
     methods: {
-      goKetangDetail($event,id){
+      goKetangDetail($event, id) {
         let title = $event.currentTarget.children[0].innerHTML
         this.$router.push({
-          name:Constants.PageName.qaKetangDetail,
-          query:{
-            cid:id,
-            title:title
+          name: Constants.PageName.qaKetangDetail,
+          query: {
+            cid: id,
+            title: title
           }
         })
       },
       getList(url) {
         this.url = url;
-        this.flag = this.url;
-        this.isFirst = true
+        axios.get(url, null)
+          .then((result) => {
+            console.log(result);
+            this.kt_lists = result.data.data
+
+          })
       },
       onItemClick(item) {
         window.location.href = item.url;
@@ -107,21 +113,22 @@
             }
         });*/
       },
-      getPicsData(url,type,picsTitle){
+      getPicsData(url, type, picsTitle) {
         this.isFirst = false
         this.loading = true
         this.picsTitle = picsTitle
         let data = {
-          type : type
+          type: type
         }
-        API.post(url,data)
-          .then((res)=>{
-            let urls = res.data
+        axios.get(url, {params: data})
+          .then((res) => {
+            console.log(res);
+            let urls = res.data.data
             this.pics = urls
           })
-            .catch((err)=>{
-              console.log(err);
-            })
+          .catch((err) => {
+            console.log(err);
+          })
       },
       selectHotWord(index) {
         this.category_index = index;
@@ -129,18 +136,19 @@
           case 0:
             //信息列表
             this.getList(Constants.Method.ketang_commend);
+            this.isFirst = true
             break;
           case 1:
             //信息列表321
-            this.getPicsData(Constants.Method.ketang_commend_qzh , 'previous',this.picsTitlePrevious);
+            this.getPicsData(Constants.Method.ketang_commend_qzh, 'previous', this.picsTitlePrevious);
             break;
           case 2:
             //信息列表
-            this.getPicsData(Constants.Method.ketang_commend_qzh , 'middle',this.picsTitleMiddle);
+            this.getPicsData(Constants.Method.ketang_commend_qzh, 'middle', this.picsTitleMiddle);
             break;
           case 3:
             //信息列表
-            this.getPicsData(Constants.Method.ketang_commend_qzh ,'last',this.picsTitleLast);
+            this.getPicsData(Constants.Method.ketang_commend_qzh, 'last', this.picsTitleLast);
             break;
           default:
             console.log("猜猜猜")
@@ -168,9 +176,20 @@
     padding-top: px2rem(60);
     height: 100%;
   }
+  /*scroll-view*/
+  .scroll-view {
+    height: 100%;
+    overflow: scroll;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    .no-data {
+      text-align: center;
+      margin-top: px2rem(40);
+    }
+  }
   .hot_word_view {
-    position:fixed;
-    top:0;
+    position: fixed;
+    top: 0;
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -195,41 +214,43 @@
       border-bottom: px2rem(2) solid $mainColor;
     }
   }
+
   /*11*/
-  .ketang_imgs{
+  .ketang_imgs {
     display: flex;
-    flex-wrap:wrap;
-    .ketang_img{
-      position:relative;
+    flex-wrap: wrap;
+    .ketang_img {
+      position: relative;
       padding: px2rem(10);
       display: inline-block;
       width: 50%;
       height: px2rem(120);
 
-      img{
+      img {
         width: 100%;
       }
-      .title{
+      .title {
         position: absolute;
         padding: px2rem(6);
         color: #fff;
       }
     }
   }
+
   .card {
     background-color: white;
     width: 100%;
     padding: px2rem(10);
     border-radius: px2rem(3);
     /*12111111*/
-    .card-img{
+    .card-img {
       display: inline-block;
       box-sizing: border-box;
       vertical-align: top;
       width: px2rem(80);
       height: px2rem(60);
       background: #ccc;
-      img{
+      img {
         width: 100%;
         height: 100%;
       }
@@ -246,7 +267,7 @@
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
-        color:#555;
+        color: #555;
       }
 
       .reward {

@@ -66,7 +66,7 @@
 
 <script>
   //
-  import {Constants, EventBus, mixins, API} from '../config/index';
+  import {Constants, EventBus, mixins, API, util} from '../config/index';
   import ImgWrapper from "../components/commons/ImgWrapper.vue";
 
   export default {
@@ -97,30 +97,60 @@
         notice_isread_num: 0,
         isreadShow: false,
         to_doc: {},
-        role: 0
+        role: 0,
+
       };
     },
     created() {
-      let str = window.location.hash.toString()
-      if (typeof str == 'string') {
-        let sign = str.split('=')[1]
-        // sign = '215b54bc24847bdaa7344b2504514881'
-        // sign = 'e0c4bdf36c78b9faac7ab659341fb033' // a
-        // sign = 'a39c64680e64ee62b6a932a0a6c3942f'// guanjia
-        // sign = '195b6cf7d91dcbe38cde92a25dd5202c'  // 晓雅
-        if (sign) {
-          // EventBus.$emit(Constants.EventBus.sign,"text")
-          window.localStorage.setItem(Constants.LocalStorage.sign, sign)
-          this.getUserInfos(()=>{
-            this.role = window.localStorage.getItem(Constants.LocalStorage.role)
+      console.log('created created');
+
+      var Request = new Object();
+      Request = util.GetRequest();
+      let sign = Request['sign'] || window.localStorage.getItem(Constants.LocalStorage.sign)
+
+      // sign = '215b54bc24847bdaa7344b2504514881'
+      // sign = 'e0c4bdf36c78b9faac7ab659341fb033' // a
+      // sign = 'a39c64680e64ee62b6a932a0a6c3942f'// guanjia
+      // sign = '195b6cf7d91dcbe38cde92a25dd5202c'  // 晓雅
+      let redirect = Request['redirect'] || this.$route.query.redirect
+      let from_id = Request['id']
+      window.localStorage.setItem(Constants.LocalStorage.sign, sign)
+      console.log(sign)
+      console.log(redirect)
+      if (sign) {
+        this.getUserInfos(() => {
+          this.role = window.localStorage.getItem(Constants.LocalStorage.role)
+        })
+        if (redirect != 'undefined') {
+          console.log('redirect succ')
+          this.$router.push({
+            name: redirect,
+            query:{
+              id:from_id
+
+            }
           })
-          setTimeout(()=>{
-            this.pushPage({
+        }else {
+          console.log('to qaIndex')
+          setTimeout(() => {
+            this.$router.push({
               name: Constants.PageName.qaIndex
             })
           },100)
         }
+      } else {
+        setTimeout(() => {
+          EventBus.$emit(Constants.EventBus.showToast, {
+            message: "需要在微信浏览器打开"
+          })
+          this.$router.push({
+            name: Constants.PageName.qaLogin,
+            redirect
+          })
+        }, 100)
       }
+
+
       EventBus.$on(Constants.EventBus.inform_num, (val) => {
         if (val) {
           this.isreadShow = val > 0
@@ -134,14 +164,17 @@
     },
     watch: {
       // 坑 监视路由
-      "$route": "getUserData"
-    },
+      "$route":
+        "getUserData"
+    }
+    ,
     mounted() {
 
       this.style = {
         height: (this.$el.offsetHeight - this.$refs['bottom'].$el.offsetHeight) + 'px'
       };
-    },
+    }
+    ,
     methods: {
       getUserInfos(success) {
         API.post(Constants.Method.profile, {})
@@ -159,19 +192,23 @@
           .catch((err) => {
             console.log(err);
           });
-      },
+      }
+      ,
       webpage() {
         this.$router.push({name: Constants.PageName.qaDoc, params: {type: 2}})
-      },
+      }
+      ,
       getUserData(to, from) {
         if (to.name === Constants.PageName.qaUser) return
         this.getUserInfos()
         this.showAsk = false
 
-      },
+      }
+      ,
       toggleAsk() {
         this.showAsk = !this.showAsk;
-      },
+      }
+      ,
       gotoAsk(type) {
         this.pushPage({
           name: Constants.PageName.qaAsk,
@@ -179,7 +216,8 @@
             type
           }
         });
-      },
+      }
+      ,
       handleChange(value) {
         if (value == 2) {
           if (this.role == 0) {
@@ -219,7 +257,8 @@
         }
       }
     }
-  };
+  }
+  ;
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only 111-->

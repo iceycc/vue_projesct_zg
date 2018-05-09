@@ -348,7 +348,8 @@
         my_answer_id:0,// 自己的回答id
         if_my_question:false,
         if_has_more:false,
-        if_show:true
+        if_show:true,
+        this_title:''
       };
     },
     computed: {
@@ -359,6 +360,7 @@
       }
     },
     created() {
+      this.fenXiang()
       this.current_uid = window.localStorage.getItem(Constants.LocalStorage.uid)
       this.role = window.localStorage.getItem(Constants.LocalStorage.role)
       this.getData();
@@ -476,19 +478,79 @@
       },
 
       fenXiang() {
-        let url = window.location.href
+        console.log('fenXiang');
+
+        let link = window.location.href
+        let title =21213131
+        let imgUrl = ''
         wx.onMenuShareTimeline({
-          title: '分享该问题', // 分享标题
-          link: url, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-          imgUrl: '', // 分享图标
+          title: title, // 分享标题
+          link: link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+          imgUrl: imgUrl, // 分享图标
           success: function () {
             // 用户确认分享后执行的回调函数
           },
           fail: function () {
             // 用户确认分享后执行的回调函数
-
           }
         })
+
+
+        wx.onMenuShareAppMessage({
+          title: title, // 分享标题
+          desc: '', // 分享描述
+          link: link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+          imgUrl: imgUrl, // 分享图标
+          type: '', // 分享类型,music、video或link，不填默认为link
+          dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+          success: function () {
+// 用户确认分享后执行的回调函数
+          },
+          cancel: function () {
+// 用户取消分享后执行的回调函数
+          }
+        });
+
+        wx.onMenuShareQQ({
+          title: title, // 分享标题
+          desc: '', // 分享描述
+          link: link, // 分享链接
+          imgUrl: imgUrl, // 分享图标
+          success: function () {
+// 用户确认分享后执行的回调函数
+          },
+          cancel: function () {
+// 用户取消分享后执行的回调函数
+          }
+        });
+
+
+        wx.onMenuShareWeibo({
+          title: title, // 分享标题
+          desc: '', // 分享描述
+          link: link, // 分享链接
+          imgUrl: imgUrl, // 分享图标
+          success: function () {
+// 用户确认分享后执行的回调函数
+          },
+          cancel: function () {
+// 用户取消分享后执行的回调函数
+          }
+        });
+
+
+        wx.onMenuShareQZone({
+          title:title, // 分享标题
+          desc: '', // 分享描述
+          link: link, // 分享链接
+          imgUrl: imgUrl, // 分享图标
+          success: function () {
+// 用户确认分享后执行的回调函数
+          },
+          cancel: function () {
+// 用户取消分享后执行的回调函数
+          }
+        });
       },
       showMore(){
         this.is_more_answer = !this.is_more_answer
@@ -509,11 +571,12 @@
           inform_id: this.$route.query.inform_id || 0
         };
         // 获取问题详情
-        API.post(Constants.Method.get_question_info, data)
+        API.get(Constants.Method.get_question_info, {params:data})
             .then((result) => {
               result = result.data
               this.question = result;
               this.current_question_id = this.question.id
+              this.this_title = this.question.title
             })
             .catch((err) => {
               console.log(err);
@@ -525,7 +588,7 @@
           my_answer:my_answer //1 只返回我的回答  0 返回全部回答
         };
         // 获取当前用户下的回答列表
-        API.post(Constants.Method.get_answer_list,data)
+        API.get(Constants.Method.get_answer_list,{params:data})
             .then((result)=>{
               // 倒叙
               console.log('result');
