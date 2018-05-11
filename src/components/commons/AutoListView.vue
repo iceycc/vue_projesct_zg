@@ -6,11 +6,9 @@
     <mu-list v-if="type == 'list'">
       <slot name="swiper"></slot>
       <template v-for="item, index in data">
-        <mu-list-item @click="onItemClick(index)">
-          <div class="item">
+          <div class="item item_card" @click="onItemClick(index)">
             <slot name="item" :item="item" :index="index" haha="c"> </slot>
           </div>
-        </mu-list-item>
         <mu-divider v-if="isNeedDivider"/>
       </template>
     </mu-list>
@@ -235,6 +233,9 @@
 
   .mu-infinite-scroll {
     padding-top: 10px;
+  }
+  .item_card{
+    margin:0 px2rem(10) px2rem(15);
   }
 
 </style>

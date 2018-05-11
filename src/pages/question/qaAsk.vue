@@ -17,13 +17,12 @@
 
     </div>
 
-    <div class="btn-submit" @click="submit">{{(type === 1 ? '支付¥' + parseFloat(qa.reward).toFixed(2) : '') +
+    <div class="btn-submit" @click="submit">{{(watch_type == 1 ? '支付¥' + parseFloat(watch_qa.reward).toFixed(2) : '') +
       '进行提问'}}
     </div>
 
     <div class="mask" v-if="showMask">
       <div class="tip1">您已选择 <span class="money">{{qa.reward}}</span>元问题赏金</div>
-
       <div class="slider" v-if="slider">
         <vue-slider-component
           v-model="qa.reward"
@@ -76,7 +75,7 @@
     name: Constants.PageName.qaIndex,
     data() {
       return {
-        type: 1,//1付费
+        type: 0,//1付费
         qa: {
           title: '',
           content: '',
@@ -92,7 +91,14 @@
         money_sum: 0
       };
     },
+
     computed: {
+      watch_qa(){
+        return this.qa
+      },
+      watch_type(){
+        return this.type
+      },
       slider() {
         let height = 40;
         let size = 60;
@@ -126,11 +132,20 @@
       }
     },
     created() {
-
+      console.log(this.$route.query)
       this.initWX(() => {
+        this.fenXiang({
+          title:'诸葛装修，全方位解决您的装修问题',
+          imgUrl:'http://image1.uzhuang.com/zhuge-logo.png'
+        },function () {
+          console.log('fenXiang');
+        })
         console.log('wx success');
       });
-      this.type = this.$route.params.type;
+
+
+      this.type = this.$route.query.type;
+
       this.current_uid = window.localStorage.getItem(Constants.LocalStorage.uid) || null
       /**
        * 如果是微信内,则不显示appBar
@@ -147,9 +162,10 @@
       }
       this.localIds = []
       this.serverIds =[]
-      this.type = this.$route.params.type;
+      this.type = this.$route.query.type;
+      console.log('ask type')
       // 判断下是 钱包明细来的 还是 提问悬赏来的
-      if (this.type === 1) {
+      if (this.type == 1) {
         this.title = '悬赏提问';
         window.document.title = '悬赏提问';//修改网页标题
         this.showMask = true;
@@ -160,7 +176,7 @@
         //   // this.lisBack()
         // }
       }
-      if (this.type === 0) {
+      if (this.type == 0) {
         this.title = '免费提问';
         window.document.title = '免费提问';
         this.showMask = false;
@@ -191,13 +207,15 @@
         });
       },
       submit: function () {
+        console.log(this.type)
+        console.log(this.qa)
         // 判断是否是从钱包详情页过来的
-        console.log('this.$route.params')
+        console.log('this.$route.query')
+        console.log(this.$route.query)
 
-        console.log(this.$route.params)
-        if (this.$route.params) {
-          this.is_wallet = this.$route.params.is_wallet//是否是钱包支付。
-          this.money_sum = this.$route.params.money_sum || 0//钱包零钱总数
+        if (this.$route.query) {
+          this.is_wallet = this.$route.query.is_wallet || false//是否是钱包支付。
+          this.money_sum = this.$route.query.money_sum || 0//钱包零钱总数
         }
         this.qa.title = this.qa.title.replace(/^\s+|\s+$/g, "");
         if (!this.qa.title) {
@@ -218,7 +236,10 @@
           });
           return;
         }
-        if (this.money_sum && this.qa.reward > this.money_sum * 0.01) {
+        console.log('this.is_wallet');
+        console.log(this.is_wallet);
+        console.log(this.money_sum);
+        if (this.money_sum && this.qa.reward > this.money_sum) {
           EventBus.$emit(Constants.EventBus.showToast, {
             message: '您的钱包余额不足'
           });
@@ -229,7 +250,7 @@
             title: this.qa.title,
             content: this.qa.content,
             attach: this.serverIds || [],
-            reward: 0,
+            reward: this.qa.reward,
             pay_type: 0
           };
 
@@ -254,13 +275,13 @@
         });
       },
       doPostDateHandle(data) {
-        console.log(this.is_wallet);
+        console.log('is_wallet:'+ this.is_wallet);
         API.post(Constants.Method.ask_question, data)
           .then((result) => {
             result = result.data
             this.insert_id = result.id
             // 回答成功后的操作
-            var successHandle = () => {
+            var successHandle = (type) => {
               EventBus.$emit(Constants.EventBus.showToast, {
                 message: '发布成功',
               });
@@ -270,24 +291,42 @@
               this.localIds = [];
               this.serverIds = [];
               //  获取问题id
+
               setTimeout(() => {
-                this.pushPage({
-                  name: Constants.PageName.qaDetail,
-                  query: {
-                    id: this.insert_id,
-                    go_home: true
-                  }
-                });
+                let is_redirect = window.localStorage.getItem('is_redirect')
+                // 外链定向来的或者悬赏付费来的
+                if(is_redirect == 1) {
+                  this.pushPage({
+                    name: Constants.PageName.qaIndex,
+                  });
+                  window.localStorage.setItem('is_redirect',0)
+                }
+                else if(type == 'card_pay'){
+                  this.pushPage({
+                    name: Constants.PageName.qaQuestion,
+                  });
+                }
+                else {
+                  this.pushPage({
+                    name: Constants.PageName.qaDetail,
+                    query: {
+                      id: this.insert_id,
+                      go_home: true
+                    }
+                  });
+                }
               }, 2000);
             }
-            // 如果是付费回答 但不是从钱包来的
+            // 如果是付费回答 银行卡或者微信支付
             if (data.reward > 0 && !this.is_wallet) {
-              console.log('xxxxx')
+              console.log('银行卡支付')
+
               let options = {
                 question_id: this.insert_id,
                 reward: data.reward,
-                is_wallet:this.is_wallet
+
               }
+              var _this = this
               API.post(Constants.Method.wxpay, options)
                 .then((result) => {
                   let option = JSON.parse(result.data)
@@ -300,7 +339,12 @@
                     success(res) {
                       // 支付成功后的回调函数
                       // 支付成功后
-                      successHandle()
+                      successHandle('card_pay')
+                      // API.get('http://zhuge.uzhuang.com/index.php?r=question-tmp/info',{params:{id:options.question_id}})
+                      //   .then((res)=>{
+                      //     let id = res.data.id
+                      //
+                      //   })
                     }
                   });
                 })
@@ -316,18 +360,6 @@
           .catch((err) => {
             console.log(err);
           });
-      },
-      doWXPay() {
-        //   wx.chooseWXPay({
-        //     timestamp: <?= $config['timestamp'] ?>,
-        //     nonceStr: '<?= $config['nonceStr'] ?>',
-        //     package: '<?= $config['package'] ?>',
-        //     signType: '<?= $config['signType'] ?>',
-        //     paySign: '<?= $config['paySign'] ?>', // 支付签名
-        //     success: function (res) {
-        //     // 支付成功后的回调函数
-        //   }
-        // });
       },
       chooseImage() {
         // 获取当前的
@@ -436,7 +468,7 @@
     margin: px2rem(10);
 
     .line {
-      height: px2rem(2);
+      height: px2rem(1);
       background-color: $divider;
       margin-bottom: px2rem(20);
     }
@@ -457,7 +489,7 @@
   .mask {
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 255, 255, 1);
+    background-color: rgba(255, 255, 255, 0.98);
     position: absolute;
     display: flex;
     flex-direction: column;

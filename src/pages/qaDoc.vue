@@ -119,18 +119,19 @@
         </div>
         <div class="tiwenxuzhi" v-if="view==3">
           <p>1、你的问题将至少获得一位金牌装修管家回答</p>
-          <img src="../assets/img/qk(1).png" alt="" class="xuzhi_img">
+          <img src="../assets/img/qk(1).png" alt="" class="xuzhi_img_1">
+          <div class="info">当天20点后提问的问题将最晚再第二天10点前获得回答</div>
           <p>2、你的问题在2小时内必会获得回答</p>
-          <img src="../assets/img/qk(2).png" alt="" class="xuzhi_img">
+          <img src="../assets/img/qk(2).png" alt="" class="xuzhi_img_2">
           <p>3、你的问题同时会推送到更多优秀的管家团队,获得
             更多专业解答</p>
-          <img src="../assets/img/qk(3).png" alt="" class="xuzhi_img">
+          <img src="../assets/img/qk(3).png" alt="" class="xuzhi_img_3">
           <p>4、同时，你的问题也有可能获得其他装修达人的解答</p>
-          <img src="../assets/img/qk(4).png" alt="" class="xuzhi_img">
+          <img src="../assets/img/qk(4).png" alt="" class="xuzhi_img_4">
           <p>5、悬赏提问请根据你的自由意愿选择赏金金额（1-10元）
             赏金最终会奖励给你采纳的回答者，如你未选择采纳，
             赏金将悬赏给被点赞数最高或最“早”回答的回答者</p>
-          <img src="../assets/img/qk(5).png" alt="" class="xuzhi_img">
+          <img src="../assets/img/qk(5).png" alt="" class="xuzhi_img_5">
 
         </div>
     </mu-list>
@@ -188,8 +189,25 @@
     width: 100%;
     overflow: scroll;
   }
-.xuzhi_img{
-  width: px2rem(330);
-}
+  .tiwenxuzhi{
+    text-align: center;
+    p{
+      text-align: left;
+    }
+    .info{
+      font-size: px2rem(12);
+      color:#999
+    }
+    img{
+      width: px2rem(250);
+    }
+    .xuzhi_img_5{
+      width: px2rem(150);
+    }
+    .xuzhi_img_2{
+      width: px2rem(150);
+    }
+  }
+
 
 </style>

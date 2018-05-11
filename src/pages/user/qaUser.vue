@@ -31,7 +31,6 @@
           <div class="num" style="visibility: hidden"></div>
           <img-wrapper :url="icon_user_arrow" classStyle="icon_arrow"></img-wrapper>
         </div>
-        <div class="divider"></div>
       </div>
       <div class="goaccount">
         <a href="javascript:;" @click="clickThree">诸葛装修 V1.0</a>
@@ -78,6 +77,7 @@
     name: Constants.PageName.qaUser,
     data() {
       return {
+        title:'',
         click_num: 0,
         icon_wallet: require('../../assets/img/icon_user_wallet.svg'),
         icon_qu: require('../../assets/img/icon_user_qu.svg'),
@@ -93,6 +93,18 @@
     },
 
     created() {
+      this.initWX(() => {
+        this.fenXiang({
+          title:'诸葛装修，全方位解决您的装修问题',
+          imgUrl:'http://image1.uzhuang.com/zhuge-logo.png'
+        },function () {
+          console.log('fenXiang');
+        })
+        console.log('wx success');
+      });
+      // this.fenXiang({},function () {
+      //   console.log("user fenxiang")
+      // })
       this.click_num = 0
       this.current_uid = window.localStorage.getItem('uid')
       this.role = window.localStorage.getItem(Constants.LocalStorage.role);

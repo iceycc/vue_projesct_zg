@@ -38,11 +38,13 @@
     },
     computed: {},
     created() {
+      this.fenXiang({
+        title:'诸葛装修，全方位解决您的装修问题',
+        imgUrl:'http://image1.uzhuang.com/zhuge-logo.png'
+      },function () {
+        console.log('fenXiang');
+      })
       this.to_doc = {name: Constants.PageName.qaDoc, params: {type: 1}}
-      // let text = null;
-      // EventBus.$on(Constants.EventBus.sign,(val)=>{
-      //   text = val
-      // })
       let sign = window.localStorage.getItem(Constants.LocalStorage.sign)
       if (sign) {
         this.gotoLogin()
@@ -50,10 +52,11 @@
 
 
     },
+
     methods: {
       gotoLogin() {
         let redirect = this.$route.query.redirect
-        let id = this.$route.query.data ? this.$route.query.data.id : null
+        let id = this.$route.query.id
         console.log(redirect);
         window.localStorage.clear()
         window.location.href = `http://wx.uzhuang.com/index.php?r=wx/oauth2&redirect=${redirect}&id=${id}`

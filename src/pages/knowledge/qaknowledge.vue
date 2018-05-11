@@ -10,8 +10,8 @@
     </div>
 
     <div v-if="isFirst" class="scroll-view">
-      <div @onItemClick="onItemClick" v-for="item,index in kt_lists">
-        <div class="card">
+      <div v-for="item,index in kt_lists">
+        <div class="card" @click="onItemClick(item)">
           <div class="card-img">
             <img :src="item.thumb" alt="">
           </div>
@@ -82,6 +82,15 @@
     },
     computed: {},
     created() {
+      this.initWX(() => {
+        this.fenXiang({
+          title:'诸葛装修，全方位解决您的装修问题',
+          imgUrl:'http://image1.uzhuang.com/zhuge-logo.png'
+        },function () {
+          console.log('fenXiang');
+        })
+        console.log('wx success');
+      });
       this.selectHotWord(0);
     },
     methods: {
@@ -105,6 +114,7 @@
           })
       },
       onItemClick(item) {
+        console.log(item)
         window.location.href = item.url;
         /*this.pushPage({
             name: Constants.PageName.qaDetail,
@@ -239,12 +249,12 @@
 
   .card {
     background-color: white;
+    display: flex;
     width: 100%;
     padding: px2rem(10);
     border-radius: px2rem(3);
     /*12111111*/
     .card-img {
-      display: inline-block;
       box-sizing: border-box;
       vertical-align: top;
       width: px2rem(80);
@@ -256,7 +266,7 @@
       }
     }
     .title-view {
-      display: inline-block;
+      flex: 1;
       box-sizing: border-box;
       padding-left: px2rem(10);
       vertical-align: top;

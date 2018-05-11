@@ -3,7 +3,7 @@
     <!--<app-bar :title="title"></app-bar>-->
     <div class="fixed-top">
       <div class="question-search">
-        <input type="search" v-model="search_word" @keyup.enter="goSearch(search_word)" placeholder="请输入问题名称">
+        <input type="search" v-model="search_word" @keyup.enter="goSearch(search_word)" placeholder="请输入问题名称" class="">
         <div @click="goSearch(search_word)">
           <img-wrapper :url="icon_search" classStyle="icon"></img-wrapper>
         </div>
@@ -75,7 +75,15 @@
       }
     },
     created() {
-
+      this.initWX(() => {
+        this.fenXiang({
+          title:'诸葛装修，全方位解决您的装修问题',
+          imgUrl:'http://image1.uzhuang.com/zhuge-logo.png'
+        },function () {
+          console.log('fenXiang');
+        })
+        console.log('wx success');
+      });
       this.role = window.localStorage.getItem(Constants.LocalStorage.role)
       this.init(this.role)
 
@@ -300,7 +308,8 @@
   /*search 1111  */
   .question-search {
     position: relative;
-    width: 100%;
+    width: px2rem(350);
+    margin: 0 auto;
     height: px2rem(60);
     padding: px2rem(10);
     input {
@@ -309,6 +318,7 @@
       border-radius: px2rem(30);
       border: px2rem(1) solid #ccc;
       padding-left:px2rem(45);
+      background: #f1f1f1;
     }
     .icon {
       position: absolute;

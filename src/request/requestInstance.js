@@ -13,15 +13,17 @@ _axios.interceptors.request.use((config)=>{
   //   _this.text = 1111
   // })
   config.headers['Content-Type'] = 'application/x-www-form-urlencoded'
-  var sign = localStorage.getItem(Constants.LocalStorage.sign)
-
+  let sign = localStorage.getItem(Constants.LocalStorage.sign)
   config.headers['X-sign'] = sign;
   // if(config.method === 'post') {
   //   config.data = qs.stringify( {
   //     ...config.data
   //   })
   // }
-
+  // config.params = {
+  //   uid:uid,
+  //   ...config.params
+  // }
   // 判断请求的类型
   // 如果是post请求就把默认参数拼到data里面
   // 如果是get请求就拼到params里面
@@ -38,15 +40,6 @@ _axios.interceptors.response.use( (response)=>{
   // 对响应数据做点什么
   // sign过期或者不正确时提醒重新登陆，移除当前的 sign
 
-  if(response.data.code == 1 && response.data.message == '登录失败' ){
-    // window.location.href = location.host + '/#/qalogin'
-    EventBus.$emit(Constants.EventBus.showToast,{
-      message:"登陆已经过期，请重新登陆"
-    })
-
-    window.localStorage.clear()
-    return
-  }
   if(response.data.code == 1 && response.data.message == '登录失败' ){
     // window.location.href = location.host + '/#/qalogin'
     EventBus.$emit(Constants.EventBus.showToast,{

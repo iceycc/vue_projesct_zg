@@ -52,13 +52,13 @@
   @import "../../assets/scss/px2rem";
 
   .role {
-    vertical-align: top;
+    vertical-align: middle;
     font-size: px2rem(12);
-    padding: px2rem(1) px2rem(5);
+    padding: 0 px2rem(5);
     border-radius: px2rem(10);
     border: px2rem(1) solid #333;
     color: #333;
-    /*line-height: 1;*/
+    line-height: 1;
   }
 
   .role-jinpaiguanjia {
@@ -79,7 +79,6 @@
   .role-faqiren{
     border-color: #fe4423;
     color:  #fe4423;
-    border-radius: px2rem(0);
     background-color: rgb(254, 250, 229);
   }
 </style>

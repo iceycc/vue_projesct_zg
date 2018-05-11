@@ -104,7 +104,8 @@
         version: process.env.APP_VERSION,
         localValue: this.$ls.get(Constants.LocalStorage.test, '-1'),
         swiper_i: 0,
-        isTab: false
+        isTab: false,
+        current_uid:null
       };
     },
     filter: {},
@@ -114,25 +115,18 @@
       }
     },
     created() {
+      this.current_uid = window.localStorage.getItem('uid')
       console.log('index created')
-      API.post(Constants.Method.get_banner_list, {})
-          .then((result) => {
-            this.banners = result.data;
-          })
-          .catch((err) => {
-            console.log(err);
-          })
-
-      API.post(Constants.Method.get_hot_words, {})
-          .then((result) => {
-            console.log('result');
-            console.log(result);
-            this.hot_words = this.hot_words.concat(result.data);
-              this.getList();
-          })
-          .catch((err) => {
-            console.log(err);
-          })
+      this.init()
+      this.initWX(() => {
+        this.fenXiang({
+          title:'诸葛装修，全方位解决您的装修问题',
+          imgUrl:'http://image1.uzhuang.com/zhuge-logo.png'
+        },function () {
+          console.log('fenXiang');
+        })
+        console.log('wx success');
+      });
 
     },
     updated() {
@@ -141,6 +135,25 @@
       })
     },
     methods: {
+      init(){
+        API.post(Constants.Method.get_banner_list, {})
+          .then((result) => {
+            this.banners = result.data;
+          })
+          .catch((err) => {
+            console.log(err);
+          })
+
+        API.post(Constants.Method.get_hot_words, {})
+          .then((result) => {
+            console.log('result');
+            this.hot_words = this.hot_words.concat(result.data);
+            this.getList();
+          })
+          .catch((err) => {
+            console.log(err);
+          })
+      },
       onSwipeLeft() {
         this.swiper_i++;
         if (this.swiper_i == this.hot_words.length - 1) {
@@ -175,7 +188,8 @@
         this.pushPage({
           name: Constants.PageName.qaDetail,
           query: {
-            id: item.id
+            id: item.id,
+            uid:this.current_uid
           }
         });
       },
@@ -202,20 +216,22 @@
     position: relative;
     background-color: $divider;
     height: 100%;
-    padding-top: px2rem(60);
+    padding-top: px2rem(55);
   }
 
   .scroll-view {
-    padding-bottom: px2rem(70);
     &.isIndex0 {
-      padding-bottom: px2rem(0);
       max-height: 100% !important;
     }
   }
 
   .banner {
+
+    font-size: 0;
+    vertical-align: middle;
     height: px2rem(154);
     background-color: white;
+    margin-bottom: px2rem(12);
     .banner_img {
       height: 100%;
       width: 100%;
@@ -238,10 +254,13 @@
       right: 0;
       top: 0;
       width: px2rem(50);
-      height: px2rem(50);
+      height: px2rem(54);
+
       background: #fff;
       text-align: center;
       padding-top: px2rem(10);
+      box-shadow: -1px -1px 3px #dedede;
+
     }
     .tags {
       display: flex;
@@ -250,12 +269,14 @@
     }
 
     .hot_word {
+      height: px2rem(54);
       color: #333;
-      padding: px2rem(15);
+      padding:0 px2rem(15);
       font-size: px2rem(13);
       box-sizing: border-box;
       white-space: nowrap;
       transition: font-size, color 0.2s, 0.2s;
+      line-height: px2rem(50);
     }
     .hot_word_empty {
       width: px2rem(50);
@@ -272,7 +293,7 @@
     background-color: white;
     width: 100%;
     padding: px2rem(10);
-    border-radius: px2rem(3);
+    border-radius: px2rem(4);
 
     .title-view {
       display: flex;

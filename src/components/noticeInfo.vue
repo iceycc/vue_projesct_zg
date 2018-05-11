@@ -51,6 +51,7 @@
       }
     },
     created() {
+
       if (!this.datas) {
         this.getData()
       }
@@ -62,6 +63,12 @@
 
     },
     activated() {// 组件激活
+      this.fenXiang({
+        title:'诸葛装修，全方位解决您的装修问题',
+        imgUrl:'http://image1.uzhuang.com/zhuge-logo.png'
+      },function () {
+        console.log('fenXiang');
+      })
       this.datas = []
       this.page = defaultStartPage
       this.getData()

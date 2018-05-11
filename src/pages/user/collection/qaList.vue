@@ -55,6 +55,15 @@
     },
     computed: {},
     created() {
+      this.initWX(() => {
+        this.fenXiang({
+          title:'诸葛装修，全方位解决您的装修问题',
+          imgUrl:'http://image1.uzhuang.com/zhuge-logo.png'
+        },function () {
+          console.log('fenXiang');
+        })
+        console.log('wx success');
+      });
       let key_word = this.$route.query.key_word;
       if (key_word) {
         this.ex_params={
@@ -100,7 +109,8 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
   @import "../../../assets/scss/px2rem";
-
+  $tag_border_color:#dedede;
+  $tag_color:#ACACAC;
   .content {
     background-color: $divider;
     height: 100%;
@@ -162,7 +172,8 @@
     flex-wrap: wrap;
     padding-top: px2rem(10);
     .tag {
-      border: px2rem(1) solid #ccc;
+      border: px2rem(1) solid $tag_border_color;
+      color: $tag_color;
       padding: px2rem(1) px2rem(6);
       margin-right: px2rem(10);
       margin-bottom: px2rem(6);

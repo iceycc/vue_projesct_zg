@@ -39,8 +39,13 @@
       };
     },
     created() {
-
       this.initWX(() => {
+        this.fenXiang({
+          title:'诸葛装修，全方位解决您的装修问题',
+          imgUrl:'http://image1.uzhuang.com/zhuge-logo.png'
+        },function () {
+          console.log('fenXiang');
+        })
         console.log('wx success');
       });
 

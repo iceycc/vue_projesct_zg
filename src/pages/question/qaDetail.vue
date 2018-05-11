@@ -6,6 +6,7 @@
     </mu-appbar>
     <!--顶部问题详情-->
     <div class="card" v-if="question">
+
       <!--用户头像 名称 赏金-->
       <div class="view1" v-if="!if_my_question">
         <img-wrapper :url="question.asker_avatar" classStyle="avatar"
@@ -16,48 +17,50 @@
       </div>
       <!--问题标题-->
       <div class="card-title">
-        <span class="left">{{question.title}}</span>
+        <div class="left">{{question.title}}
         <span class="reward shadow"
               v-if="parseFloat(question.reward) > 0 && if_my_question">¥{{question.reward | chu100}}</span>
-      </div>
-
-      </div>
-    <div class="scroll-view">
-      <mu-list>
-      <div class="card shadow" v-if="question">
-      <!--==========================================================================================================-->
-      <!--问题描述-->
-      <div class="card-content">{{question.content}}
-        <!--图片展示-->
-        <div class="card-img" v-if="question.attach && question.attach.length !==0 ">
-          <div v-for="item,index in question.attach" :key="index" v-if=" item != ''" class="cc-img">
-            <img :src="item" alt="" @click="showBigImg(item,question.attach)">
-          </div>
-        </div>
-      </div>
-      <!--展示 浏览数 回答数 收藏 时间-->
-      <div class="view2">
-        <div>{{question.pv}}浏览</div>
-        <div>{{question.answer_num}}回答</div>
-        <!--收藏 -->
-
-        <button @click.stop="collect" class="collect-icon" :class="question.is_collect == '1' ? 'collected' : 'collect'"
-                :disabled="disabled"
-                style="border: none;background: transparent;outline:none">
-          <!--<img-wrapper :url="question.is_collect ?  icon5 : icon6 " classStyle="icon"></img-wrapper>-->
-          {{question.is_collect == '1' ? '已收藏': '收藏'}}
-        </button>
-
-        <div>{{ question.addtime | crtTime }}</div>
-      </div>
-      <div class="card-tags" v-if="question.label && question.label.length > 0">
-        <div class="tag" v-for="item in question.label" v-if="question.label[0] !==''">
-          {{item}}
         </div>
       </div>
 
     </div>
-    <!--回答列表-->
+    <div class="scroll-view">
+      <mu-list>
+        <div class="card shadow" v-if="question">
+          <!--==========================================================================================================-->
+          <!--问题描述-->
+          <div class="card-content">{{question.content}}
+            <!--图片展示-->
+            <div class="card-img" v-if="question.attach && question.attach.length !==0 ">
+              <div v-for="item,index in question.attach" :key="index" v-if=" item != ''" class="cc-img">
+                <img :src="item" alt="" @click="showBigImg(item,question.attach)">
+              </div>
+            </div>
+          </div>
+          <!--展示 浏览数 回答数 收藏 时间-->
+          <div class="view2">
+            <div>{{question.pv}}浏览</div>
+            <div>{{question.answer_num}}回答</div>
+            <!--收藏 -->
+
+            <button @click.stop="collect" class="collect-icon"
+                    :class="question.is_collect == '1' ? 'collected' : 'collect'"
+                    :disabled="disabled"
+                    style="border: none;background: transparent;outline:none">
+              <!--<img-wrapper :url="question.is_collect ?  icon5 : icon6 " classStyle="icon"></img-wrapper>-->
+              {{question.is_collect == '1' ? '已收藏': '收藏'}}
+            </button>
+
+            <div>{{ question.addtime | crtTime }}</div>
+          </div>
+          <div class="card-tags" v-if="question.label && question.label.length > 0">
+            <div class="tag" v-for="item in question.label" v-if="question.label[0] !==''">
+              {{item}}
+            </div>
+          </div>
+
+        </div>
+        <!--回答列表-->
         <!--我在自己的回答-->
         <template v-if="if_my_answer === 1 && if_show">
           <div class="card-re" @click="onItemClick(my_answer.id)">
@@ -66,24 +69,28 @@
               <div class="vertical-view">
                 <div class="date">{{my_answer.addtime | crtTime}}</div>
               </div>
-              <div class="accept" v-if="question.asker_id == current_uid  && my_answer.answerer_id !== question.asker_id && !isAdoption"
+              <div class="accept"
+                   v-if="question.asker_id == current_uid  && my_answer.answerer_id !== question.asker_id && my_answer.adoption >0"
                    @click.stop="openAdoption(index)">采纳
               </div>
 
-              <div class="accepted" v-if="my_answer.adoption =='1'"><img src="../../assets/img/accepted@2x.png"
-                                                                    alt=""></div>
-              <div class="get_reward" v-if="my_answer.adoption =='1' && question.reward > 0"><img
+              <div class="accepted" v-if="my_answer.adoption >0"><img src="../../assets/img/accepted@2x.png"
+                                                                         alt=""></div>
+              <div class="get_reward" v-if="my_answer.adoption > 0 && question.reward > 0"><img
                 src="../../assets/img/get_reward.png" alt=""></div>
             </div>
             <!--评论内容-->
             <div class="context">{{my_answer.content}}</div>
             <!--获取评论下的评论 -->
             <div v-if="my_answer.hot_commnet && my_answer.hot_commnet.commenter_id" class="hotcomment">
-              <div class="title">{{my_answer.hot_commnet.commenter_role == 1 && role == 1 && current_uid != my_answer.hot_commnet.commenter_id ? '匿名用户' : my_answer.hot_commnet.commenter_name}}
-                <template v-if="!(my_answer.hot_commnet.commenter_role == 1 && role == 1 && current_uid != my_answer.hot_commnet.commenter_id)">
+              <div class="title">{{my_answer.hot_commnet.commenter_role == 1 && role == 1 && current_uid !=
+                my_answer.hot_commnet.commenter_id ? '匿名用户' : my_answer.hot_commnet.commenter_name}}
+                <template
+                  v-if="!(my_answer.hot_commnet.commenter_role == 1 && role == 1 && current_uid != my_answer.hot_commnet.commenter_id)">
                   <uz-lable v-if="question.q_reward > 0"
                             :role="my_answer.hot_commnet.commenter_id === question.asker_id ? '赏金发起人' : my_answer.hot_commnet.commenter_rank"></uz-lable>
-                  <uz-lable v-else :role="my_answer.hot_commnet.commenter_id === question.asker_id ? '问题发起人' : my_answer.hot_commnet.commenter_rank"></uz-lable>
+                  <uz-lable v-else
+                            :role="my_answer.hot_commnet.commenter_id === question.asker_id ? '问题发起人' : my_answer.hot_commnet.commenter_rank"></uz-lable>
                 </template>
                 :{{my_answer.hot_commnet.content}}
               </div>
@@ -102,17 +109,20 @@
                 {{my_answer.laud}}
               </button>
               <!--编辑功能-->
+              <!--自己的提问 未被采纳可以显示-->
               <button class="like"
                       @click.stop="editHandle(my_answer.id)"
                       style="border: none;background: transparent;outline: none"
                       :disabled="disabled"
-                      v-if="current_uid == my_answer.answerer_id"
+                      v-if="my_answer.answerer_id == current_uid  && !my_answer.adoption >0"
               >
                 <img-wrapper :url="icon_edit"
                              classStyle="icon"></img-wrapper>
                 编辑
               </button>
-              <div @click.stop="openClickDel(my_answer.id)" v-if="my_answer.answerer_id == current_uid && question.q_adoption !=my_answer.answerer_id && !isAdoption"> 删除
+              <div @click.stop="openClickDel(my_answer.id)"
+                   v-if="my_answer.answerer_id == current_uid  && my_answer.adoption == '0'"> 删除
+
               </div>
               <mu-dialog :open="dialog2" title="提示" @close="close">
                 确定要删除该条回答吗
@@ -125,91 +135,97 @@
         </template>
         <!---->
         <div class="click-more" @click="showMore" v-if="if_my_answer === 1 && if_has_more">
-          {{is_more_answer?'查看其他回答':'关闭其他回答'}}
+          {{is_more_answer?'关闭其他回答':'查看其他回答'}}
         </div>
         <!--全部回答-->
         <template v-if="is_more_answer">
-            <div class="card-re" @click="onItemClick(item.id)" v-for="item, index in answer_list_filter">
-              <!--回答 人 头像 名称 用户等级 是否采纳 11-->
-              <div class="view1 horizontal-view">
-                <img-wrapper
-                    :url="item.a_avatar == 'http://m.uzhuang.com/res/images/userface.png' ? a_avatar : item.answerer_avatar "
-                    classStyle="avatar"
-                    @onClick="ifGoDetail(item.answerer_id,item.answerer_role,item.answerer_name)"
-                ></img-wrapper>
+          <div class="card-re" @click="onItemClick(item.id)" v-for="item, index in answer_list_filter">
+            <!--回答 人 头像 名称 用户等级 是否采纳 11-->
+            <div class="view1 horizontal-view">
+              <img-wrapper
+                :url="item.a_avatar == 'http://m.uzhuang.com/res/images/userface.png' ? a_avatar : item.answerer_avatar "
+                classStyle="avatar"
+                @onClick="ifGoDetail(item.answerer_id,item.answerer_role,item.answerer_name)"
+              ></img-wrapper>
 
-                <div class="vertical-view">
-                  <div class="name" @click.stop="ifGoDetail(item.answerer_id,item.answerer_role,item.answerer_name)">
-                    {{item.answerer_role == 1 && role == 1 && current_uid != item.answerer_id? '匿名用户': item.answerer_name }}
-                    <!--显示颜色从组件内根据角色名匹配的-->
-                    <template v-if="!(item.answerer_role == 1 && role == 1 && current_uid != item.answerer_id)">
-                      <uz-lable v-if="question.q_reward > 0"
-                                :role="item.answerer_id === question.asker_id ? '赏金发起人' : item.answerer_rank"></uz-lable>
-                      <uz-lable v-else :role="item.answerer_id ===question.asker_id ? '问题发起人' : item.answerer_rank"></uz-lable>
-                    </template>
-
-
-                  </div>
-                  <div class="date">{{item.addtime | crtTime}}</div>
-                </div>
-
-                <div class="accept" v-if="question.asker_id == current_uid  && item.answerer_id !== question.asker_id && !isAdoption"
-                     @click.stop="openAdoption(index)">采纳
-                </div>
-
-                <div class="accepted" v-if="item.adoption =='1'"><img src="../../assets/img/accepted@2x.png"
-                                                                                alt=""></div>
-                <div class="get_reward" v-if="item.adoption =='1' && question.reward > 0"><img
-                    src="../../assets/img/get_reward.png" alt=""></div>
-              </div>
-              <!--评论内容-->
-              <div class="context">{{item.content}}</div>
-              <!--获取评论下的评论 -->
-              <div v-if="item.hot_commnet.commenter_id" class="hotcomment">
-                <div class="title">{{item.hot_commnet.commenter_role == 1 && role == 1 && current_uid != item.hot_commnet.commenter_id ? '匿名用户' : item.hot_commnet.commenter_name}}
-                  <template v-if="!(item.hot_commnet.commenter_role == 1 && role == 1 && current_uid != item.hot_commnet.commenter_id)">
+              <div class="vertical-view">
+                <div class="name" @click.stop="ifGoDetail(item.answerer_id,item.answerer_role,item.answerer_name)">
+                  {{item.answerer_role == 1 && role == 1 && current_uid != item.answerer_id? '匿名用户': item.answerer_name
+                  }}
+                  <!--显示颜色从组件内根据角色名匹配的-->
+                  <template v-if="!(item.answerer_role == 1 && role == 1 && current_uid != item.answerer_id)">
                     <uz-lable v-if="question.q_reward > 0"
-                              :role="item.hot_commnet.commenter_id === question.asker_id ? '赏金发起人' : item.hot_commnet.commenter_rank"></uz-lable>
-                    <uz-lable v-else :role="item.hot_commnet.commenter_id === question.asker_id ? '问题发起人' : item.hot_commnet.commenter_rank"></uz-lable>
+                              :role="item.answerer_id === question.asker_id ? '赏金发起人' : item.answerer_rank"></uz-lable>
+                    <uz-lable v-else
+                              :role="item.answerer_id ===question.asker_id ? '问题发起人' : item.answerer_rank"></uz-lable>
                   </template>
-                  :{{item.hot_commnet.content}}
                 </div>
-                <div class="count">查看全部{{item.hot_commnet.total}}条回复</div>
+                <div class="date">{{item.addtime | crtTime}}</div>
               </div>
-              <!--底部信息展示-->
-              <div class="view2 horizontal-view">
-                <!--点赞功能-->
-                <button class="like" v-bind:class="item.is_like == 1 ? 'liked' : ''"
-                        @click.stop="like(item.id,item.is_like)"
-                        style="border: none;background: transparent;outline: none"
-                        :disabled="disabled"
-                >
-                  <img-wrapper :url="item.is_like == 1 ? icon4 : icon3 "
-                               classStyle="icon"></img-wrapper>
-                  {{item.laud}}
 
-                </button>
-                <!--编辑功能-->
-                <button class="like"
-                        @click.stop="editHandle(item.id)"
-                        style="border: none;background: transparent;outline: none"
-                        :disabled="disabled"
-                        v-if="current_uid == item.answerer_id"
-                >
-                  <img-wrapper :url="icon_edit"
-                               classStyle="icon"></img-wrapper>
-                  编辑
-                </button>
-                <div @click.stop="openClickDel(item.id)" v-if="item.answerer_id == current_uid && question.q_adoption !=item.answerer_id && !isAdoption"> 删除
-                </div>
-                <mu-dialog :open="dialog2" title="提示" @close="close">
-                  确定要删除该条回答吗
-                  <mu-flat-button slot="actions" @click="close" primary label="取消"/>
-                  <mu-flat-button slot="actions" primary @click="deleteHandle" label="确定"/>
-                </mu-dialog>
+              <div class="accept"
 
+                   v-if="question.asker_id == current_uid && item.answerer_id != current_uid && !isAdoption"
+                   @click.stop="openAdoption(index)">采纳
               </div>
+
+              <div class="accepted" v-if="item.adoption >0"><img src="../../assets/img/accepted@2x.png"
+                                                                    alt=""></div>
+              <div class="get_reward" v-if="item.adoption >0 && question.reward > 0"><img
+                src="../../assets/img/get_reward.png" alt=""></div>
             </div>
+            <!--评论内容-->
+            <div class="context">{{item.content}}</div>
+            <!--获取评论下的评论 -->
+            <div v-if="item.hot_commnet.commenter_id" class="hotcomment">
+              <div class="title">{{item.hot_commnet.commenter_role == 1 && role == 1 && current_uid !=
+                item.hot_commnet.commenter_id ? '匿名用户' : item.hot_commnet.commenter_name}}
+                <template
+                  v-if="!(item.hot_commnet.commenter_role == 1 && role == 1 && current_uid != item.hot_commnet.commenter_id)">
+                  <uz-lable v-if="question.q_reward > 0"
+                            :role="item.hot_commnet.commenter_id === question.asker_id ? '赏金发起人' : item.hot_commnet.commenter_rank"></uz-lable>
+                  <uz-lable v-else
+                            :role="item.hot_commnet.commenter_id === question.asker_id ? '问题发起人' : item.hot_commnet.commenter_rank"></uz-lable>
+                </template>
+                :{{item.hot_commnet.content}}
+              </div>
+              <div class="count">查看全部{{item.hot_commnet.total}}条回复</div>
+            </div>
+            <!--底部信息展示-->
+            <div class="view2 horizontal-view">
+              <!--点赞功能-->
+              <button class="like" v-bind:class="item.is_like == 1 ? 'liked' : ''"
+                      @click.stop="like(item.id,item.is_like)"
+                      style="border: none;background: transparent;outline: none"
+                      :disabled="disabled"
+              >
+                <img-wrapper :url="item.is_like == 1 ? icon4 : icon3 "
+                             classStyle="icon"></img-wrapper>
+                {{item.laud}}
+
+              </button>
+              <!--编辑功能-->
+              <button class="like"
+                      @click.stop="editHandle(item.id)"
+                      style="border: none;background: transparent;outline: none"
+                      :disabled="disabled"
+                      v-if="current_uid == item.answerer_id && item.adoption == 0 "
+              >
+                <img-wrapper :url="icon_edit"
+                             classStyle="icon"></img-wrapper>
+                编辑
+              </button>
+              <div @click.stop="openClickDel(item.id)"
+                   v-if="item.answerer_id == current_uid  && item.adoption == 0"> 删除
+              </div>
+              <mu-dialog :open="dialog2" title="提示" @close="close">
+                确定要删除该条回答吗
+                <mu-flat-button slot="actions" @click="close" primary label="取消"/>
+                <mu-flat-button slot="actions" primary @click="deleteHandle" label="确定"/>
+              </mu-dialog>
+
+            </div>
+          </div>
         </template>
       </mu-list>
     </div>
@@ -219,7 +235,7 @@
         <img-wrapper :url="icon1" classStyle="icon"></img-wrapper>
         去回答
       </div>
-      <div @click="gotoAsk1" v-if="role ==0 ">
+      <div @click="gotoAsk1" v-if="watch_role == 0 ">
         <img-wrapper :url="icon2" classStyle="icon"></img-wrapper>
         去提问
       </div>
@@ -270,7 +286,7 @@
 
 <script>
   // import {Constants, mixins, util} from '../assets/js/index';
-  import {EventBus, API,Constants,mixins,util} from '../../config/index'
+  import {EventBus, API, Constants, mixins, util} from '../../config/index'
 
   import ComponentTemplate from "../../components/template";
   import AutoListView from "../../components/commons/AutoListView";
@@ -288,19 +304,11 @@
     },
     mixins: [mixins.base, mixins.wx, util],
     name: Constants.PageName.qaDetail,
-    filters: {
-      my_time: function (value) {
-        if (value) {
-          return value.substring(5)
-        }
-        return value
-      }
-    },
     data() {
       return {
-        del_answer_id:null,
+        del_answer_id: null,
         q_adoption_index: null,
-        current_question_id:0,
+        current_question_id: 0,
         showAsk: false,
         dialog2: false,
         dialog: false,
@@ -317,7 +325,7 @@
         icon_ask_close: require('../../assets/img/icon_ask_close.svg'),
         icon_edit: require('../../assets/img/icon_edit.svg'),
         role: 0,
-        ifSelfAnswer:false,
+        ifSelfAnswer: false,
         a_avatar: require('../../assets/img/icon_slider.png'),
         uid: 0,
         question: {},
@@ -327,72 +335,48 @@
         localValue: this.$ls.get(Constants.LocalStorage.test, '-1'),
         disabled: false,
         current_uid: null,
-        isAdoption:false,
-        attach: [// text
-          'http://pic40.nipic.com/20140412/11857649_170524977000_2.jpg',
-          'http://pic34.photophoto.cn/20150202/0005018384491898_b.jpg',
-          'http://pic40.nipic.com/20140412/11857649_170524977000_2.jpg',
-          'http://pic34.photophoto.cn/20150202/0005018384491898_b.jpg',
-          'http://pic40.nipic.com/20140412/11857649_170524977000_2.jpg',
-          'http://pic34.photophoto.cn/20150202/0005018384491898_b.jpg',
-          'http://pic40.nipic.com/20140412/11857649_170524977000_2.jpg',
-          'http://pic34.photophoto.cn/20150202/0005018384491898_b.jpg',
-          'http://pic40.nipic.com/20140412/11857649_170524977000_2.jpg',
-          'http://pic34.photophoto.cn/20150202/0005018384491898_b.jpg',
-          'http://pic40.nipic.com/20140412/11857649_170524977000_2.jpg',
-          'http://pic34.photophoto.cn/20150202/0005018384491898_b.jpg',
-        ],
-        my_answer:[],
-        is_more_answer:true,
-        if_my_answer:0,// 是否需要优先显示自己的回答
-        my_answer_id:0,// 自己的回答id
-        if_my_question:false,
-        if_has_more:false,
-        if_show:true,
-        this_title:''
+        isAdoption: false,
+        my_answer: [],
+        is_more_answer: true,
+        if_my_answer: 0,// 是否需要优先显示自己的回答
+        my_answer_id: 0,// 自己的回答id
+        if_my_question: false,
+        if_has_more: false,
+        if_show: true,
+        this_title: '',
       };
     },
     computed: {
-      answer_list_filter:function () {
-          return this.answer_list.filter((val)=>{
-              return val.id !== this.my_answer_id
-          })
+      watch_role(){
+        return this.role
+      },
+      answer_list_filter: function () {
+        return this.answer_list.filter((val) => {
+          return val.id !== this.my_answer_id
+        })
       }
     },
     created() {
-      this.fenXiang()
-      this.current_uid = window.localStorage.getItem(Constants.LocalStorage.uid)
-      this.role = window.localStorage.getItem(Constants.LocalStorage.role)
-      this.getData();
+
+
       this.initWX(() => {
         console.log('wx success');
       });
-      if(this.$route.query.if_my_question){
+      this.current_uid = window.localStorage.getItem(Constants.LocalStorage.uid)
+      this.role = window.localStorage.getItem(Constants.LocalStorage.role)
+
+      // todo 分享链接有问题
+      // this.ifNeedReLogin()
+
+      this.getData();
+      if (this.$route.query.if_my_question) {
         this.if_my_question = true
       }
-      if(this.$route.query.my_answer == 1 ){
+      if (this.$route.query.my_answer == 1) {
         this.is_more_answer = false
         this.if_my_answer = 1
       }
       this.ifGoHome = this.$route.query.go_home || false
-
-      let newTime = new Date()
-      let timeChuo1 = Date.parse(newTime)
-      let timeChuo2 = newTime.valueOf()
-      let timeChuo3 = newTime.getTime()
-
-      // console.log(formData(newTime));
-      function formData(now) {
-        var
-            year = now.getFullYear(),
-            month = now.getMonth() + 1,
-            date = now.getDate(),
-            hour = now.getHours(),
-            minute = now.getMinutes(),
-            second = now.getSeconds();
-        return year + '-' + month + '-' + date + ' ' + hour + ':' + minute + ':' + second;
-      }
-
       /**
        * 如果是微信内,则不显示appBar
        * @type {boolean}
@@ -400,11 +384,39 @@
       this.showAppBar = !/MicroMessenger/.test(navigator.userAgent);
     },
     activated() {
+      this.role = window.localStorage.getItem(Constants.LocalStorage.role)
     },
     methods: {
+      // todo 是否需要重新登陆
+      ifNeedReLogin() {
+        this.current_uid = window.localStorage.getItem(Constants.LocalStorage.uid)
+        var Request = new Object();
+        Request = util.GetRequest();
+        let urlUid = Request['uid'] || this.current_uid
+        let id = Request['id'] || this.$route.query.id
+        let redirect = this.$route.name
+        console.log('002');
+        console.log(urlUid != this.current_uid);
+        console.log(this.current_uid == true);
+        console.log(this.current_uid);
+        console.log(null);
+        if (urlUid && this.current_uid && urlUid != this.current_uid) {
+          EventBus.$emit(Constants.EventBus.showToast, {
+            message: "需要重新登陆"
+          })
+
+          this.$router.replace({
+            name: Constants.PageName.qaLogin,
+            query: {
+              redirect: redirect,
+              id: id
+            }
+          })
+        }
+      },
       ifGoDetail(uid, role) {
         // 这里通过判断返回的role是否时管是家 自己是管家的话点不开其他管家的详情 匿名用户不能打开 管家看管家也是显示匿名用户
-        if(role == this.role && uid != this.current_uid){
+        if (role == this.role && uid != this.current_uid) {
           return
         } else {
           this.goGujian(uid, role)
@@ -431,15 +443,16 @@
       },
       goBack() {
         if (this.ifGoHome) {
-          this.$router.go(-2)
+          this.$router.go(-1)
         } else {
           this.$router.go(-1)
         }
+        // this.$router.go(-1)
       },
       gotoAsk(type) {
         this.pushPage({
           name: Constants.PageName.qaAsk,
-          params: {
+          query: {
             type
           }
         });
@@ -453,186 +466,121 @@
       deleteHandle(type) {
 
         let data = {
-            id: this.del_answer_id
+          id: this.del_answer_id
         }
         // if(){
         //
         // }
         API.post(Constants.Method.del_answer, data)
-            .then((result) => {
-              this.getAnswerList()
-              this.dialog2 = false
-              if(type){
-                this.if_show = false
-              }
-              EventBus.$emit(Constants.EventBus.showToast, {
-                message: "删除成功"
-              });
-            })
-            .catch((err) => {
-              console.log(err);
-            })
+          .then((result) => {
+            this.getAnswerList()
+            this.dialog2 = false
+            if (type) {
+              this.if_show = false
+            }
+            EventBus.$emit(Constants.EventBus.showToast, {
+              message: "删除成功"
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+          })
       },
       webpage() {
         this.$router.push({name: Constants.PageName.qaDoc, params: {type: 2}})
       },
 
-      fenXiang() {
-        console.log('fenXiang');
 
-        let link = window.location.href
-        let title =21213131
-        let imgUrl = ''
-        wx.onMenuShareTimeline({
-          title: title, // 分享标题
-          link: link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-          imgUrl: imgUrl, // 分享图标
-          success: function () {
-            // 用户确认分享后执行的回调函数
-          },
-          fail: function () {
-            // 用户确认分享后执行的回调函数
-          }
-        })
-
-
-        wx.onMenuShareAppMessage({
-          title: title, // 分享标题
-          desc: '', // 分享描述
-          link: link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-          imgUrl: imgUrl, // 分享图标
-          type: '', // 分享类型,music、video或link，不填默认为link
-          dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
-          success: function () {
-// 用户确认分享后执行的回调函数
-          },
-          cancel: function () {
-// 用户取消分享后执行的回调函数
-          }
-        });
-
-        wx.onMenuShareQQ({
-          title: title, // 分享标题
-          desc: '', // 分享描述
-          link: link, // 分享链接
-          imgUrl: imgUrl, // 分享图标
-          success: function () {
-// 用户确认分享后执行的回调函数
-          },
-          cancel: function () {
-// 用户取消分享后执行的回调函数
-          }
-        });
-
-
-        wx.onMenuShareWeibo({
-          title: title, // 分享标题
-          desc: '', // 分享描述
-          link: link, // 分享链接
-          imgUrl: imgUrl, // 分享图标
-          success: function () {
-// 用户确认分享后执行的回调函数
-          },
-          cancel: function () {
-// 用户取消分享后执行的回调函数
-          }
-        });
-
-
-        wx.onMenuShareQZone({
-          title:title, // 分享标题
-          desc: '', // 分享描述
-          link: link, // 分享链接
-          imgUrl: imgUrl, // 分享图标
-          success: function () {
-// 用户确认分享后执行的回调函数
-          },
-          cancel: function () {
-// 用户取消分享后执行的回调函数
-          }
-        });
-      },
-      showMore(){
+      showMore() {
         this.is_more_answer = !this.is_more_answer
       },
       getData() {
+        // todo
+        if(this.$route.query && this.$route.query.is_from_payask === true){
+          let url = 'http://zhuge.uzhuang.com/index.php?r=question-tmp/info'
+          this.getQuestion(url)
+          return
+        }
         this.getQuestion()
         let num = this.$route.query.my_answer || 0
         this.getAnswerList(num)
-        if(num ==1){
+        if (num == 1) {
           this.getAnswerList()
         }
-
-
       },
-      getQuestion(){
+      getQuestion(url) {
+        let urlS =url ||  Constants.Method.get_question_info
         let data = {
           id: this.$route.query.id,
           inform_id: this.$route.query.inform_id || 0
         };
         // 获取问题详情
-        API.get(Constants.Method.get_question_info, {params:data})
-            .then((result) => {
-              result = result.data
-              this.question = result;
-              this.current_question_id = this.question.id
-              this.this_title = this.question.title
+        API.get(urlS, {params: data})
+          .then((result) => {
+            result = result.data
+            this.question = result;
+            this.current_question_id = this.question.id
+            this.fenXiang({
+              title: result.title,
+              imgUrl:'http://image1.uzhuang.com/zhuge-logo.png'
             })
-            .catch((err) => {
-              console.log(err);
-            });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       },
-      getAnswerList(my_answer){
+      getAnswerList(my_answer) {
         let data = {
           id: this.$route.query.id,
-          my_answer:my_answer //1 只返回我的回答  0 返回全部回答
+          my_answer: my_answer //1 只返回我的回答  0 返回全部回答
         };
         // 获取当前用户下的回答列表
-        API.get(Constants.Method.get_answer_list,{params:data})
-            .then((result)=>{
-              // 倒叙
-              console.log('result');
-              console.log(result);
-              if(!result.data){
-                return
-              }
-              if(data.my_answer == 1){
-                this.my_answer = result.data[0]
-                this.my_answer_id = result.data[0].id
-              }
-              this.answer_list = result.data
-              // 判断当前回答列表内是否有自己回答过的
-              this.ifSelfAnswer = util.ifHaveVale(this.answer_list,'answerer_id',this.current_uid)
+        API.get(Constants.Method.get_answer_list, {params: data})
+          .then((result) => {
+            // 倒叙
+            console.log('result');
+            console.log(result);
+            if (!result.data) {
+              return
+            }
+            if (data.my_answer == 1) {
+              this.my_answer = result.data[0]
+              this.my_answer_id = result.data[0].id
+            }
+            this.answer_list = result.data
+            // 判断当前回答列表内是否有自己回答过的
+            this.ifSelfAnswer = util.ifHaveVale(this.answer_list, 'answerer_id', this.current_uid)
 
-              // if(this.ifSelfAnswer){
-              //   EventBus.$emit(Constants.EventBus.showToast,{
-              //     message:'你已经回答过改问题'
-              //   })
-              // }
-              this.if_has_more = this.answer_list.length > 1
-              // 欧安的是否有采纳的
-              // this.isAdoption = util.ifHaveVale(this.answer_list,'adoption','1')
-              // 没有采纳的部分 按点赞排序
+            // if(this.ifSelfAnswer){
+            //   EventBus.$emit(Constants.EventBus.showToast,{
+            //     message:'你已经回答过改问题'
+            //   })
+            // }
+            this.if_has_more = this.answer_list.length > 1
+            // 欧安的是否有采纳的
+            // this.isAdoption = util.ifHaveVale(this.answer_list,'adoption','1')
+            // 没有采纳的部分 按点赞排序
 
-              this.answer_list.reverse()
-              this.answer_list = util.jsonSort(this.answer_list, 'laud', true);
-              // this.answer_list.reverse()
-              // 获取采纳的序列号
-              let _index =  util.getSuccIndex(this.answer_list,'adoption','1')
-              if(_index !== -1){
-                this.isAdoption = true
-                var adoptionAnswer = this.answer_list.splice(_index,1)[0]
-                console.log('adoptionAnswer');
-                this.answer_list.unshift(adoptionAnswer)
-              }
-            })
+            this.answer_list.reverse()
+            this.answer_list = util.jsonSort(this.answer_list, 'laud', true);
+            // this.answer_list.reverse()
+            // 获取采纳的序列号
+            let _index = util.getSuccIndex(this.answer_list, 'adoption', '1')
+            if (_index !== -1) {
+              this.isAdoption = true
+              var adoptionAnswer = this.answer_list.splice(_index, 1)[0]
+              console.log('adoptionAnswer');
+              this.answer_list.unshift(adoptionAnswer)
+            }
+          })
+        console.log(this.isAdoption);
       },
 
       gotoResponse() {
-        if(this.ifSelfAnswer){
+        if (this.ifSelfAnswer) {
 
-          EventBus.$emit(Constants.EventBus.showToast,{
-            message:'你已经回答过该问题，不能继续回答，可以编辑'
+          EventBus.$emit(Constants.EventBus.showToast, {
+            message: '你已经回答过该问题，不能继续回答，可以编辑'
           })
           return
         }
@@ -683,29 +631,29 @@
       },
       editHandle(aid) {
         let data = {
-            id: aid,
+          id: aid,
         }
         console.log(313123123)
-        API.post(Constants.Method.get_answer_edit,data)
-            .then((result) => {
+        API.post(Constants.Method.get_answer_edit, data)
+          .then((result) => {
 
-              if(result.code === 0 && result.message == 'Successful'){
-                this.$router.push({
-                  name: Constants.PageName.qaResponse,
-                  params: {
-                    content: result.data.content,
-                    is_edit: true,
-                    data:data
-                  }
-                })
-              }
-            })
-            .catch((err) => {
+            if (result.code === 0 && result.message == 'Successful') {
+              this.$router.push({
+                name: Constants.PageName.qaResponse,
+                params: {
+                  content: result.data.content,
+                  is_edit: true,
+                  data: data
+                }
+              })
+            }
+          })
+          .catch((err) => {
 
-              console.log(err);
-            })
+            console.log(err);
+          })
       },
-      like(id, liked,type) {
+      like(id, liked, type) {
         console.log(type)
         console.log(liked)
         if (timer) {
@@ -714,54 +662,54 @@
         this.disabled = true
         let timer;
         let data = {
-           id: id,
+          id: id,
         };
         switch (liked) {
           case '1':
             API.post(Constants.Method.un_like, data)
-                .then((result) => {
-                  if(type == 'my_answer'){
-                    this.getAnswerList(1)
-                  }else {
-                    this.getAnswerList()
-                  }
-                  timer = setTimeout(() => {
-                    this.disabled = false
-                  }, 1000)
-                })
-                .catch((err)=>{
-                  console.log(err);
-                })
-            break;
-          case '0':
-            API.post(Constants.Method.like, data)
-                .then((result) => {
-                  if(type == 'my_answer'){
-                    this.getAnswerList(1)
-                  }else {
-                    this.getAnswerList()
-                  }
-                  timer = setTimeout(() => {
-                    this.disabled = false
-                  }, 1000)
-                })
-                .catch((err)=>{
-                  console.log(err);
-                })
-            break;
-          default:
-            API.post(Constants.Method.un_like, data)
               .then((result) => {
-                if(type == 'my_answer'){
+                if (type == 'my_answer') {
                   this.getAnswerList(1)
-                }else {
+                } else {
                   this.getAnswerList()
                 }
                 timer = setTimeout(() => {
                   this.disabled = false
                 }, 1000)
               })
-              .catch((err)=>{
+              .catch((err) => {
+                console.log(err);
+              })
+            break;
+          case '0':
+            API.post(Constants.Method.like, data)
+              .then((result) => {
+                if (type == 'my_answer') {
+                  this.getAnswerList(1)
+                } else {
+                  this.getAnswerList()
+                }
+                timer = setTimeout(() => {
+                  this.disabled = false
+                }, 1000)
+              })
+              .catch((err) => {
+                console.log(err);
+              })
+            break;
+          default:
+            API.post(Constants.Method.un_like, data)
+              .then((result) => {
+                if (type == 'my_answer') {
+                  this.getAnswerList(1)
+                } else {
+                  this.getAnswerList()
+                }
+                timer = setTimeout(() => {
+                  this.disabled = false
+                }, 1000)
+              })
+              .catch((err) => {
                 console.log(err);
               })
         }
@@ -778,42 +726,42 @@
         var count = window.localStorage.getItem('collect_num')
         if (this.question.is_collect == '1') {
           let data = {
-              id: this.$route.query.id,
+            id: this.$route.query.id,
           };
           API.post(Constants.Method.un_favourites, data)
-              .then((result) => {
-                count--;
-                EventBus.$emit('collect_num', count)
-                this.getQuestion();
-                EventBus.$emit(Constants.EventBus.showToast, {
-                  message: '取消收藏'
-                });
-                timer = setTimeout(() => {
-                  this.disabled = false
-                }, 1000)
-              })
-              .catch((err)=>{
-                console.log(err);
+            .then((result) => {
+              count--;
+              EventBus.$emit('collect_num', count)
+              this.getQuestion();
+              EventBus.$emit(Constants.EventBus.showToast, {
+                message: '取消收藏'
               });
+              timer = setTimeout(() => {
+                this.disabled = false
+              }, 1000)
+            })
+            .catch((err) => {
+              console.log(err);
+            });
         } else {
           let data = {
-             id: this.$route.query.id,
+            id: this.$route.query.id,
           };
-          API.post(Constants.Method.favourites,data)
-              .then((result) => {
-                count++;
-                EventBus.$emit('collect_num', count)
-               this.getQuestion();
-                EventBus.$emit(Constants.EventBus.showToast, {
-                  message: '收藏成功'
-                });
-                timer = setTimeout(() => {
-                  this.disabled = false
-                }, 2000)
-              })
-              .catch((err)=>{
-                console.log(err);
+          API.post(Constants.Method.favourites, data)
+            .then((result) => {
+              count++;
+              EventBus.$emit('collect_num', count)
+              this.getQuestion();
+              EventBus.$emit(Constants.EventBus.showToast, {
+                message: '收藏成功'
               });
+              timer = setTimeout(() => {
+                this.disabled = false
+              }, 2000)
+            })
+            .catch((err) => {
+              console.log(err);
+            });
         }
 
 
@@ -822,25 +770,26 @@
         console.log('采纳')
         let index = this.q_adoption_index
         let data = {
-            question_id: this.current_question_id,
-            answer_id: this.answer_list[index].id,
+          question_id: this.current_question_id,
+          answer_id: this.answer_list[index].id,
         };
         console.log(data);
         API.post(Constants.Method.adoption, data)
-            .then((result) => {
-              this.dialog = false
-              EventBus.$emit(Constants.EventBus.showToast, {
-                message: '已采纳'
-              });
-              this.getAnswerList();
-            })
-            .catch((err)=>{
-              console.log(err);
+          .then((result) => {
+            this.dialog = false
+            EventBus.$emit(Constants.EventBus.showToast, {
+              message: '已采纳'
             });
+            this.getAnswerList();
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       },
       onItemClick(id) {
         let data = {
-          id: id
+          id: id,
+          uid:this.current_uid
         };
 
         this.pushPage({
@@ -863,151 +812,152 @@
     flex-direction: column;
   }
 
-
   .card {
-       background-color: white;
-       width: 100%;
-       padding: px2rem(10) px2rem(20);
-       z-index: 1;
-       .card-title{
-         display: flex;
-         flex-direction: row;
-         align-items: center;
-         font-size: px2rem(16);
-         color:#333;
-         font-weight: 600;
-         .left{
-           flex: 1;
-         }
-         .reward {
-           font-size: px2rem(12);
-           line-height: 1;
-           background-color: RGB(255, 205, 0);
-           color: white;
-           padding: px2rem(4) px2rem(10);
-           border-radius: px2rem(15);
-           margin-left: px2rem(10);
-         }
-       }
+    background-color: white;
+    width: 100%;
+    padding: px2rem(10) px2rem(20);
+    z-index: 1;
+    .card-title {
 
-       .avatar {
-         width: px2rem(30);
-         height: px2rem(30);
-       }
-       .card-img {
-         display: flex;
-         overflow-x: scroll;
-         margin-top: px2rem(20);
-         height: px2rem(60);
-         font-size: 0;
-         .cc-img {
-           margin-right: px2rem(20);
-         }
-         img {
-           width: px2rem(80);
-           height: px2rem(60);
-         }
-       }
+      font-size: px2rem(16);
+      color: #333;
+      font-weight: 600;
+      .reward {
+        float: right;
+        font-size: px2rem(12);
+        line-height: 1;
+        background-color: RGB(255, 205, 0);
+        color: white;
+        padding: px2rem(4) px2rem(10);
+        border-radius: px2rem(15);
+        margin-left: px2rem(10);
+        margin-right: px2rem(15);
+      }
+    }
 
-       .view1 {
-         display: flex;
-         flex-direction: row;
-         align-items: center;
-         .username {
-           font-size: px2rem(16);
-           color: #333;
-           flex-grow: 1;
-           margin-left: px2rem(10);
-         }
-         .reward {
-           font-size: px2rem(12);
-           line-height: 1;
-           background-color: RGB(255, 205, 0);
-           color: white;
-           padding: px2rem(4) px2rem(10);
-           border-radius: px2rem(15);
-         }
-       }
+    .avatar {
+      width: px2rem(30);
+      height: px2rem(30);
+    }
+    .card-img {
+      display: flex;
+      overflow-x: scroll;
+      margin-top: px2rem(20);
+      height: px2rem(60);
+      font-size: 0;
+      .cc-img {
+        margin-right: px2rem(20);
+      }
+      img {
+        width: px2rem(80);
+        height: px2rem(60);
+      }
+    }
 
-       &-title {
-         font-size: px2rem(14);
-         color: #333;
-         padding: px2rem(10) 0;
-       }
+    .view1 {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      .username {
+        font-size: px2rem(16);
+        color: #333;
+        flex-grow: 1;
+        margin-left: px2rem(10);
+      }
+      .reward {
+        font-size: px2rem(12);
+        line-height: 1;
+        background-color: RGB(255, 205, 0);
+        color: white;
+        padding: px2rem(4) px2rem(10);
+        border-radius: px2rem(15);
+      }
+    }
 
-       &-content {
-         color: $fontcolor;
-         font-size: px2rem(14);
-       }
+    &-title {
+      font-size: px2rem(14);
+      color: #333;
+      padding: px2rem(10) 0;
+    }
 
-       .view2 {
-         position: relative;
-         color: $fontcolor_gray;
-         display: flex;
-         flex-direction: row;
-         align-items: center;
-         padding: px2rem(10) 0;
-         border-bottom: px2rem(1) solid $divider;
-         font-size: px2rem(12);
-         .collect {
-           color: #aaa;
-         }
-         .collected {
-           color: #31ddaa
-         }
-         div:nth-child(1):after {
-           content: '•';
-           padding: 0 px2rem(5);
-         }
-         div:nth-child(2):after {
-           content: '•';
-           padding: 0 px2rem(5);
-         }
-         div:nth-child(4) {
-           flex-grow: 1;
-           text-align: right;
-         }
-       }
+    &-content {
+      color: $fontcolor;
+      font-size: px2rem(14);
+    }
 
-       &-tags {
-         display: flex;
-         flex-wrap: wrap;
-         flex-direction: row;
-         align-items: center;
-         margin-top: px2rem(10);
-         font-size: px2rem(12);
-         .tag {
-           color: $fontcolor_gray;
-           border: 1px solid #dedede;
-           padding: px2rem(2) px2rem(5);
-           margin-bottom: px2rem(4);
-           font-size: px2rem(12);
-           margin-right: px2rem(10);
-         }
-       }
-     }
+    .view2 {
+      position: relative;
+      color: $fontcolor_gray;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding: px2rem(10) 0;
+      border-bottom: px2rem(1) solid $divider;
+      font-size: px2rem(12);
+      .collect-icon{
+        padding: 0;
+      }
+      .collect {
+        color: #aaa;
+      }
+      .collected {
+        color: #31ddaa
+      }
+      div:nth-child(1):after {
+        content: '•';
+        padding: 0 px2rem(5);
+      }
+      div:nth-child(2):after {
+        content: '•';
+        padding: 0 px2rem(5);
+      }
+      div:nth-child(4) {
+        flex-grow: 1;
+        text-align: right;
+      }
+    }
+
+    &-tags {
+      display: flex;
+      flex-wrap: wrap;
+      flex-direction: row;
+      align-items: center;
+      margin-top: px2rem(10);
+      font-size: px2rem(12);
+      .tag {
+        color: $fontcolor_gray;
+        border: 1px solid #dedede;
+        padding: px2rem(2) px2rem(5);
+        margin-bottom: px2rem(4);
+        font-size: px2rem(12);
+        margin-right: px2rem(10);
+      }
+    }
+  }
 
   .scroll-view {
     height: 100%;
     overflow: scroll;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
-    .mu-list{
+    .mu-list {
       padding: 0;
     }
   }
 
-  .click-more{
+  .click-more {
     background: #fff;
     padding: px2rem(10);
     margin: px2rem(10);
     text-align: center;
   }
+
   .card-re {
     background-color: white;
     padding: px2rem(10);
     margin: px2rem(10);
     .avatar {
+      vertical-align: middle;
       width: px2rem(30);
       height: px2rem(30);
     }
@@ -1022,9 +972,14 @@
       }
       .name {
         color: #333;
+        font-size: px2rem(13);
+        padding: 0;
+        margin: 0;
       }
       .date {
         font-size: px2rem(12);
+        padding: 0;
+        margin: 0;
       }
       .accept {
         font-size: px2rem(12);
@@ -1056,7 +1011,7 @@
       font-size: px2rem(12);
       justify-content: flex-end;
       /*11111*/
-      .collect-icon {
+      collect-icon {
         .icon {
           display: inline-block;
           width: px2rem(10);
@@ -1067,7 +1022,7 @@
         display: flex;
         flex-direction: row;
         margin-right: px2rem(10);
-        color:#999;
+        color: #999;
         .icon {
           width: px2rem(15);
           height: px2rem(15);
@@ -1123,7 +1078,7 @@
   .mask {
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 255, 255, 0.90);
+    background-color: rgba(255, 255, 255, 0.98);
     position: absolute;
     display: flex;
     flex-direction: row;
@@ -1187,8 +1142,8 @@
     }
     .close {
       vertical-align: middle;
-      width: px2rem(30);
-      height: px2rem(30);
+      width: px2rem(20);
+      height: px2rem(20);
     }
   }
 

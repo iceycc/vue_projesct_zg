@@ -6,23 +6,23 @@
       </keep-alive>
       <router-view v-if="!$route.meta.keepAlive"></router-view>
     </div>
-    <mu-bottom-nav :value="bottomNav" @change="handleChange" ref="bottom" v-if="!$route.meta.isShowTab">
+    <mu-bottom-nav :value="watch_bottomNav" @change="handleChange" ref="bottom" v-if="!$route.meta.isShowTab">
       <mu-bottom-nav-item value="0" title="问答">
-        <img-wrapper :url="bottomNav == 0 ? tab0[1] : tab0[0]" class="tabicon"></img-wrapper>
+        <img-wrapper :url="watch_bottomNav == 0 ? tab0[1] : tab0[0]" class="tabicon"></img-wrapper>
       </mu-bottom-nav-item>
       <mu-bottom-nav-item value="1" title="课堂">
-        <img-wrapper :url="bottomNav == 1 ? tab1[1] : tab1[0]" class="tabicon"></img-wrapper>
+        <img-wrapper :url="watch_bottomNav == 1 ? tab1[1] : tab1[0]" class="tabicon"></img-wrapper>
       </mu-bottom-nav-item>
       <mu-bottom-nav-item value="2" title="提问">
-        <img-wrapper :url="bottomNav == 2 ? tab2[1] : tab2[0]" class="tabicon"></img-wrapper>
+        <img-wrapper :url="watch_bottomNav == 2 ? tab2[1] : tab2[0]" class="tabicon"></img-wrapper>
       </mu-bottom-nav-item>
       <mu-bottom-nav-item value="3" title="通知">
         <!--<i class="isread-num" v-if="notice_isread_num === 1 ? false : true"></i>-->
         <i class="isread-num" v-if="isreadShow"></i>
-        <img-wrapper :url="bottomNav == 3 ? tab3[1] : tab3[0]" class="tabicon"></img-wrapper>
+        <img-wrapper :url="watch_bottomNav == 3 ? tab3[1] : tab3[0]" class="tabicon"></img-wrapper>
       </mu-bottom-nav-item>
       <mu-bottom-nav-item value="4" title="我的">
-        <img-wrapper :url="bottomNav == 4 ? tab4[1] : tab4[0]" class="tabicon"></img-wrapper>
+        <img-wrapper :url="watch_bottomNav == 4 ? tab4[1] : tab4[0]" class="tabicon"></img-wrapper>
       </mu-bottom-nav-item>
       <div class="btn_ask" @click="handleChange(2)" v-if="!$route.meta.isShowTab">
         <img-wrapper :url="tab2[1]" class="askicon"></img-wrapper>
@@ -73,7 +73,8 @@
     components: {
       ImgWrapper
     },
-    mixins: [mixins.base],
+    mixins: [mixins.base, mixins.wx],
+
     name: 'main',
     data() {
       return {
@@ -83,7 +84,7 @@
           message: '',
           Timer: null
         },
-        bottomNav: -1,
+        bottomNav: 0,
         icon1: require('../assets/img/icon_ask_free.png'),
         icon2: require('../assets/img/icon_ask.png'),
         tab0: [require('../assets/img/icon_tab_index.svg'), require('../assets/img/icon_tab_index_ed.svg')],
@@ -98,57 +99,28 @@
         isreadShow: false,
         to_doc: {},
         role: 0,
-
       };
     },
     created() {
-      console.log('created created');
-
+      this.initWX(() => {
+        console.log('wx success');
+      });
+      console.log('main created');
       var Request = new Object();
       Request = util.GetRequest();
       let sign = Request['sign'] || window.localStorage.getItem(Constants.LocalStorage.sign)
-
-      // sign = '215b54bc24847bdaa7344b2504514881'
-      // sign = 'e0c4bdf36c78b9faac7ab659341fb033' // a
-      // sign = 'a39c64680e64ee62b6a932a0a6c3942f'// guanjia
-      // sign = '195b6cf7d91dcbe38cde92a25dd5202c'  // 晓雅
       let redirect = Request['redirect'] || this.$route.query.redirect
       let from_id = Request['id']
-      window.localStorage.setItem(Constants.LocalStorage.sign, sign)
-      console.log(sign)
       console.log(redirect)
-      if (sign) {
-        this.getUserInfos(() => {
-          this.role = window.localStorage.getItem(Constants.LocalStorage.role)
-        })
-        if (redirect != 'undefined') {
-          console.log('redirect succ')
-          this.$router.push({
-            name: redirect,
-            query:{
-              id:from_id
+      console.log(from_id)
+      sign = '215b54bc24847bdaa7344b2504514881'
 
-            }
-          })
-        }else {
-          console.log('to qaIndex')
-          setTimeout(() => {
-            this.$router.push({
-              name: Constants.PageName.qaIndex
-            })
-          },100)
-        }
-      } else {
-        setTimeout(() => {
-          EventBus.$emit(Constants.EventBus.showToast, {
-            message: "需要在微信浏览器打开"
-          })
-          this.$router.push({
-            name: Constants.PageName.qaLogin,
-            redirect
-          })
-        }, 100)
-      }
+
+      window.localStorage.setItem(Constants.LocalStorage.sign, sign)
+      this.getUserInfos(() => {
+        this.role = window.localStorage.getItem(Constants.LocalStorage.role)
+      })
+
 
 
       EventBus.$on(Constants.EventBus.inform_num, (val) => {
@@ -157,6 +129,26 @@
         }
       })
       this.to_doc = {name: Constants.PageName.qaDoc, params: {type: 2}}
+
+
+      if ((redirect == 'qadetail' || redirect == 'qacomment') && typeof from_id != 'undefined') {
+        console.log('redirect success')
+        this.$router.push({
+          name: redirect,
+          query: {
+            id: from_id,
+            uid: window.localStorage.getItem(Constants.LocalStorage.uid)
+          }
+        })
+      }else{
+        setTimeout(() => {
+          this.$router.push({
+            name: Constants.PageName.qaIndex,
+          })
+        }, 100)
+      }
+
+
 
       if (this.$route.params.isLogin) {
         EventBus.$emit(Constants.EventBus.login);
@@ -168,8 +160,12 @@
         "getUserData"
     }
     ,
+    computed: {
+      watch_bottomNav() {
+        return this.bottomNav
+      }
+    },
     mounted() {
-
       this.style = {
         height: (this.$el.offsetHeight - this.$refs['bottom'].$el.offsetHeight) + 'px'
       };
@@ -179,6 +175,7 @@
       getUserInfos(success) {
         API.post(Constants.Method.profile, {})
           .then((result) => {
+            success && success(result)
             let userInfos = result.data
             this.$ls.set(Constants.LocalStorage.role, userInfos.role);
             this.role = userInfos.role;
@@ -187,7 +184,7 @@
             this.$ls.set(Constants.LocalStorage.collect_num, userInfos.collect_num)
             this.$ls.set(Constants.LocalStorage.uid, userInfos.uid)
             this.isreadShow = userInfos.inform_num > 0
-            success && success(result)
+
           })
           .catch((err) => {
             console.log(err);
@@ -199,10 +196,9 @@
       }
       ,
       getUserData(to, from) {
-        if (to.name === Constants.PageName.qaUser) return
+        if (to.name === Constants.PageName.qaUser || to.name === Constants.PageName.qaDetail) return
         this.getUserInfos()
         this.showAsk = false
-
       }
       ,
       toggleAsk() {
@@ -210,52 +206,55 @@
       }
       ,
       gotoAsk(type) {
+        console.log(type)
+
         this.pushPage({
           name: Constants.PageName.qaAsk,
-          params: {
-            type
+          query: {
+            type: type
           }
         });
       }
       ,
       handleChange(value) {
-        if (value == 2) {
-          if (this.role == 0) {
-            this.toggleAsk();
-          } else if (this.role == 1) {
-            EventBus.$emit(Constants.EventBus.showToast, {
-              message: '管家没有提问权限'
-            });
-          } else {
-
-            EventBus.$emit(Constants.EventBus.showToast, {
-              message: '没有提问权限'
-            });
-          }
-        } else {
-          let name = '';
-          switch (parseInt(value)) {
-            case 0:
-              name = Constants.PageName.qaIndex;
-              break;
-            case 1:
-              name = Constants.PageName.qaknowledge;
-              break;
-            case 3:
-              name = Constants.PageName.qaNotice;
-
-              break;
-            case 4:
-              name = Constants.PageName.qaUser;
-              break;
-          }
-
-          this.bottomNav = value;
-          this.pushPage({
-            name: name
-          });
+        console.log(value);
+        let name = '';
+        switch (parseInt(value)) {
+          case 0:
+            name = Constants.PageName.qaIndex;
+            break;
+          case 1:
+            name = Constants.PageName.qaknowledge;
+            break;
+          case 2:
+            if (this.role == 0) {
+              this.toggleAsk();
+            }
+            else if (this.role == 1) {
+              EventBus.$emit(Constants.EventBus.showToast, {
+                message: '管家没有提问权限'
+              });
+            }
+            else {
+              EventBus.$emit(Constants.EventBus.showToast, {
+                message: '没有提问权限'
+              });
+            }
+            break;
+          case 3:
+            name = Constants.PageName.qaNotice;
+            break;
+          case 4:
+            name = Constants.PageName.qaUser;
+            break;
         }
+        console.log(name)
+        this.bottomNav = value;
+        this.pushPage({
+          name: name
+        });
       }
+
     }
   }
   ;
@@ -307,7 +306,7 @@
   .mask {
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 255, 255, 0.90);
+    background-color: rgba(255, 255, 255, 0.98);
     position: absolute;
     display: flex;
     flex-direction: row;
@@ -371,8 +370,8 @@
     }
     .close {
       vertical-align: middle;
-      width: px2rem(30);
-      height: px2rem(30);
+      width: px2rem(20);
+      height: px2rem(20);
     }
   }
 

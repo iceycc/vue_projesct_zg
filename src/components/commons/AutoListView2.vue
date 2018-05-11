@@ -155,6 +155,8 @@
         refreshing: false,
         trigger: null,
         disabled: false,
+        current_uid:null,
+
       }
     },
     watch: {
@@ -179,6 +181,7 @@
     },
     created() {
       console.log('created')
+      this.current_uid = window.localStorage.getItem('uid')
       if (this.flag) {
         this.getData()
       }
@@ -213,7 +216,6 @@
       },
       getData() {
         console.log('this.ex_params')
-        console.log(this.ex_params)
         this.loading = true;
         let data = {
           page: this.page,
@@ -224,12 +226,10 @@
         if (!this.url) {
           return
         }
-        console.log(this.url);
         API.post(this.url, data)
           .then((result) => {
             result = result.data;
             console.log('result')
-            console.log(result)
             console.log('=------------------11-----------------=')
             this.answered_list = this.answered_list.concat(result)
             if (result && result.length === 0) {
@@ -247,7 +247,6 @@
       },
       goQuestionDetail(item,list_style) {
         console.log('item.id')
-        console.log(item)
         switch (list_style) {
           case 'answer_list':
             var my_answer = 1;
@@ -261,13 +260,13 @@
           query: {
             id: id,
             my_answer:my_answer || 0,
-            if_my_question
+            if_my_question,
+            uid:this.current_uid
           }
         });
       },
       loadMore() {
         console.log('isMore')
-        console.log(this.isMore)
         this.loading = true
         setTimeout(() => {
           this.getData(this.url);
@@ -363,6 +362,8 @@
   }
 
   /*question-card*/
+  $tag_border_color:#dedede;
+  $tag_color:#ACACAC;
   $yuan_width: px2rem(16);
   $yuan_width_2: px2rem(8);
   .answer-list-card {
@@ -421,7 +422,6 @@
     .title {
       font-size: px2rem(16);
       color: $title-color;
-      font-weight: 600;
       @extend .line_one
     }
     .question-content {
@@ -450,7 +450,8 @@
       margin-left: px2rem(10);
 
       .tag {
-        border: px2rem(1) solid #ccc;
+        border: px2rem(1) solid $tag_border_color;
+        color:$tag_color;
         padding: px2rem(1) px2rem(6);
         margin-left: px2rem(10);
         margin-bottom: px2rem(6);
@@ -467,7 +468,6 @@
     .card-title{
       font-size: px2rem(16);
       color:#333;
-      font-weight: 600;
     }
     .question-notice {
       font-size: px2rem(14);
@@ -561,8 +561,8 @@
       margin-top: px2rem(10);
       font-size: px2rem(12);
       .tag {
-        color: $fontcolor_gray;
-        border: 1px solid #dedede;
+        color: $tag_color;
+        border: 1px solid $tag_border_color;
         padding: px2rem(2) px2rem(5);
         margin-bottom: px2rem(4);
         font-size: px2rem(12);
@@ -595,7 +595,6 @@
       .title {
         font-size: px2rem(16);
         flex-grow: 1;
-        font-weight: 600;
         color: $title-color;
         @extend .line_one
 
@@ -649,7 +648,8 @@
       flex-wrap: wrap;
       padding-top: px2rem(10);
       .tag {
-        border: px2rem(1) solid #ccc;
+        border: px2rem(1) solid $tag_border_color;
+        color:$tag_color;
         padding: px2rem(1) px2rem(6);
         margin-right: px2rem(10);
         margin-bottom: px2rem(6);

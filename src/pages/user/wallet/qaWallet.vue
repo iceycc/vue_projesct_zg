@@ -8,6 +8,7 @@
     </div>
     <div style="flex-grow: 1"></div>
     <div class="btn-view">
+      <!--result.money == 0 && role == 0-->
       <div v-if="result.money > 0 && role == 0" class="btn btn-white" @click="gotoAsk(1)">用于悬赏提问</div>
       <div v-if="result.money > 0" class="btn" @click="gotoWithdraw">提现</div>
       <div class="desc">仅支持提现至微信零钱</div>
@@ -43,6 +44,15 @@
     },
     computed: {},
     created() {
+      this.initWX(() => {
+        this.fenXiang({
+          title:'诸葛装修，全方位解决您的装修问题',
+          imgUrl:'http://image1.uzhuang.com/zhuge-logo.png'
+        },function () {
+          console.log('fenXiang');
+        })
+        console.log('wx success');
+      });
       // console.log(1)
       this.role = window.localStorage.getItem('role')
       API.post(Constants.Method.wallet,null)
@@ -68,11 +78,10 @@
       gotoAsk(type) {
         this.pushPage({
           name: Constants.PageName.qaAsk,
-          params: {
+          query: {
             type,
             is_wallet:true,
-            money_sum:this.money || 0
-
+            money_sum:this.money * 100 || 0
           }
         });
       },

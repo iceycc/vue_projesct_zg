@@ -56,7 +56,7 @@ let routes = [
         path: Constants.PageName.qaknowledge,
         name: Constants.PageName.qaknowledge,
         component: Pages[Constants.PageName.qaknowledge],
-        meta: {keepAlive: true, title: '课堂', needLogin: true}
+        meta: {keepAlive: true, title: '课堂', needLogin: true }
       },
       // {
       //   path: Constants.PageName.qaDetail,
@@ -83,7 +83,7 @@ let routes = [
 
 addRouter(Constants.PageName.template, {title: '测试页面'});
 addRouter(Constants.PageName.qaDetail, {keepAlive: false, title: '问答详情'});
-addRouter(Constants.PageName.qaAsk, {title: '提问'});
+addRouter(Constants.PageName.qaAsk, {title: '提问',keepAlive: true});
 addRouter(Constants.PageName.qaResponse, {title: '回复'});
 addRouter(Constants.PageName.qaComment, {title: '评论'});
 addRouter(Constants.PageName.qaSearch, {title: '搜索'});
@@ -92,7 +92,7 @@ addRouter(Constants.PageName.qaWalletDetail, {keepAlive: false, title: '钱包�
 addRouter(Constants.PageName.qaLogin, {keepAlive: false, title: '登录', needLogin: false});
 addRouter(Constants.PageName.qaWallet, {keepAlive: false, title: '钱包'});
 addRouter(Constants.PageName.qaWithdraw, {keepAlive: false, title: '提现'});
-addRouter(Constants.PageName.qaKetangDetail, {keepAlive: false, title: '课堂'});
+addRouter(Constants.PageName.qaKetangDetail, {keepAlive: false, title: '课堂', needLogin: false});
 addRouter(Constants.PageName.qaDoc, {keepAlive: false, title: '', needLogin: false});
 addRouter(Constants.PageName.qaBindAccount, {keepAlive: false, title: '账号绑定'});
 
@@ -105,63 +105,61 @@ router.beforeEach((to, from, next) => {
   if (to.meta && to.meta.title) {
     document.title = to.meta.title;
   }
-
   // 判断是否需要进行登陆 校验
   if (to.meta.needLogin) {
     let sign = localStorage.getItem(Constants.LocalStorage.sign)
-    // let sign = null;
-    // EventBus.$on(Constants.EventBus.sign,(val)=>{
-    //   sign = val
-    // })
-    // 判断sign是否存在
-    console.log("router to from")
-    console.log(to)
-    console.log(from)
-
-    if (!from.name && to.name !== 'main' && ( to.name=='qadetail' || to.name == 'qacomment')) {
-      console.log('分享链接')
-      EventBus.$emit(Constants.EventBus.showToast, {
-        message: "分享链接需要在微信浏览器登陆打开"
-      })
-      // window.location.href = `http://wx.uzhuang.com/index.php?r=wx/oauth2&redirect=${to.name}&id=${to.query}`
-      // next()
-      next({
-        name: Constants.PageName.qaLogin,
-        query: {redirect: to.name,data:to.query},
-      })
-    }
     if (!from.name && to.name !== 'main') {
-      console.log('分享链接')
+      console.log('分享链接  回到当前页')
+      window.localStorage.setItem('is_redirect',1)
+    }
+    // 1 刷新
+    // 2 从m.uzhuang.com返回
+    // 3 点击分享链接
+    // qaIndex  qaDetail
+    // if(from.)
+    // 点击链接
+      // todo 分享链接跳转的问题：
+            //  1  qadetail  qacomment  i  跳转当前页  需要 问题id  当前用户的sign
+            //  2  课堂 直接去 next()
+            //  3  index 个人页面  跳转当前页 等待    跳转到index  需要当前用户的sign
+      // todo 分享样式
+
+      // todo 石墨文档
+    if(!sign){
       EventBus.$emit(Constants.EventBus.showToast, {
-        message: "分享链接需要在微信浏览器登陆打开"
+        message: "需要在微信浏览器登陆打开"
       })
-      // window.location.href = `http://wx.uzhuang.com/index.php?r=wx/oauth2&redirect=${to.name}&id=${to.query}`
-      // next()
       next({
         name: Constants.PageName.qaLogin,
-        query: {redirect: Constants.PageName.qaIndex},
+
+        query: {redirect: to.name,id:to.query.id},
       })
     }
-
-    if (sign) {
-      next()
-    } else {
-      EventBus.$emit(Constants.EventBus.showToast, {
-        message: "需要在微信浏览器打开"
-      })
-      setTimeout(() => {
-        next({
-          name: Constants.PageName.qaLogin,
-          query: {redirect: to.name}
-
-        })
-      }, 2000)
-    }
-
+    else {next()}
+    // if (!from.name && to.name !== 'main') {
+    //   console.log('分享链接  回到当前页')
+    //   EventBus.$emit(Constants.EventBus.showToast, {
+    //     message: "分享链接需要在微信浏览器登陆打开"
+    //   })
+    //   if(to.name == 'qadetail' && to.name == 'qacomment'){
+    //     next({
+    //       name: Constants.PageName.qaLogin,
+    //       query: {redirect: to.name, data: to.query},
+    //     })
+    //   }else{
+    //     window.location.href = `http://wx.uzhuang.com/index.php?r=wx/oauth2&redirect`
+    //   }
+    //   // window.location.href = `http://wx.uzhuang.com/index.php?r=wx/oauth2&redirect=${to.name}&id=${to.query}`
+    //   // next()
+    // }
+    // else{
+    //   if(sign){
+    //     next()
+    //   }
+    //
+    // }
   }
   next()
-
-
 });
 
 

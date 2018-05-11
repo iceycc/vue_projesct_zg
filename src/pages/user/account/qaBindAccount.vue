@@ -2,8 +2,8 @@
   <div>
     <app-bar :title="title"></app-bar>
     <div class="form">
-        <mu-text-field fullWidth :underlineShow="false" v-model="username" hintText="管家端账号"/>
-        <mu-text-field fullWidth :underlineShow="false" v-model="password" hintText="管家端密码" type="password"/>
+        <input type="text" v-model="username" placeholder="管家端账号">
+        <input type="password" v-model="password" placeholder="管家端密码">
         <div class="submit" @click="goBindAccount">确认绑定</div>
     </div>
   </div>
@@ -28,6 +28,17 @@
       }
     }
     ,
+    created(){
+      this.initWX(() => {
+        this.fenXiang({
+          title:'诸葛装修，全方位解决您的装修问题',
+          imgUrl:'http://image1.uzhuang.com/zhuge-logo.png'
+        },function () {
+          console.log('fenXiang');
+        })
+        console.log('wx success');
+      });
+    },
     methods:{
       goBindAccount(){
         this.username = this.username.replace(/^\s+|\s+$/g,"")
@@ -80,25 +91,24 @@
     text-align: center;
     padding-top:px2rem(50)
   }
-  .mu-text-field{
-    border: 1px solid #ccc;
-    border-radius:px2rem(10);
+
+  input{
+    width: px2rem(320);
+    height: px2rem(50) ;
+    border-radius: px2rem(10);
     padding-left: px2rem(20);
     margin-bottom:px2rem(30);
-    width: px2rem(300) !important;
-    .mu-text-field-hint {
-      text-align: left;
-    }
+    border: 1px solid #ccc;
+    font-size: px2rem(16);
   }
-
   .submit{
     margin: 0 auto;
-    width: px2rem(300);
-    height: px2rem(40);
+    width: px2rem(280);
+    height: px2rem(50);
     background: #21d5b8;
     border-radius:px2rem(5);
     color:#fff;
-    font-size: px2rem(20);
-    line-height: px2rem(40);
+    font-size: px2rem(16);
+    line-height: px2rem(50);
   }
 </style>

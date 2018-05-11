@@ -7,7 +7,7 @@
                      @onClick="ifGoDetail(answer.answerer_id,answer.answerer_role,answer.answerer_name)"></img-wrapper>
         <div class="vertical-view">
           <div class="name" @click="ifGoDetail(answer.uid,answer.answerer_role,answer.answerer_name)">
-            {{answer.answerer_role == 1 && role == 1 ? '匿名用户': answer.answerer_name }}
+            {{answer.answerer_role == 1 && role == 1 && answer.answerer_id != current_uid ? '匿名用户': answer.answerer_name }}
             <template v-if="!(answer.answerer_role == 1 && role == 1)">
               <uz-lable v-if="answer.answerer_rank" :role="answer.answerer_rank"></uz-lable>
             </template>
@@ -58,7 +58,7 @@
                   确定要删除该条评论吗
                   <mu-flat-button slot="actions" @click="close" primary label="取消"/>
                   <!--这里传item.id 为啥和上面获取的不一样呢-->
-                  <mu-flat-button slot="actions" primary  @click="delCommentHandle" label="确定"/>
+                  <mu-flat-button slot="actions" primary @click="delCommentHandle" label="确定"/>
                 </mu-dialog>
               </div>
 
@@ -78,7 +78,7 @@
 </template>
 
 <script>
-  import {Constants, EventBus, mixins, API} from '../../config/index';
+  import {Constants, EventBus, mixins, API, util} from '../../config/index';
 
   import ComponentTemplate from "../../components/template";
   import AutoListView from "../../components/commons/AutoListView";
@@ -100,7 +100,7 @@
     name: Constants.PageName.qaDetail,
     data() {
       return {
-        current_uid:null,
+        current_uid: null,
         dialog1: false,
         icon1: require('../../assets/img/icon_detail_response.svg'),
         icon2: require('../../assets/img/icon_detail_ask.svg'),
@@ -115,28 +115,57 @@
         is_footer_show: false,
         title: '',
         disabled: false,
-        a_id:0,
-        del_comment:null,
-        role:0
+        a_id: 0,
+        del_comment: null,
+        role: 0
       };
     },
     computed: {},
     created() {
-      this.current_uid = window.localStorage.getItem(Constants.LocalStorage.uid)
+      this.initWX(() => {
+        console.log('wx success');
+      });
       this.role = window.localStorage.getItem(Constants.LocalStorage.role)
-
+      this.ifNeedReLogin()
     },
     activated() {
       this.getData()
       this.getComment()
     },
     methods: {
+      ifNeedReLogin() {
+        this.current_uid = window.localStorage.getItem(Constants.LocalStorage.uid)
+        var Request = new Object();
+        Request = util.GetRequest();
+        let urlUid = Request['uid'] || this.current_uid
+        let id = Request['id'] || this.$route.query.id
+        let redirect = this.$route.name
+        console.log('002');
+        console.log(urlUid != this.current_uid);
+        console.log(null != undefined);
+        console.log(null == true);
+        console.log(this.current_uid == true);
+        console.log(this.current_uid);
+        console.log(null);
+        if (urlUid && this.current_uid && urlUid != this.current_uid) {
+          EventBus.$emit(Constants.EventBus.showToast, {
+            message: "需要重新登陆"
+          })
+          this.$router.replace({
+            name: Constants.PageName.qaLogin,
+            query: {
+              redirect: redirect,
+              id: id
+            }
+          })
+        }
+      },
       // uid
       ifGoDetail(uid, role) {
         // 这里通过判断返回的role是否时管是家 自己是管家的话点不开其他管家的详情 匿名用户不能打开 管家看管家也是显示匿名用户
-        if(role == this.role && uid != this.current_uid){
+        if (role == this.role && uid != this.current_uid) {
           return
-        }else {
+        } else {
           this.goGujian(uid, role)
         }
       },
@@ -150,42 +179,45 @@
       },
       getData() {
         let data = {
-            id: this.$route.query.id,
-            inform_id: this.$route.query.inform_id || 0,
+          id: this.$route.query.id,
+          inform_id: this.$route.query.inform_id || 0,
         };
 
-        API.get(Constants.Method.get_answer, {params:data})
-            .then((result) => {
-              this.answer = result.data
-              if (this.answer == null) {
-                EventBus.$emit(Constants.EventBus.showToast, {message: '该条动态已被删除'})
-                setTimeout(() => {
-                  this.$router.go(-1)
-                }, 1500)
-              }
+        API.get(Constants.Method.get_answer, {params: data})
+          .then((result) => {
+            this.answer = result.data
+            this.fenXiang({
+              title: result.data.title,
             })
-            .catch((err)=>{
-              console.log(err);
-            });
+            if (this.answer == null) {
+              EventBus.$emit(Constants.EventBus.showToast, {message: '该条动态已被删除'})
+              setTimeout(() => {
+                this.$router.go(-1)
+              }, 1500)
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       },
       getComment() {
         let data = {
-            id: this.$route.query.id,
-            inform_id: this.$route.query.inform_id || 0
+          id: this.$route.query.id,
+          inform_id: this.$route.query.inform_id || 0
         };
 
-        API.get(Constants.Method.get_comment_list, {params:data})
-            .then((result) => {
-              this.comments = result.data;
-              if (this.comments && this.comments.length > 0) {
-                this.title = `${this.comments.length}条回复`
-              } else {
-                this.title = `暂无回复`
-              }
-            })
-            .catch((err)=>{
-              console.log(err)
-            });
+        API.get(Constants.Method.get_comment_list, {params: data})
+          .then((result) => {
+            this.comments = result.data;
+            if (this.comments && this.comments.length > 0) {
+              this.title = `${this.comments.length}条回复`
+            } else {
+              this.title = `暂无回复`
+            }
+          })
+          .catch((err) => {
+            console.log(err)
+          });
       },
       getRoleClass(role) {
 
@@ -205,23 +237,23 @@
           id: this.del_comment,
         }
         API.post(Constants.Method.del_comment, data)
-            .then((result) => {
-              this.getComment()
-              this.dialog1 = false
-              this.del_comment = null
-            })
-            .catch((err)=>{
-              console.log(err)
-            })
+          .then((result) => {
+            this.getComment()
+            this.dialog1 = false
+            this.del_comment = null
+          })
+          .catch((err) => {
+            console.log(err)
+          })
       },
       //
-      onItemClick(name, c_id,a_id) {
+      onItemClick(name, c_id, a_id) {
         // console.log(name);
         this.is_footer_show = true
         this.a_id = a_id
-        console.log('this.a_id : '+ a_id)
+        console.log('this.a_id : ' + a_id)
         this.c_id = c_id
-        console.log('this.c_id : '+ c_id)
+        console.log('this.c_id : ' + c_id)
         this.to_who = "回复 " + name + " 评论："
       },
       submit() {
@@ -233,46 +265,46 @@
         }
 
         // 回复回答
-        if(this.c_id == 0){
+        if (this.c_id == 0) {
           let data = {
             answer_id: this.a_id,
             content: this.recomment,
           };
           API.post(Constants.Method.reply_answer, data)
-              .then((result) => {
-                this.getComment()
-                this.recomment = ''
-                console.log("++++++++++++comment+++++++++++++");
-                // console.log(result);
-                this.is_footer_show = false
-                console.log("++++++++++++++++++++++++++++++++");
-              })
-              .catch((err)=>{
-                console.log(err)
-              });
+            .then((result) => {
+              this.getComment()
+              this.recomment = ''
+              console.log("++++++++++++comment+++++++++++++");
+              // console.log(result);
+              this.is_footer_show = false
+              console.log("++++++++++++++++++++++++++++++++");
+            })
+            .catch((err) => {
+              console.log(err)
+            });
         }
-        if(this.a_id == 0){
+        if (this.a_id == 0) {
           let data = {
             comment_id: this.c_id,
             content: this.recomment,
           };
           API.post(Constants.Method.reply_comment, data)
-              .then((result) => {
-                this.getComment()
-                this.recomment = ''
-                console.log("++++++++++++comment+++++++++++++");
-                // console.log(result);
-                this.is_footer_show = false
-                console.log("++++++++++++++++++++++++++++++++");
-              })
-              .catch((err)=>{
-                console.log(err)
-              });
+            .then((result) => {
+              this.getComment()
+              this.recomment = ''
+              console.log("++++++++++++comment+++++++++++++");
+              // console.log(result);
+              this.is_footer_show = false
+              console.log("++++++++++++++++++++++++++++++++");
+            })
+            .catch((err) => {
+              console.log(err)
+            });
         }
 
       },
       like(a_id, liked, c_id) {
-
+        console.log('5000')
         if (timer) {
           clearTimeout(timer)
         }
@@ -284,31 +316,32 @@
         switch (liked) {
           case '1':
             API.post(Constants.Method.un_like, data)
-                .then((result) => {
-                    this.getData()
-                  timer = setTimeout(() => {
-                    this.disabled = false;
-                  }, 1000)
-                })
-                .catch((err)=>{
-                  console.log(err)
-                });
+              .then((result) => {
+                this.getData()
+                timer = setTimeout(() => {
+                  this.disabled = false;
+                }, 3000)
+              })
+              .catch((err) => {
+                console.log(err)
+              });
             break;
           case '0':
             API.post(Constants.Method.like, data)
-                .then((result) => {
-                    this.getData();
-                  timer = setTimeout(() => {
-                    this.disabled = false;
-                  }, 1000)
-                })
-                .catch((err)=>{
-                  console.log(err)
-                })
+              .then((result) => {
+                this.getData();
+                timer = setTimeout(() => {
+                  this.disabled = false;
+                }, 3000)
+              })
+              .catch((err) => {
+                console.log(err)
+              })
         }
         timer = setTimeout(() => {
           this.disabled = false;
-        }, 1000)
+          console.log('like once')
+        }, 3000)
 
       },
       collect() {
@@ -316,21 +349,21 @@
       },
       accept(index) {
         let options = {
-          params:{
+          params: {
             q_id: this.$route.query.id,
             a_id: this.answer_list[index].id,
           }
         };
 
         API.post(Constants.Method.adoption, options.params)
-            .then((result) => {
-              console.log("========adoption============");
-              // console.log(result);
-              console.log("====================");
-            })
-            .catch((err)=>{
-              console.log(err);
-            });
+          .then((result) => {
+            console.log("========adoption============");
+            // console.log(result);
+            console.log("====================");
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       },
 
     }

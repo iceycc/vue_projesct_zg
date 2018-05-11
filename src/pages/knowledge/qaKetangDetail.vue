@@ -83,6 +83,15 @@
     },
 
     created() {
+      this.initWX(() => {
+        this.fenXiang({
+          title:'诸葛装修，全方位解决您的装修问题',
+          imgUrl:'http://image1.uzhuang.com/zhuge-logo.png'
+        },function () {
+          console.log('fenXiang');
+        })
+        console.log('wx success');
+      });
       this.title = this.$route.query.title || '课堂'
       this.getList()
     },
@@ -111,7 +120,6 @@
         }
         axios.get(Constants.Method.ketang_nodeList,{params:data})
             .then((result) => {
-              console.log(result);
               this.data_list = this.data_list.concat(result.data.data)
               // 判断数据是否存在且是否为空 控制加载是否继续
               if (result.data.data && result.data.data.length == 0) {

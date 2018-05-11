@@ -34,6 +34,86 @@ export default {
     }
   },
   methods: {
+    fenXiang(content,fn) {
+      let data = {
+        title:content.title || '诸葛装修，全方位解决您的装修问题',
+        link:content.link || window.location.href,
+        imgUrl:content.imgUrl || 'http://image1.uzhuang.com/zhuge-logo.png',
+        type:content.type || '',
+        dataUrl:content.dataUrl || '',
+        desc:content.desc || '',
+      }
+      fn && fn()
+      // console.log(data)
+      wx.onMenuShareTimeline({
+        title: data.title, // 分享标题
+        link: data.link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+        imgUrl: data.imgUrl, // 分享图标
+        success: function () {
+          // 用户确认分享后执行的回调函数
+        },
+        fail: function () {
+          // 用户确认分享后执行的回调函数
+        }
+      })
+
+
+      wx.onMenuShareAppMessage({
+        title: data.title, // 分享标题
+        desc: data.desc, // 分享描述
+        link: data.link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+        imgUrl: data.imgUrl, // 分享图标
+        type: data.type, // 分享类型,music、video或link，不填默认为link
+        dataUrl: data.dataUrl, // 如果type是music或video，则要提供数据链接，默认为空
+        success: function () {
+// 用户确认分享后执行的回调函数
+        },
+        cancel: function () {
+// 用户取消分享后执行的回调函数
+        }
+      });
+
+      wx.onMenuShareQQ({
+        title: data.title, // 分享标题
+        desc: data.desc, // 分享描述
+        link: data.link, // 分享链接
+        imgUrl: data.imgUrl, // 分享图标
+        success: function () {
+// 用户确认分享后执行的回调函数
+        },
+        cancel: function () {
+// 用户取消分享后执行的回调函数
+        }
+      });
+
+
+      wx.onMenuShareWeibo({
+        title: data.title, // 分享标题
+        desc: data.desc, // 分享描述
+        link: data.link, // 分享链接
+        imgUrl: data.imgUrl, // 分享图标
+        success: function () {
+// 用户确认分享后执行的回调函数
+        },
+        cancel: function () {
+// 用户取消分享后执行的回调函数
+        }
+      });
+
+
+      wx.onMenuShareQZone({
+        title:data.title, //data. 分享标题
+        desc: data.desc, // 分享描述
+        link: data.link, // 分享链接
+        imgUrl: data.imgUrl, // 分享图标
+        success: function () {
+// 用户确认分享后执行的回调函数
+        },
+        cancel: function () {
+// 用户取消分享后执行的回调函数
+        }
+      });
+    },
     pagePause() {
       this._pagePause && this._pagePause()
     },
