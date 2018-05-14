@@ -2,6 +2,9 @@
   <div class="scroll-view">
     <mu-refresh-control :refreshing="refreshing" :trigger="trigger" @refresh="refresh"/>
     <mu-list>
+      <div v-if="datas && datas.length == 0" style="text-align: center;margin-top: 20px">
+        {{infoMsg}}
+      </div>
       <div class="info-box"
            v-for="(item,index) in datas" :key="index"
            @click="goDetail(item.type,index,item.question_id,item.answer_id,item.id)"
@@ -47,7 +50,9 @@
         isMore: true,
         data: [],
         refreshing: false,
-        trigger: null
+        trigger: null,
+        infoMsg:'正在加载中...',
+        empty:true
       }
     },
     created() {
@@ -112,6 +117,7 @@
               this.datas = this.datas.concat(result)
               //1 如果新请求的数据存在但是result.length为0  取消加载
               if (result && result.length == 0) {
+                this.infoMsg = '没有通知...'
                 this.isMore = false
               } else {
                 this.page = this.page + 1

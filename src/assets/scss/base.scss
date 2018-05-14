@@ -15,6 +15,9 @@ html, body, #app, .page, pre {
   background: #FFFFFF;
   overflow: hidden;
 }
+input {
+  -webkit-appearance: none;
+}
 
 pre {
   white-space: pre-line;

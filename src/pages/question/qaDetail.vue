@@ -150,8 +150,9 @@
 
               <div class="vertical-view">
                 <div class="name" @click.stop="ifGoDetail(item.answerer_id,item.answerer_role,item.answerer_name)">
-                  {{item.answerer_role == 1 && role == 1 && current_uid != item.answerer_id? '匿名用户': item.answerer_name
-                  }}
+                 <span class="user-name">
+                    {{item.answerer_role == 1 && role == 1 && current_uid != item.answerer_id? '匿名用户': item.answerer_name}}
+                 </span>
                   <!--显示颜色从组件内根据角色名匹配的-->
                   <template v-if="!(item.answerer_role == 1 && role == 1 && current_uid != item.answerer_id)">
                     <uz-lable v-if="question.q_reward > 0"
@@ -972,9 +973,14 @@
       }
       .name {
         color: #333;
-        font-size: px2rem(13);
         padding: 0;
         margin: 0;
+        font-size: 0;
+        .user-name{
+          vertical-align: middle;
+          font-size: px2rem(13);
+
+        }
       }
       .date {
         font-size: px2rem(12);
