@@ -5,7 +5,7 @@
       <mu-icon-button icon="arrow_back" slot="left" @click="goBack"></mu-icon-button>
     </mu-appbar>
     <div class="form">
-      <mu-text-field class="field_title" fullWidth :underlineShow="false" v-model="qa.title" hintText="请输入标题（5~150字）"/>
+      <input class="field_title" v-model="qa.title" placeholder="请输入标题（5~150字）"/>
 
       <div class="line"></div>
 
@@ -549,6 +549,10 @@
   }
 
   .field_title {
-    font-size: px2rem(15) !important;
+    -webkit-appearance: none;
+    border: none;
+    width: 100%;
+    height: px2rem(40);
+    font-size: px2rem(15);
   }
 </style>

@@ -108,9 +108,7 @@
         this.url = url;
         axios.get(url, null)
           .then((result) => {
-            console.log(result);
             this.kt_lists = result.data.data
-
           })
       },
       onItemClick(item) {

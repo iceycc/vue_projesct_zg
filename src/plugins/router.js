@@ -108,6 +108,9 @@ router.beforeEach((to, from, next) => {
   // 判断是否需要进行登陆 校验
   if (to.meta.needLogin) {
     let sign = localStorage.getItem(Constants.LocalStorage.sign)
+    if(to.name !== 'qaknowledge'){
+      next()
+    }
     if (!from.name && to.name !== 'main') {
       console.log('分享链接  回到当前页')
       window.localStorage.setItem('is_redirect',1)

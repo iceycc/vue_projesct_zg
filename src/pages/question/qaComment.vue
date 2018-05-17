@@ -3,7 +3,7 @@
     <app-bar :title="title"></app-bar>
     <div class="card shadow" v-if="answer">
       <div class="view1 horizontal-view">
-        <img-wrapper :url="answer.answerer_avatar" classStyle="avatar"
+        <img-wrapper :url="answer.answerer_role == 1 && role == 1 && answer.answerer_id != current_uid ? 'http://image1.uzhuang.com/icon_slider.png': answer.answerer_avatar" classStyle="avatar"
                      @onClick="ifGoDetail(answer.answerer_id,answer.answerer_role,answer.answerer_name)"></img-wrapper>
         <div class="vertical-view">
           <div class="name" @click="ifGoDetail(answer.uid,answer.answerer_role,answer.answerer_name)">

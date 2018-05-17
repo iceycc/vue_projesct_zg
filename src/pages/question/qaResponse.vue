@@ -2,8 +2,7 @@
   <div class="content">
     <app-bar :title="title"></app-bar>
     <div class="form">
-      <mu-text-field fullWidth :underlineShow="false" v-model="qa.content" hintText="回答问题将获得积分奖励" fullWidth
-                     multiLine :rows="6"/>
+      <textarea v-model="qa.content" placeholder="回答问题将获得积分奖励" rows="6" class="textarea" autofocus="autofocus"/>
       <!--<upload-view @upload="chooseImage" @remove="remove" :localIds="localIds"></upload-view>-->
     </div>
 
@@ -241,6 +240,11 @@
       text-align: center;
       margin-top: px2rem(20);
     }
+  }
+  .textarea{
+    border: none;
+    width: 100%;
+    height: 100%;
   }
 
 </style>

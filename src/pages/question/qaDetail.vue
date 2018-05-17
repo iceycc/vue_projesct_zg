@@ -142,8 +142,9 @@
           <div class="card-re" @click="onItemClick(item.id)" v-for="item, index in answer_list_filter">
             <!--回答 人 头像 名称 用户等级 是否采纳 11-->
             <div class="view1 horizontal-view">
+              <!--如果是匿名用户 显示小鲸鱼  主要评论详情页也是-->
               <img-wrapper
-                :url="item.a_avatar == 'http://m.uzhuang.com/res/images/userface.png' ? a_avatar : item.answerer_avatar "
+                :url="item.answerer_role == 1 && role == 1 && current_uid != item.answerer_id ? 'http://image1.uzhuang.com/icon_slider.png' : item.answerer_avatar "
                 classStyle="avatar"
                 @onClick="ifGoDetail(item.answerer_id,item.answerer_role,item.answerer_name)"
               ></img-wrapper>

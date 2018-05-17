@@ -5,6 +5,7 @@
         <router-view v-if="$route.meta.keepAlive"></router-view>
       </keep-alive>
       <router-view v-if="!$route.meta.keepAlive"></router-view>
+
     </div>
     <mu-bottom-nav :value="watch_bottomNav" @change="handleChange" ref="bottom" v-if="!$route.meta.isShowTab">
       <mu-bottom-nav-item value="0" title="问答">
@@ -17,6 +18,7 @@
         <img-wrapper :url="watch_bottomNav == 2 ? tab2[1] : tab2[0]" class="tabicon"></img-wrapper>
       </mu-bottom-nav-item>
       <mu-bottom-nav-item value="3" title="通知">
+
         <!--<i class="isread-num" v-if="notice_isread_num === 1 ? false : true"></i>-->
         <i class="isread-num" v-if="isreadShow"></i>
         <img-wrapper :url="watch_bottomNav == 3 ? tab3[1] : tab3[0]" class="tabicon"></img-wrapper>
@@ -102,37 +104,66 @@
       };
     },
     created() {
+      console.log('main created');
+
+      // 保证刷新时 下面的tab和路由对应
+      var str = window.location.hash
+      var href
+      if(str.indexOf('?') === -1){
+        href = str.slice(2)
+      }else {
+        href = str.slice(2,str.indexOf('?') + 1)
+      }
+      switch (href){
+        case Constants.PageName.qaIndex:
+          this.bottomNav = 0;
+          break;
+        case Constants.PageName.qaknowledge:
+          this.bottomNav = 1;
+          break;
+        case Constants.PageName.qaNotice:
+          this.bottomNav = 3;
+          break;
+        case Constants.PageName.qaUser:
+          this.bottomNav = 4;
+          break;
+        default:
+          break;
+      }
+      // 初始化微信
       this.initWX(() => {
         console.log('wx success');
       });
-      console.log('main created');
+      // 获取url参数代码
       var Request = new Object();
       Request = util.GetRequest();
       let sign = Request['sign'] || window.localStorage.getItem(Constants.LocalStorage.sign)
       let redirect = Request['redirect'] || this.$route.query.redirect
       let from_id = Request['id']
-      console.log(redirect)
-      console.log(from_id)
-      sign = '215b54bc24847bdaa7344b2504514881'
+      // console.log(redirect)
+      // console.log(from_id)
+      // sign = '215b54bc24847bdaa7344b2504514881'
+      // sign = 'a39c64680e64ee62b6a932a0a6c3942f'
 
 
+      // 设置sign
       window.localStorage.setItem(Constants.LocalStorage.sign, sign)
       this.getUserInfos(() => {
         this.role = window.localStorage.getItem(Constants.LocalStorage.role)
       })
-
-
-
       EventBus.$on(Constants.EventBus.inform_num, (val) => {
         if (val) {
           this.isreadShow = val > 0
         }
       })
       this.to_doc = {name: Constants.PageName.qaDoc, params: {type: 2}}
-
-
-      if ((redirect == 'qadetail' || redirect == 'qacomment') && typeof from_id != 'undefined') {
-        console.log('redirect success')
+      if(href == 'qaknowledge'){
+        this.$router.replace({
+          name: href,
+        })
+      }
+      else if ((redirect == 'qadetail' || redirect == 'qacomment') && typeof from_id != 'undefined') {
+        // console.log('redirect success')
         this.$router.push({
           name: redirect,
           query: {
@@ -147,12 +178,11 @@
           })
         }, 100)
       }
-
-
-
       if (this.$route.params.isLogin) {
         EventBus.$emit(Constants.EventBus.login);
       }
+
+
     },
     watch: {
       // 坑 监视路由
@@ -188,6 +218,7 @@
           })
           .catch((err) => {
             console.log(err);
+
           });
       }
       ,
@@ -196,6 +227,22 @@
       }
       ,
       getUserData(to, from) {
+        switch (to.name){
+          case Constants.PageName.qaIndex:
+            this.bottomNav = 0;
+            break;
+          case Constants.PageName.qaknowledge:
+            this.bottomNav = 1;
+            break;
+          case Constants.PageName.qaNotice:
+            this.bottomNav = 3;
+            break;
+          case Constants.PageName.qaUser:
+            this.bottomNav = 4;
+            break;
+          default:
+            break;
+        }
         if (to.name === Constants.PageName.qaUser || to.name === Constants.PageName.qaDetail) return
         this.getUserInfos()
         this.showAsk = false
@@ -207,7 +254,6 @@
       ,
       gotoAsk(type) {
         console.log(type)
-
         this.pushPage({
           name: Constants.PageName.qaAsk,
           query: {
@@ -248,7 +294,6 @@
             name = Constants.PageName.qaUser;
             break;
         }
-        console.log(name)
         this.bottomNav = value;
         this.pushPage({
           name: name
