@@ -42,9 +42,11 @@ _axios.interceptors.response.use( (response)=>{
 
   if(response.data.code == 1 && response.data.message == '登录失败' ){
     // window.location.href = location.host + '/#/qalogin'
+
     EventBus.$emit(Constants.EventBus.showToast,{
       message:"登陆已经过期，请重新登陆"
     })
+    // window.location.href = `http://wx.uzhuang.com/index.php?r=wx/oauth2&redirect=${redirect}&id=${id}`
     window.localStorage.clear()
     return
   }else if(response.data.code == 20 && response.data.message == '登录失败' ){

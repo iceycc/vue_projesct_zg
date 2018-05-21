@@ -17,7 +17,7 @@
 
     </div>
 
-    <div class="btn-submit" @click="submit">{{(watch_type == 1 ? '支付¥' + parseFloat(watch_qa.reward).toFixed(2) : '') +
+    <div class="btn-submit" @click.once="submit">{{(watch_type == 1 ? '支付¥' + parseFloat(watch_qa.reward).toFixed(2) : '') +
       '进行提问'}}
     </div>
 
@@ -162,7 +162,7 @@
       }
       this.localIds = []
       this.serverIds =[]
-      this.type = this.$route.query.type;
+      this.type = this.$route.query.type || 0;
       console.log('ask type')
       // 判断下是 钱包明细来的 还是 提问悬赏来的
       if (this.type == 1) {

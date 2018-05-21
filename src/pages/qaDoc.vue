@@ -182,6 +182,8 @@
   @import "../assets/scss/px2rem";
   .content{
     height: 100%;
+    overflow:auto;   /* 用于 android4+，或其他设备 */
+    -webkit-overflow-scrolling:touch;    /* 用于 ios5+ */
   }
   .text-content{
     padding: px2rem(10) px2rem(20) px2rem(80);

@@ -156,6 +156,10 @@
   @import "../assets/scss/base";
   @import "../assets/scss/px2rem";
   /* h */
+  #app{
+    overflow:auto;   /* 用于 android4+，或其他设备 */
+    -webkit-overflow-scrolling:touch;    /* 用于 ios5+ */
+  }
   .mu-dialog {
     border-radius: px2rem(10);
     padding-bottom:px2rem(10)

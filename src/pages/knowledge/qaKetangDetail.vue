@@ -229,7 +229,6 @@
     padding: px2rem(10);
     border-radius: px2rem(3);
     display: flex;
-    margin-bottom: px2rem(10);
     /*1211111111*/
     .card-img {
       display: block;
