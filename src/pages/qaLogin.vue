@@ -73,11 +73,10 @@
   @import "../assets/scss/px2rem";
 
   .page {
-    background: url("../../static/bg-img.png") no-repeat 0 0;
+    background: url("/static/bg-img.png") no-repeat 0 0;
     background-size: cover;
     /*background-color: #1bd4bb;*/
   }
-
   .top-text {
     font-size: 0;
     text-align: center;

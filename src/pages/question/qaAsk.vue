@@ -17,7 +17,7 @@
 
     </div>
 
-    <div class="btn-submit" @click.once="submit">{{(watch_type == 1 ? '支付¥' + parseFloat(watch_qa.reward).toFixed(2) : '') +
+    <div class="btn-submit" @click="submit">{{(watch_type == 1 ? '支付¥' + parseFloat(watch_qa.reward).toFixed(2) : '') +
       '进行提问'}}
     </div>
 
@@ -42,8 +42,8 @@
       </div>
       <div class="tip3">
         <div>使用付费服务您将获得</div>
-        <div>1.至少1个金牌管家参与回答</div>
-        <div>2.提问2h之内必回答</div>
+        <div>1.提问将在工作时间2h之内必回答</div>
+        <div>2.至少1个金牌管家参与回答</div>
       </div>
 
       <div class="btn" @click="toggleMask">去提问</div>
