@@ -142,7 +142,8 @@
       let from_id = Request['id']
       // console.log(redirect)
       // console.log(from_id)
-      // sign = '215b54bc24847bdaa7344b2504514881'
+
+      sign = '215b54bc24847bdaa7344b2504514881'
       // sign = 'a39c64680e64ee62b6a932a0a6c3942f'
 
 

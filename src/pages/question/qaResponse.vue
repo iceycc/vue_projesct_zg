@@ -2,14 +2,13 @@
   <div class="content">
     <app-bar :title="title"></app-bar>
     <div class="form">
-      <textarea v-model="qa.content" placeholder="回答问题将获得积分奖励" rows="6" class="textarea" autofocus="autofocus"/>
+      <textarea v-model="qa.content" placeholder="回答问题将获得积分奖励" rows="6" class="textarea" autofocus="autofocus980-"/>
       <!--<upload-view @upload="chooseImage" @remove="remove" :localIds="localIds"></upload-view>-->
     </div>
 
     <div class="btn-submit" @click.stop="submit(is_edit)">发布
     </div>
   </div>
-
 </template>
 
 <script>
