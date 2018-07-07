@@ -10,7 +10,7 @@
     <div class="search-hotword">
 
       <div class="title">
-        <img-wrapper @onClick="remove(index)" :url="icon_search_hot" classStyle="title_icon"></img-wrapper>
+        <img-wrapper @onClick="remove()" :url="icon_search_hot" classStyle="title_icon"></img-wrapper>
         <span> 热门搜索</span>
       </div>
       <div class="words">
@@ -20,7 +20,7 @@
 
     <div class="search-hotword history" v-if="searchwords && searchwords.length > 0">
       <div class="title">
-        <img-wrapper @onClick="remove(index)" :url="icon_search_histroy" classStyle="title_icon"></img-wrapper>
+        <img-wrapper @onClick="remove()" :url="icon_search_histroy" classStyle="title_icon"></img-wrapper>
         <span> 搜索历史</span>
       </div>
       <div class="list">
@@ -126,7 +126,7 @@
         });
         this.search = '';
       },
-      remove(index) {
+      remove(index =0) {
         this.searchwords.splice(index, 1);
         this.$ls.set(Constants.LocalStorage.searchHistory, this.searchwords);
       },

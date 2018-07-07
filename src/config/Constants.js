@@ -3,7 +3,7 @@
  */
 
 const BASE_URL_OLD = 'http://m.uzhuang.com/index.php?m=wenda&';
-const BASE_URL = 'http://zhuge.uzhuang.com/index.php';
+const BASE_URL = process.env.API_HOST ;//'http://zhuge.uzhuang.com/index.php'
 const Method_Class = {
   hotWord: BASE_URL + '?r=hot-word/',
   banner: BASE_URL + '?r=banner/',
