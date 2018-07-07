@@ -140,6 +140,7 @@ export const PageName = {
   qaDoc: 'qadoc',
   qaBindAccount: 'qabindaccount',
   qaQuestionList: 'qaquestionlist',
+    qaFind: 'qafind',
 };
 //
 export const LocalStorage = {

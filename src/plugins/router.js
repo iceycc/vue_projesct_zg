@@ -58,6 +58,12 @@ let routes = [
         component: Pages[Constants.PageName.qaknowledge],
         meta: {keepAlive: true, title: '课堂', needLogin: true }
       },
+      {
+        path: Constants.PageName.qaFind,
+        name: Constants.PageName.qaFind,
+        component: Pages[Constants.PageName.qaFind],
+        meta: {keepAlive: true, title: '课堂', needLogin: true }
+      },
       // {
       //   path: Constants.PageName.qaDetail,
       //   name: Constants.PageName.qaDetail,
@@ -95,6 +101,7 @@ addRouter(Constants.PageName.qaWithdraw, {keepAlive: false, title: '提现'});
 addRouter(Constants.PageName.qaKetangDetail, {keepAlive: false, title: '课堂', needLogin: false});
 addRouter(Constants.PageName.qaDoc, {keepAlive: false, title: '', needLogin: false});
 addRouter(Constants.PageName.qaBindAccount, {keepAlive: false, title: '账号绑定'});
+// addRouter(Constants.PageName.qaFind, {keepAlive: false, title: '发现'});
 
 let router = new Router({
 
