@@ -12,12 +12,12 @@
             <!--</template>-->
             <!--<div class="hot_word_empty"></div>-->
             <!--</div>-->
-            <div class="hot-word-box" @click="hotViewShow = !hotViewShow">热门
+            <div class="hot-word-box" @click="clickHotHandle">{{hotword}}
                 <img-wrapper :url="!hotViewShow ? hot_words_pic[0] : hot_words_pic[1]"
                              classStyle="hot_img"></img-wrapper>
             </div>
             <div class="search-box">
-                <input type="text" placeholder="搜索" v-model="search" @focus="searchViewShow =!searchViewShow">
+                <input type="text" placeholder="搜索" v-model="search" @focus="searchFocusHandle">
                 <img-wrapper :url="icon_search" classStyle="search_box_style"></img-wrapper>
             </div>
             <div @click="doSearch" class="go_search">
@@ -25,42 +25,46 @@
             </div>
         </div>
         <!--点击搜索的弹层-->
-        <transition name="fade" v-if="hotViewShow">
-            <div class="hot-view">
-                <div class="hot-view-box">
-                    <span v-for="word,index in hot_words" :key="index" :class="{active_hot_style:active_hot == index}" @click="doSelect(index)">{{word.name}}</span>
+        <!--<transition name="fade">-->
+            <div class="hot-view" id="hot-outdiv" v-show="hotViewShow">
+                <div class="hot-view-box" id="hot-indiv">
+                    <span v-for="word,index in hot_words" :key="index" :class="{active_hot_style:active_hot == index}" @click="doSelect(index,word.name)">{{word.name}}</span>
                 </div>
             </div>
-        </transition>
+        <!--</transition>-->
         <!--搜索时的弹层-->
         <transition name="fade">
 
-            <div class="search-view" v-if="searchViewShow">
+            <div class="search-view" v-show="searchViewShow" id="search-outdiv">
+                <div id="search-indiv">
 
-                <div class="search-hotword">
+                    <div class="search-hotword" >
 
-                    <div class="title">
-                        <img-wrapper :url="icon_search_hot" classStyle="title_icon"></img-wrapper>
-                        <span> 热门搜索</span>
-                    </div>
-                    <div class="words">
-                        <div v-for="item in words" @click="searchWord(item,true)">{{item}}</div>
-                    </div>
-                </div>
-
-                <div class="search-hotword history" v-if="searchwords && searchwords.length > 0">
-                    <div class="title">
-                        <img-wrapper @onClick="remove(0)" :url="icon_search_histroy" classStyle="title_icon"></img-wrapper>
-                        <span> 搜索历史</span>
-                    </div>
-                    <div class="list">
-                        <div v-for="item,index in searchwords" v-if="index<=4">
-                            <div class="name" @click="searchWord(item,false)">{{item}}</div>
-                            <img-wrapper @onClick="remove(index)" :url="icon_search_close"></img-wrapper>
+                        <div class="title">
+                            <img-wrapper :url="icon_search_hot" classStyle="title_icon"></img-wrapper>
+                            <span> 热门搜索</span>
+                            <span style="float:right" @click="searchViewShow=false"> 关闭</span>
+                        </div>
+                        <div class="words">
+                            <div v-for="item in words" @click="searchWord(item,true)">{{item}}</div>
                         </div>
                     </div>
-                    <div class="clear-all" @click="clickAllSearchHistory">清除全部</div>
+
+                    <div class="search-hotword history" v-if="searchwords && searchwords.length > 0">
+                        <div class="title">
+                            <img-wrapper @onClick="remove(0)" :url="icon_search_histroy" classStyle="title_icon"></img-wrapper>
+                            <span> 搜索历史</span>
+                        </div>
+                        <div class="list">
+                            <div v-for="item,index in searchwords" v-if="index<=4">
+                                <div class="name" @click="searchWord(item,false)">{{item}}</div>
+                                <img-wrapper @onClick="remove(index)" :url="icon_search_close"></img-wrapper>
+                            </div>
+                        </div>
+                        <div class="clear-all" @click="clickAllSearchHistory">清除全部</div>
+                    </div>
                 </div>
+
             </div>
         </transition>
 
@@ -138,10 +142,11 @@
         name: Constants.PageName.qaIndex,
         data() {
             return {
+                hotword:'热门',
                 active_hot:0,
                 hot_keywords:[], //['热门','客厅','卧室','厨房','儿童房','卫生间','别墅','二手房装修','小户型','环保检测'],
                 hotViewShow: false,
-                searchViewShow:true,
+                searchViewShow:false,
                 text: "1111",
                 swiperOption: {
                     autoplay: 3000
@@ -159,9 +164,6 @@
                 swiper_i: 0,
                 isTab: false,
                 current_uid: null,
-
-
-
                 words: [],
                 searchwords: [],
                 search: '',
@@ -178,16 +180,16 @@
         },
         created() {
             this.current_uid = window.localStorage.getItem('uid')
-            console.log('index created')
+            // console.log('index created')
             this.init()
             this.initWX(() => {
                 this.fenXiang({
                     title: '诸葛装修，全方位解决您的装修问题',
                     imgUrl: 'http://image1.uzhuang.com/zhuge-logo.png'
                 }, function () {
-                    console.log('fenXiang');
+                    // console.log('fenXiang');
                 })
-                console.log('wx success');
+                // console.log('wx success');
             });
             this.initSeachView()
 
@@ -198,15 +200,6 @@
             })
         },
         methods: {
-            // 获取几天到今天0点的时间戳区间
-            // getPreData(7,0)
-            getPreData(preDay, endDay) {
-                let one_day = 24 * 60 * 60 * 1000  // 一天的时间戳
-                let nowTime = new Date(new Date().toLocaleDateString()).valueOf() // 今天0点点时间戳
-                let preTime = nowTime - one_day * preDay // n
-                let endTime = nowTime - one_day * endDay // n
-                return [preTime, endTime]
-            },
             init() {
                 this.getHotWords()
                 API.post(Constants.Method.get_banner_list, {})
@@ -214,18 +207,52 @@
                         this.banners = result.data;
                     })
                     .catch((err) => {
-                        console.log(err);
+                        // console.log(err);
                     })
 
                 API.post(Constants.Method.get_hot_words, {})
                     .then((result) => {
-                        console.log('result');
+                        // console.log('result');
                         this.hot_words = this.hot_words.concat(result.data);
                         this.getList();
                     })
                     .catch((err) => {
-                        console.log(err);
+                        // console.log(err);
                     })
+            },
+            searchFocusHandle(){
+                this.hotViewShow=false;
+                this.searchViewShow = true
+                if(this.searchViewShow){
+                    this.outClickHandle('search-indiv','search-outdiv',() => {
+                        this.searchViewShow = false
+                        // outDiv.removeEventListener('click')
+                    })
+                }
+            },
+            clickHotHandle(){
+                this.searchViewShow = false ;
+                this.hotViewShow = !this.hotViewShow;
+                if(this.hotViewShow){
+                    this.outClickHandle('hot-indiv','hot-outdiv',() => {
+                        this.hotViewShow = false
+                        // outDiv.removeEventListener('click')
+                    })
+                }
+            },
+            outClickHandle(inDivId,outDivId,callback){
+                // 点击外层
+                let inDiv = document.getElementById(inDivId)
+                let outDiv = document.getElementById(outDivId)
+                console.log(inDiv,outDiv);
+
+                outDiv.addEventListener('click',()=>{
+                    callback && callback(outDiv)
+                })
+                inDiv.addEventListener('click',function (e) {
+                    e = e || window.event
+                    e.stopPropagation()
+                })
             },
             //
             getHotWords(){
@@ -234,34 +261,34 @@
                         this.hot_keywords = result.data;
                     })
                     .catch((err)=>{
-                        console.log(err);
+                        // console.log(err);
                     });
             },
-            onSwipeLeft() {
-                this.swiper_i++;
-                if (this.swiper_i == this.hot_words.length - 1) {
-                    this.swiper_i = this.hot_words.length - 2
-                    return
-                }
-                this.selectHotWord(this.swiper_i)
-            },
-            onSwipeRight() {
-                this.swiper_i--;
-                if (this.swiper_i == -1) {
-                    this.swiper_i = 0
-                    return
-                }
-                this.selectHotWord(this.swiper_i)
-            },
-            onSwipeDown($event) {
-                console.log($event)
-            },
-            onSwipeUp() {
-
-            },
+            // onSwipeLeft() {
+            //     this.swiper_i++;
+            //     if (this.swiper_i == this.hot_words.length - 1) {
+            //         this.swiper_i = this.hot_words.length - 2
+            //         return
+            //     }
+            //     this.selectHotWord(this.swiper_i)
+            // },
+            // onSwipeRight() {
+            //     this.swiper_i--;
+            //     if (this.swiper_i == -1) {
+            //         this.swiper_i = 0
+            //         return
+            //     }
+            //     this.selectHotWord(this.swiper_i)
+            // },
+            // onSwipeDown($event) {
+            //     // console.log($event)
+            // },
+            // onSwipeUp() {
+            //
+            // },
             getList(isTab) {
                 this.url = Constants.Method.get_homepage;
-                this.ex_params = {
+                this.ex_params = { // 用于传递额外的参数
                     id: this.hot_words[this.hot_words_index].id
                 }
                 this.isTab = isTab || false;
@@ -276,20 +303,40 @@
                     }
                 });
             },
-            selectHotWord(index) {
-                this.hot_words_index = index;
-                this.getList(true);
-            },
-            gotoSearch() {
+
+            doSearch() {
+                this.search = this.search.replace(/^\s+|\s+$/g, "");
+                if (!this.search) {
+                    EventBus.$emit(Constants.EventBus.showToast, {
+                        message: '不能为空'
+                    });
+                    return;
+                }
+                this.searchwords.unshift(this.search);
+                this.$ls.set(Constants.LocalStorage.searchHistory, this.searchwords);
                 this.pushPage({
-                    name: Constants.PageName.qaSearch
+                    name: Constants.PageName.qaList,
+                    query: {
+                        key_word: this.search
+                    }
                 });
+                this.search = '';
             },
+
+            // gotoSearch() {
+            //     this.pushPage({
+            //         name: Constants.PageName.qaSearch
+            //     });
+            // },
             openWeb(url) {
                 window.location.href = url;
             },
-            doSelect(index){
+            doSelect(index,word){
+                this.hotword = word
                 this.active_hot = index
+                this.hot_words_index = index;
+                this.getList(true);
+                this.hotViewShow = false
             },
 
         //    search-view
@@ -307,11 +354,11 @@
                         this.words = result.data;
                     })
                     .catch((err)=>{
-                        console.log(err);
+                        // console.log(err);
                     });
             },
             clickAllSearchHistory(){
-                console.log(11)
+                // console.log(11)
                 this.$ls.remove(Constants.LocalStorage.searchHistory)
                 this.searchwords = []
             },
@@ -435,11 +482,9 @@
         margin-right: px2rem(25);
         background-color: white;
         .hot-word-box {
-            width: px2rem(65);
-            line-height: px2rem(54);
             font-size: px2rem(15);
             padding-left: 10px;
-            box-sizing: border-box;
+            padding-right: 5px;
             .hot_img {
                 margin-left: px2rem(3);
                 width: px2rem(8);
@@ -450,7 +495,7 @@
 
         .search-box {
             position: relative;
-            width: px2rem(260);
+            flex:1;
             height: px2rem(30);
             padding-right: px2rem(10);
             .search_box_style {

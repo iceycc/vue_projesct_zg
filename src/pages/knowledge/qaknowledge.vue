@@ -87,9 +87,9 @@
           title:'诸葛装修，全方位解决您的装修问题',
           imgUrl:'http://image1.uzhuang.com/zhuge-logo.png'
         },function () {
-          console.log('fenXiang');
+          // console.log('fenXiang');
         })
-        console.log('wx success');
+        // console.log('wx success');
       });
       this.selectHotWord(0);
     },
@@ -112,7 +112,7 @@
           })
       },
       onItemClick(item) {
-        console.log(item)
+        // console.log(item)
         window.location.href = item.url;
         /*this.pushPage({
             name: Constants.PageName.qaDetail,
@@ -130,12 +130,12 @@
         }
         axios.get(url, {params: data})
           .then((res) => {
-            console.log(res);
+            // console.log(res);
             let urls = res.data.data
             this.pics = urls
           })
           .catch((err) => {
-            console.log(err);
+            // console.log(err);
           })
       },
       selectHotWord(index) {
@@ -159,7 +159,7 @@
             this.getPicsData(Constants.Method.ketang_commend_qzh, 'last', this.picsTitleLast);
             break;
           default:
-            console.log("猜猜猜")
+            // console.log("猜猜猜")
         }
 
       },

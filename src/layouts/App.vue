@@ -50,7 +50,7 @@
     // },
     mounted() {
       // let {} = this.EventUtil
-      console.log('mounted')
+      // console.log('mounted')
       var muDialogWrapper = document.querySelector('.mu-dialog-wrapper') || document
       var _tar = document.querySelector('.mu-dialog')//获取你的目标元素
       if(muDialogWrapper && _tar){
@@ -62,12 +62,12 @@
           if (!(target == _tar) && !_tar.contains(target)) {
             //你的功能
             this.login = false;
-            console.log('click')
+            // console.log('click')
             // this.EventUtil().removeHandler(muDialogWrapper,'click')
 
           } else {
             //你的功能
-            console.log('_tar')
+            // console.log('_tar')
           }
         })
         this.EventUtil().addHandler(muDialogWrapper,'touch', (e) => {
@@ -78,11 +78,11 @@
           if (!(target == _tar) && !_tar.contains(target)) {
             //你的功能
             this.login = false;
-            console.log('touch')
+            // console.log('touch')
             // this.EventUtil().removeHandler(muDialogWrapper,'touch')
           } else {
             //你的功能
-            console.log('_tar')
+            // console.log('_tar')
           }
         })
       }
@@ -103,9 +103,9 @@
 
     },
     beforeRouteUpdate(from,to,next){
-      console.log('beforeRouteUpdate')
+      // console.log('beforeRouteUpdate')
       if(to.name =='qaindex' && from.name == 'login'){
-        console.log('login to qaindex')
+        // console.log('login to qaindex')
       }
       next()
     },

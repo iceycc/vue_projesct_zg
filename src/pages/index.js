@@ -21,7 +21,9 @@ page[Constants.PageName.qaQuestion] = resolve => require(['./user/question/qaQue
 page[Constants.PageName.qaKetangDetail] = resolve => require(['./knowledge/qaKetangDetail.vue'], resolve);//新增qaKetangDetail
 page[Constants.PageName.qaDoc] = resolve => require(['./qaDoc.vue'], resolve);//新增qaUserAgreement
 page[Constants.PageName.qaBindAccount] = resolve => require(['./user/account/qaBindAccount.vue'], resolve);//qaBindAccount
-page[Constants.PageName.qaFind] = resolve => require(['./find/qaFind.vue'], resolve);//qaBindAccount
+page[Constants.PageName.qaFind] = resolve => require(['./find/qaFind.vue'], resolve);//qaFind
+page[Constants.PageName.qaManagerDetail] = resolve => require(['./find/qaManagerDetail.vue'], resolve);//qaManagerDetail
+page[Constants.PageName.qaStrategyList] = resolve => require(['./find/qaStrategyList.vue'], resolve);//qaStrategyList
 
 
 export default page;

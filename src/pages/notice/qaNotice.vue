@@ -31,9 +31,9 @@
           title:'诸葛装修，全方位解决您的装修问题',
           imgUrl:'http://image1.uzhuang.com/zhuge-logo.png'
         },function () {
-          console.log('fenXiang');
+          // console.log('fenXiang');
         })
-        console.log('wx success');
+        // console.log('wx success');
       });
     },
     actived(){
@@ -41,7 +41,7 @@
     },
     methods: {
       goDetail(index) {
-        console.log(this.datas[index])
+        // console.log(this.datas[index])
         // this.$router.push({
         //   name: Constants.PageName.qaDetail,
         //   query: {

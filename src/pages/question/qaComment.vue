@@ -123,7 +123,7 @@
     computed: {},
     created() {
       this.initWX(() => {
-        console.log('wx success');
+        // console.log('wx success');
       });
       this.role = window.localStorage.getItem(Constants.LocalStorage.role)
       this.ifNeedReLogin()
@@ -140,13 +140,13 @@
         let urlUid = Request['uid'] || this.current_uid
         let id = Request['id'] || this.$route.query.id
         let redirect = this.$route.name
-        console.log('002');
-        console.log(urlUid != this.current_uid);
-        console.log(null != undefined);
-        console.log(null == true);
-        console.log(this.current_uid == true);
-        console.log(this.current_uid);
-        console.log(null);
+        // console.log('002');
+        // console.log(urlUid != this.current_uid);
+        // console.log(null != undefined);
+        // console.log(null == true);
+        // console.log(this.current_uid == true);
+        // console.log(this.current_uid);
+        // console.log(null);
         if (urlUid && this.current_uid && urlUid != this.current_uid) {
           EventBus.$emit(Constants.EventBus.showToast, {
             message: "需要重新登陆"
@@ -197,7 +197,7 @@
             }
           })
           .catch((err) => {
-            console.log(err);
+            // console.log(err);
           });
       },
       getComment() {
@@ -216,7 +216,7 @@
             }
           })
           .catch((err) => {
-            console.log(err)
+            // console.log(err)
           });
       },
       getRoleClass(role) {
@@ -224,7 +224,7 @@
       },
       clickDel(id) {
         this.dialog1 = true
-        console.log(id)
+        // console.log(id)
         this.del_comment = id
         // this.delCommentHandle(item.cid)
       },
@@ -243,17 +243,17 @@
             this.del_comment = null
           })
           .catch((err) => {
-            console.log(err)
+            // console.log(err)
           })
       },
       //
       onItemClick(name, c_id, a_id) {
-        // console.log(name);
+        // // console.log(name);
         this.is_footer_show = true
         this.a_id = a_id
-        console.log('this.a_id : ' + a_id)
+        // console.log('this.a_id : ' + a_id)
         this.c_id = c_id
-        console.log('this.c_id : ' + c_id)
+        // console.log('this.c_id : ' + c_id)
         this.to_who = "回复 " + name + " 评论："
       },
       submit() {
@@ -274,13 +274,13 @@
             .then((result) => {
               this.getComment()
               this.recomment = ''
-              console.log("++++++++++++comment+++++++++++++");
-              // console.log(result);
+              // console.log("++++++++++++comment+++++++++++++");
+              // // console.log(result);
               this.is_footer_show = false
-              console.log("++++++++++++++++++++++++++++++++");
+              // console.log("++++++++++++++++++++++++++++++++");
             })
             .catch((err) => {
-              console.log(err)
+              // console.log(err)
             });
         }
         if (this.a_id == 0) {
@@ -292,19 +292,19 @@
             .then((result) => {
               this.getComment()
               this.recomment = ''
-              console.log("++++++++++++comment+++++++++++++");
-              // console.log(result);
+              // console.log("++++++++++++comment+++++++++++++");
+              // // console.log(result);
               this.is_footer_show = false
-              console.log("++++++++++++++++++++++++++++++++");
+              // console.log("++++++++++++++++++++++++++++++++");
             })
             .catch((err) => {
-              console.log(err)
+              // console.log(err)
             });
         }
 
       },
       like(a_id, liked, c_id) {
-        console.log('5000')
+        // console.log('5000')
         if (timer) {
           clearTimeout(timer)
         }
@@ -323,7 +323,7 @@
                 }, 3000)
               })
               .catch((err) => {
-                console.log(err)
+                // console.log(err)
               });
             break;
           case '0':
@@ -335,17 +335,17 @@
                 }, 3000)
               })
               .catch((err) => {
-                console.log(err)
+                // console.log(err)
               })
         }
         timer = setTimeout(() => {
           this.disabled = false;
-          console.log('like once')
+          // console.log('like once')
         }, 3000)
 
       },
       collect() {
-        console.log(collect);
+        // console.log(collect);
       },
       accept(index) {
         let options = {
@@ -357,12 +357,12 @@
 
         API.post(Constants.Method.adoption, options.params)
           .then((result) => {
-            console.log("========adoption============");
-            // console.log(result);
-            console.log("====================");
+            // console.log("========adoption============");
+            // // console.log(result);
+            // console.log("====================");
           })
           .catch((err) => {
-            console.log(err);
+            // console.log(err);
           });
       },
 

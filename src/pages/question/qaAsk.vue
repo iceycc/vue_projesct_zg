@@ -132,15 +132,15 @@
       }
     },
     created() {
-      console.log(this.$route.query)
+      // console.log(this.$route.query)
       this.initWX(() => {
         this.fenXiang({
           title:'诸葛装修，全方位解决您的装修问题',
           imgUrl:'http://image1.uzhuang.com/zhuge-logo.png'
         },function () {
-          console.log('fenXiang');
+          // console.log('fenXiang');
         })
-        console.log('wx success');
+        // console.log('wx success');
       });
 
 
@@ -163,16 +163,16 @@
       this.localIds = []
       this.serverIds =[]
       this.type = this.$route.query.type || 0;
-      console.log('ask type')
+      // console.log('ask type')
       // 判断下是 钱包明细来的 还是 提问悬赏来的
       if (this.type == 1) {
         this.title = '悬赏提问';
         window.document.title = '悬赏提问';//修改网页标题
         this.showMask = true;
-        // console.log(this.goBack)
+        // // console.log(this.goBack)
         // if (this.showMask && this.title == '悬赏提问' && this.goBack) {
         //   // todo 难题
-        //   console.log("给浏览器自带按钮返回注册事件")
+        //   // console.log("给浏览器自带按钮返回注册事件")
         //   // this.lisBack()
         // }
       }
@@ -207,11 +207,11 @@
         });
       },
       submit: function () {
-        console.log(this.type)
-        console.log(this.qa)
+        // console.log(this.type)
+        // console.log(this.qa)
         // 判断是否是从钱包详情页过来的
-        console.log('this.$route.query')
-        console.log(this.$route.query)
+        // console.log('this.$route.query')
+        // console.log(this.$route.query)
 
         if (this.$route.query) {
           this.is_wallet = this.$route.query.is_wallet || false//是否是钱包支付。
@@ -236,9 +236,9 @@
           });
           return;
         }
-        console.log('this.is_wallet');
-        console.log(this.is_wallet);
-        console.log(this.money_sum);
+        // console.log('this.is_wallet');
+        // console.log(this.is_wallet);
+        // console.log(this.money_sum);
         if (this.money_sum && this.qa.reward > this.money_sum) {
           EventBus.$emit(Constants.EventBus.showToast, {
             message: '您的钱包余额不足'
@@ -275,7 +275,7 @@
         });
       },
       doPostDateHandle(data) {
-        console.log('is_wallet:'+ this.is_wallet);
+        // console.log('is_wallet:'+ this.is_wallet);
         API.post(Constants.Method.ask_question, data)
           .then((result) => {
             result = result.data
@@ -319,7 +319,7 @@
             }
             // 如果是付费回答 银行卡或者微信支付
             if (data.reward > 0 && !this.is_wallet) {
-              console.log('银行卡支付')
+              // console.log('银行卡支付')
 
               let options = {
                 question_id: this.insert_id,
@@ -349,7 +349,7 @@
                   });
                 })
                 .catch((err) => {
-                  console.log(err);
+                  // console.log(err);
                 })
             } else {
               successHandle()
@@ -358,7 +358,7 @@
 
           })
           .catch((err) => {
-            console.log(err);
+            // console.log(err);
           });
       },
       chooseImage() {
@@ -379,7 +379,7 @@
           return
         }
         // todo 测试选择图片数量的啊
-        console.log(this.last_num)
+        // console.log(this.last_num)
         let that = this;
         wx.chooseImage({
           count: this.last_num, // 默认9
@@ -414,7 +414,7 @@
             success: function (res) {
               that.serverIds.push(res.serverId);
               window.localStorage.setItem("wx_img", res.serverId)
-              // console.log(that.serverIds)
+              // // console.log(that.serverIds)
               that.upload(callback);
             }
           });
@@ -425,7 +425,7 @@
     },
     deactivated() {  //success 组件停用时调用！！！
       this.type = 1  //
-      console.log('组件停用')
+      // console.log('组件停用')
 
     },
 
@@ -437,7 +437,7 @@
           EventBus.$emit('my_question_num', result.question_num)
         })
         .catch((err) => {
-          console.log(err);
+          // console.log(err);
         });
       next()
     },

@@ -36,12 +36,14 @@
 </template>
 
 <script>
+
   import {Constants, EventBus, mixins,API} from '../../config/index';
 
   import AppBar from "../../components/commons/AppBar.vue";
   import ImgWrapper from "../../components/commons/ImgWrapper.vue";
 
   export default {
+    //  改页面第一次迭代后废弃
     components: {
       AppBar,
     },
@@ -63,9 +65,9 @@
           title:'诸葛装修，全方位解决您的装修问题',
           imgUrl:'http://image1.uzhuang.com/zhuge-logo.png'
         },function () {
-          console.log('fenXiang');
+          // console.log('fenXiang');
         })
-        console.log('wx success');
+        // console.log('wx success');
       });
       let temp = this.$ls.get(Constants.LocalStorage.searchHistory);
       if (temp) {
@@ -80,7 +82,7 @@
             this.words = result.data;
           })
           .catch((err)=>{
-            console.log(err);
+            // console.log(err);
           });
 
     },
@@ -88,7 +90,7 @@
     },
     methods: {
       clickAllSearchHistory(){
-        console.log(11)
+        // console.log(11)
         this.$ls.remove(Constants.LocalStorage.searchHistory)
         this.searchwords = []
       },

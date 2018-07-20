@@ -42,17 +42,22 @@
           title:'诸葛装修，全方位解决您的装修问题',
           imgUrl:'http://image1.uzhuang.com/zhuge-logo.png'
         },function () {
-          console.log('fenXiang');
+          // console.log('fenXiang');
         })
-        console.log('wx success');
+        // console.log('wx success');
       });
 
     },
     activated() {
       this.qa.content=''
-      this.is_edit = this.$route.params.is_edit || false
+      this.is_edit = this.$route.params.is_edit || false // 判断是编辑还是添加
+        this.pre_content = this.$route.query.content
       if (this.is_edit) {
         this.qa.content = this.$route.params.content
+      }
+      if(this.pre_content){
+          this.qa.content = this.$route.query.content
+
       }
     },
     methods: {
@@ -61,58 +66,58 @@
       },
       submit(is_edit) {
 
-        if (!this.qa.content) {
+      if (!this.qa.content) {
           EventBus.$emit(Constants.EventBus.showToast, {
-            message: '内容不能为空'
+              message: '内容不能为空'
           });
           return;
-        }
-        if (is_edit) {
+      }
+      if (is_edit) {
           let data = this.$route.params.data
-          console.log(data)
+          // console.log(data)
           data.content = this.qa.content
 
           // .concat({content:this.qa.content})
           API.post(Constants.Method.put_answer_edit, data)
               .then((result) => {
-                console.log(result);
-                this.$router.go(-1)
+                  // console.log(result);
+                  this.$router.go(-1)
               })
               .catch((err) => {
-                console.log(err);
+                  // console.log(err);
               })
 
 
           return
-        }
-        let data = {
+      }
+      let data = {
           id: this.$route.query.id,
           content: this.qa.content,
 
-        };
+      };
 
-        API.post(Constants.Method.answer, data)
-            .then((result) => {
+      API.post(Constants.Method.answer, data)
+          .then((result) => {
               this.qa.content = '';
-              console.log(result)
+              // console.log(result)
               if (result.code && result.code == 1) {
-                // 不用看了这里没作用的 哈哈
-                EventBus.$emit(Constants.EventBus.showToast, {
-                  message: '你已经回答过了吆111！'
-                });
+                  // 不用看了这里没作用的 哈哈
+                  EventBus.$emit(Constants.EventBus.showToast, {
+                      message: '你已经回答过了吆111！'
+                  });
               } else {
-                EventBus.$emit(Constants.EventBus.showToast, {
-                  message: '发布成功'
-                });
+                  EventBus.$emit(Constants.EventBus.showToast, {
+                      message: '发布成功'
+                  });
               }
               setTimeout(() => {
-                this.$router.go(-1);
+                  this.$router.go(-1);
               }, 2000);
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-      },
+          })
+          .catch((err) => {
+              // console.log(err);
+          });
+  },
       chooseImage() {
         let that = this;
         wx.chooseImage({
@@ -131,7 +136,7 @@
         if (this.localIds && this.localIds.length > 0) {
           if (this.localIds.length === this.localIdIndex) {
             callback && callback();
-            // console.log(this.serverIds);
+            // // console.log(this.serverIds);
             this.localIdIndex = 0;
             return;
           }

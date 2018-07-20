@@ -88,9 +88,9 @@
           title:'诸葛装修，全方位解决您的装修问题',
           imgUrl:'http://image1.uzhuang.com/zhuge-logo.png'
         },function () {
-          console.log('fenXiang');
+          // console.log('fenXiang');
         })
-        console.log('wx success');
+        // console.log('wx success');
       });
       this.title = this.$route.query.title || '课堂'
       this.getList()
@@ -105,7 +105,7 @@
       },
       loadMore() {
         // 1  请求数据中判断数据是否为空
-        console.log(11)
+        // console.log(11)
         this.loading = true
         setTimeout(() => {
           this.getList()

@@ -35,7 +35,7 @@
     },
     activated(){
       this.mode='page'
-      // console.log(this.mode)
+      // // console.log(this.mode)
     },
     created() {
       // document.title = this.title;

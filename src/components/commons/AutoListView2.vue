@@ -1,3 +1,4 @@
+<!-- 个人中心的列表组件-->
 <template>
   <div class="scroll-view">
     <mu-list>
@@ -180,14 +181,14 @@
 
     },
     created() {
-      console.log('created')
+      // console.log('created')
       this.current_uid = window.localStorage.getItem('uid')
       if (this.flag) {
         this.getData()
       }
     },
     mounted() {
-      console.log('mounted')
+      // console.log('mounted')
       this.trigger = this.$el
       this.scroller = this.$el
       this.scroller.onscroll = () => {
@@ -195,7 +196,7 @@
       };
     },
     activated() {
-      console.log('activated')
+      // console.log('activated')
       // if(this.flag){
       //   this.getData()
       // }
@@ -211,11 +212,11 @@
         this.answered_list = [];
       },
       onItemClick(index) {
-        console.log(index)
+        // console.log(index)
         this.$emit('onItemClick', this.answered_list[index], index);
       },
       getData() {
-        console.log('this.ex_params')
+        // console.log('this.ex_params')
         this.loading = true;
         let data = {
           page: this.page,
@@ -229,8 +230,8 @@
         API.post(this.url, data)
           .then((result) => {
             result = result.data;
-            console.log('result')
-            console.log('=------------------11-----------------=')
+            // console.log('result')
+            // console.log('=------------------11-----------------=')
             this.answered_list = this.answered_list.concat(result)
             if (result && result.length === 0) {
               this.infoMsg = '没有数据......'
@@ -242,11 +243,11 @@
 
           })
           .catch((err) => {
-            console.log(err);
+            // console.log(err);
           })
       },
       goQuestionDetail(item,list_style) {
-        console.log('item.id')
+        // console.log('item.id')
         switch (list_style) {
           case 'answer_list':
             var my_answer = 1;
@@ -266,7 +267,7 @@
         });
       },
       loadMore() {
-        console.log('isMore')
+        // console.log('isMore')
         this.loading = true
         setTimeout(() => {
           this.getData(this.url);

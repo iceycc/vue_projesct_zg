@@ -62,7 +62,7 @@ let routes = [
         path: Constants.PageName.qaFind,
         name: Constants.PageName.qaFind,
         component: Pages[Constants.PageName.qaFind],
-        meta: {keepAlive: true, title: '课堂', needLogin: true }
+        meta: {keepAlive: true, title: '发现', needLogin: true }
       },
       // {
       //   path: Constants.PageName.qaDetail,
@@ -101,7 +101,8 @@ addRouter(Constants.PageName.qaWithdraw, {keepAlive: false, title: '提现'});
 addRouter(Constants.PageName.qaKetangDetail, {keepAlive: false, title: '课堂', needLogin: false});
 addRouter(Constants.PageName.qaDoc, {keepAlive: false, title: '', needLogin: false});
 addRouter(Constants.PageName.qaBindAccount, {keepAlive: false, title: '账号绑定'});
-// addRouter(Constants.PageName.qaFind, {keepAlive: false, title: '发现'});
+addRouter(Constants.PageName.qaManagerDetail, {keepAlive: false, title: '管家详情'});
+addRouter(Constants.PageName.qaStrategyList, {keepAlive: false, title: '装修攻略'});
 
 let router = new Router({
 
@@ -119,7 +120,7 @@ router.beforeEach((to, from, next) => {
       next()
     }
     if (!from.name && to.name !== 'main') {
-      console.log('分享链接  回到当前页')
+      // console.log('分享链接  回到当前页')
       window.localStorage.setItem('is_redirect',1)
     }
     // 1 刷新
@@ -147,7 +148,7 @@ router.beforeEach((to, from, next) => {
     }
     else {next()}
     // if (!from.name && to.name !== 'main') {
-    //   console.log('分享链接  回到当前页')
+    //   // console.log('分享链接  回到当前页')
     //   EventBus.$emit(Constants.EventBus.showToast, {
     //     message: "分享链接需要在微信浏览器登陆打开"
     //   })
@@ -178,11 +179,11 @@ var sess = window.sessionStorage
 const reloadIntercepetor = (to, from) => {
   if (to.name == 'qauser') {
     let isRefresh = sess.getItem('isRefresh')
-    console.log('isRefresh:' + isRefresh)
+    // console.log('isRefresh:' + isRefresh)
     if (isRefresh == '0') {
       sess.setItem('isRefresh', null)
       window.location.href = window.location.host + '/#/qauser'
-      console.log(window.location)
+      // console.log(window.location)
 
     } else {
       sess.setItem('isRefresh', 0)

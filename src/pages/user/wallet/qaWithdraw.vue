@@ -50,9 +50,9 @@
           title:'诸葛装修，全方位解决您的装修问题',
           imgUrl:'http://image1.uzhuang.com/zhuge-logo.png'
         },function () {
-          console.log('fenXiang');
+          // console.log('fenXiang');
         })
-        console.log('wx success');
+        // console.log('wx success');
       });
       this.current_uid = window.localStorage.getItem('uid')
       this.getData()
@@ -64,12 +64,12 @@
       getData() {
         API.post(Constants.Method.wallet, null)
             .then((result) => {
-              console.log('tx');
-              console.log(result);
+              // console.log('tx');
+              // console.log(result);
               this.tx_data.money = result.data.money;
             })
             .catch((err)=>{
-              console.log(err);
+              // console.log(err);
             });
         API.post(Constants.Method.profile, {uid:this.current_uid})
             .then((result) => {
@@ -77,7 +77,7 @@
               this.data.avatar = result.avatar;
             })
             .catch((err)=>{
-              console.log(err);
+              // console.log(err);
             });
       },
       gotoWithdraw() {
@@ -86,7 +86,7 @@
         }
         API.get(Constants.Method.wxtx,null)
             .then((result) => {
-              console.log(result.data);
+              // console.log(result.data);
               if (result.code === 0) {
                 EventBus.$emit(Constants.EventBus.showToast, {
                   message: '提现成功'
@@ -99,7 +99,7 @@
                 });
               }
             }).catch((err)=>{
-          console.log(err);
+          // console.log(err);
         })
       }
     }

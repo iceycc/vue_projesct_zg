@@ -49,11 +49,11 @@
           title:'诸葛装修，全方位解决您的装修问题',
           imgUrl:'http://image1.uzhuang.com/zhuge-logo.png'
         },function () {
-          console.log('fenXiang');
+          // console.log('fenXiang');
         })
-        console.log('wx success');
+        // console.log('wx success');
       });
-      // console.log(1)
+      // // console.log(1)
       this.role = window.localStorage.getItem('role')
       API.post(Constants.Method.wallet,null)
           .then((result) => {
@@ -61,7 +61,7 @@
             this.money = result.data.money
           })
           .catch((err)=>{
-            console.log(err);
+            // console.log(err);
           });
     },
     methods: {

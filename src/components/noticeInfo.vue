@@ -72,7 +72,7 @@
         title:'诸葛装修，全方位解决您的装修问题',
         imgUrl:'http://image1.uzhuang.com/zhuge-logo.png'
       },function () {
-        console.log('fenXiang');
+        // console.log('fenXiang');
       })
       this.datas = []
       this.page = defaultStartPage
@@ -85,7 +85,7 @@
       // 2 获取父组件传递的参数
       // 3 点击进入详情
       goDetail(type, index, q_id, a_id, id) {
-        console.log(a_id)
+        // console.log(a_id)
         if(a_id){
           this.$router.push({
             name: Constants.PageName.qaComment,
@@ -124,7 +124,7 @@
               }
             })
             .catch((err)=>{
-              console.log(err);
+              // console.log(err);
             });
       },
       getRedNum(result) {
@@ -132,7 +132,7 @@
         // window.localStorage.setItem("notice_isread_num", count)
       },
       loadMore() {
-        console.log(this.isMore)
+        // console.log(this.isMore)
         if (this.isMore) {
           this.loading = true
           setTimeout(() => {

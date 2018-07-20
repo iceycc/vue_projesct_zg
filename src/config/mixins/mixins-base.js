@@ -7,7 +7,7 @@ export default {
     // 在渲染该组件的对应路由被 confirm 前调用
     // 不！能！获取组件实例 `this`
     // 因为当守卫执行前，组件实例还没被创建
-    //console.log('beforeRouteEnter:' + to.name);
+    //// console.log('beforeRouteEnter:' + to.name);
 
     //你可以通过传一个回调给 next来访问组件实例。在导航被确认的时候执行回调，并且把组件实例作为回调方法的参数。
     next(vm => {
@@ -23,7 +23,7 @@ export default {
   },
   //
   beforeRouteLeave(to, from, next) {
-    //console.log('beforeRouteLeave:' + from.name);
+    //// console.log('beforeRouteLeave:' + from.name);
     this.pagePause();
     next();// 不支持回调  因为应可以访问this
   },
@@ -44,7 +44,7 @@ export default {
         desc:content.desc || '',
       }
       fn && fn()
-      // console.log(data)
+      // // console.log(data)
       wx.onMenuShareTimeline({
         title: data.title, // 分享标题
         link: data.link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
@@ -152,7 +152,7 @@ export default {
       var _this = this
       window.addEventListener("popstate", function (e) {
         _this.goBack && _this.goBack()
-        console.log('goBack')
+        // console.log('goBack')
         if (window.event) {
           //IE中阻止函数器默认动作的方式
           window.event.returnValue = false;

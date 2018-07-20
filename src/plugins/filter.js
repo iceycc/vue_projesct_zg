@@ -29,6 +29,9 @@ let chu100 = value => {
   }
   return s_x;
 }
+let cutStr = (value,num) => {
+
+}
 export {
   crtTime,
   crtTime1,

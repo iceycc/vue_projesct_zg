@@ -53,13 +53,13 @@
     name: 'AutoListView',
     mixins: [mixins.wx],
     props: {
-      ex_params:{
+      ex_params:{ // 用于接收额外的参数
         type:Object,
         default:function () {
           return {}
         }
       },
-      url: {
+      url: { // 接收
         type: String,
         default: ''
       },
@@ -86,7 +86,7 @@
         default: true
       },
       isTab: {
-        type: [String, Number, Boolean, Function, Object, Array, Symbol],
+        type: null,
         default: false
       }
       // emptyMsg: {
@@ -138,6 +138,7 @@
       }
     },
     created() {
+        // console.log('list-12331')
       if (this.flag) {
         this.getData();
       }
@@ -155,14 +156,14 @@
         this.loading = true;
         API.post(this.url, null)
             .then((result) => {
-              console.log(result);
+              // console.log(result);
             }).catch((err)=>{
-          console.log(err);
+          // console.log(err);
         })
       },
       getData() {
         this.loading = true;
-        // 注意判断完成切换类型是点击顶部栏还是下拉触发的方式
+        // 注意判断完成切换类型是点击顶部栏还是下拉触发的方式 用于区分分页还是点击热门标签切换。用于加载第n页时避免切换类型时page没有初始化
         if (this.isTab == true) {
           this.init()
         }
@@ -183,9 +184,9 @@
               }
               EventBus.$emit('isTab')
               this.data = this.data.concat(result);
-              // console.log(result);
-              // console.log(this.data);
-              // console.log(this.data instanceof Array);
+              // // console.log(result);
+              // // console.log(this.data);
+              // // console.log(this.data instanceof Array);
 
               if (result.length === 0) {
                 this.isMore = false;
@@ -205,8 +206,8 @@
 
       },
       loadMore() {
-        console.log('isMore')
-        console.log(this.isMore)
+        // console.log('isMore')
+        // console.log(this.isMore)
         if (this.isMore) {
           this.loading = true
           setTimeout(() => {
@@ -216,7 +217,7 @@
         }
       },
       refresh() {
-        console.log('refresh')
+        // console.log('refresh')
         this.refreshing = true
         setTimeout(() => {
           this.init();

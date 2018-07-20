@@ -80,9 +80,9 @@
           title:'诸葛装修，全方位解决您的装修问题',
           imgUrl:'http://image1.uzhuang.com/zhuge-logo.png'
         },function () {
-          console.log('fenXiang');
+          // console.log('fenXiang');
         })
-        console.log('wx success');
+        // console.log('wx success');
       });
       this.role = window.localStorage.getItem(Constants.LocalStorage.role)
       this.init(this.role)
@@ -112,8 +112,8 @@
     },
     methods: {
       init(this_role,left_right) {
-        console.log('init')
-        console.log(this_role)
+        // console.log('init')
+        // console.log(this_role)
         if (this_role == 1) {
           this.getNum()
           this.url = this.urls[1]
@@ -145,7 +145,7 @@
       },
       getList(type, key_word) {
         this.isTab = true;
-        console.log(type)
+        // console.log(type)
 
         this.ex_params = {
           key_word
@@ -189,7 +189,7 @@
         this.list_type_num = type
       },
       onItemClick(item) {
-        console.log(item)
+        // console.log(item)
         this.pushPage({
           name: Constants.PageName.qaDetail,
           query: {
@@ -225,36 +225,36 @@
 
         // API.all([getLeftNum(),getRightNum()])
         //     .then(API.spread((res1,res2)=>{
-        //       console.log(res1);
-        //       console.log(res2);
+        //       // console.log(res1);
+        //       // console.log(res2);
         //     }))
         //     .catch((err1,err2)=>{
-        //       console.log(err1);
-        //       console.log(err2);
+        //       // console.log(err1);
+        //       // console.log(err2);
         //     })
         getLeftNum().then((result) => {
-          console.log(result);
+          // console.log(result);
           this.left_num = result.data.num
         })
         getRightNum().then((result) => {
 
-          console.log(result);
+          // console.log(result);
           this.right_num = result.data.num
         })
 
       },
       goSearch(word) {
-        console.log(word)
+        // console.log(word)
         word = word.replace(/^\s+|\s+$/g, "")
         if (!word) {
-          console.log('不能为空')
+          // console.log('不能为空')
           EventBus.$emit(Constants.EventBus.showToast, {
             message: '搜索内容不能为空'
           });
           return;
         }
         if(!this.list_type_num){
-          console.log('未知错误')
+          // console.log('未知错误')
           return
         }
         this.getList(this.list_type_num,word)
