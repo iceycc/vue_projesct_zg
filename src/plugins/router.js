@@ -53,12 +53,6 @@ let routes = [
         meta: {keepAlive: true, title: '通知', needLogin: true},
       },
       {
-        path: Constants.PageName.qaknowledge,
-        name: Constants.PageName.qaknowledge,
-        component: Pages[Constants.PageName.qaknowledge],
-        meta: {keepAlive: true, title: '课堂', needLogin: true }
-      },
-      {
         path: Constants.PageName.qaFind,
         name: Constants.PageName.qaFind,
         component: Pages[Constants.PageName.qaFind],
@@ -103,6 +97,9 @@ addRouter(Constants.PageName.qaDoc, {keepAlive: false, title: '', needLogin: fal
 addRouter(Constants.PageName.qaBindAccount, {keepAlive: false, title: '账号绑定'});
 addRouter(Constants.PageName.qaManagerDetail, {keepAlive: false, title: '管家详情'});
 addRouter(Constants.PageName.qaStrategyList, {keepAlive: false, title: '装修攻略'});
+addRouter(Constants.PageName.qaManagerList, {keepAlive: false, title: '管家列表'});
+addRouter(Constants.PageName.qaknowledge, {keepAlive: false, title: '课堂',needLogin: false});
+addRouter(Constants.PageName.qaGoodCase, {keepAlive: false, title: '精品案例',needLogin: false});
 
 let router = new Router({
 

@@ -1,4 +1,3 @@
-<script src="../../../../../../../Desktop/jquery-2.2.2(源码解析版本).js"></script>
 <template>
     <div class="page">
         <div class="sub-page" v-bind:style="style">
@@ -12,7 +11,7 @@
             <mu-bottom-nav-item value="0" title="问答">
                 <img-wrapper :url="watch_bottomNav == 0 ? tab0[1] : tab0[0]" class="tabicon"></img-wrapper>
             </mu-bottom-nav-item>
-            <mu-bottom-nav-item value="1" title="课堂">
+            <mu-bottom-nav-item value="1" title="发现">
                 <img-wrapper :url="watch_bottomNav == 1 ? tab1[1] : tab1[0]" class="tabicon"></img-wrapper>
             </mu-bottom-nav-item>
             <mu-bottom-nav-item value="2" title="提问">
@@ -69,7 +68,6 @@
 </template>
 
 <script>
-    //
     import {Constants, EventBus, mixins, API, util} from '../config/index';
     import ImgWrapper from "../components/commons/ImgWrapper.vue";
 
@@ -119,7 +117,7 @@
                 case Constants.PageName.qaIndex:
                     this.bottomNav = 0;
                     break;
-                case Constants.PageName.qaknowledge:
+                case Constants.PageName.qaFind:
                     this.bottomNav = 1;
                     break;
                 case Constants.PageName.qaNotice:
@@ -300,7 +298,7 @@
                         name = Constants.PageName.qaIndex;
                         break;
                     case 1:
-                        name = Constants.PageName.qaknowledge;
+                        name = Constants.PageName.qaFind;
                         break;
                     case 2:
                         if (this.role == 0) {
@@ -332,7 +330,7 @@
 
         }
     }
-    ;
+
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only 111-->

@@ -60,12 +60,7 @@
     height: 100%;
     background: $divider;
   }
-  .scroll-view {
-    height: 100%;
-    overflow: scroll;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
-  }
+
 
 
   .title {

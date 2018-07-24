@@ -25,13 +25,13 @@
             </div>
         </div>
         <!--点击搜索的弹层-->
-        <!--<transition name="fade">-->
+        <transition name="fade">
             <div class="hot-view" id="hot-outdiv" v-show="hotViewShow">
                 <div class="hot-view-box" id="hot-indiv">
                     <span v-for="word,index in hot_words" :key="index" :class="{active_hot_style:active_hot == index}" @click="doSelect(index,word.name)">{{word.name}}</span>
                 </div>
             </div>
-        <!--</transition>-->
+        </transition>
         <!--搜索时的弹层-->
         <transition name="fade">
 
@@ -456,8 +456,8 @@
             text-align: center;
             line-height: px2rem(34);
             border: 1px solid #dcdcdc;
-            font-size: px2rem(1.2);
-            border-radius: px2rem(0.1);
+            font-size: px2rem(13);
+            border-radius: px2rem(3);
             color:#333;
             &:nth-child(4n) {
                 margin-right: 0;

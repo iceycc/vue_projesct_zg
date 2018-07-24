@@ -24,6 +24,7 @@ page[Constants.PageName.qaBindAccount] = resolve => require(['./user/account/qaB
 page[Constants.PageName.qaFind] = resolve => require(['./find/qaFind.vue'], resolve);//qaFind
 page[Constants.PageName.qaManagerDetail] = resolve => require(['./find/qaManagerDetail.vue'], resolve);//qaManagerDetail
 page[Constants.PageName.qaStrategyList] = resolve => require(['./find/qaStrategyList.vue'], resolve);//qaStrategyList
-
+page[Constants.PageName.qaManagerList] = resolve => require(['./find/qaManagerList.vue'], resolve);//qaManagerList
+page[Constants.PageName.qaGoodCase] = resolve => require(['./find/qaGoodCase.vue'], resolve);//qaGoodCase
 
 export default page;

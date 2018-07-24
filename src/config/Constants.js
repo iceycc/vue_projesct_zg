@@ -51,7 +51,7 @@ export const Method = {
         favourites: Method_Class.member + "collect",
         un_favourites: Method_Class.member + "uncollect",
 
-        // 获取个人信息
+        // 获取个人信息 个人资料  管家详细信息也是这个
         profile: Method_Class.member + "info",
         //热门搜索
         hot_search: Method_Class.hotWord + "get-hotsearch",
@@ -112,6 +112,12 @@ export const Method = {
         wxtx: Method_Class.member + 'withdraw-deposit',
         //wx_jssdk 配置信息
         get_wx_config_info: Method_Class.wx + 'get-jsconfig',
+        // 2.0迭代新加
+        // r=member/keeper-active
+        keeperActive: Method_Class.member + 'keeper-active', // 获取管家列表
+        keeperDetails: Method_Class.member + 'keeper-details', // 获取管家详情
+        getScreen: BASE_URL + '?r=find-mod/screen', // 筛选条件
+        getClassicList: BASE_URL + '?r=find-mod/classic-list', // 筛选条件
     }
 ;
 
@@ -142,6 +148,8 @@ export const PageName = {
     qaFind: 'qafind',
     qaManagerDetail: 'qamanagerdetail',
     qaStrategyList: 'qastrategylist',
+    qaManagerList: 'qamanagerlist',
+    qaGoodCase: 'qagoodcase',
 };
 //
 export const LocalStorage = {

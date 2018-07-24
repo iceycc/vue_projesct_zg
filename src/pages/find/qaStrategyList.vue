@@ -1,10 +1,10 @@
 <template>
-    <div>
+    <div class=" scroll-view">
         <AppBar title="装修攻略"></AppBar>
         <div class="view-list">
             <list-item
                     @onClick="goDetailPage"
-                    v-for="item,index in 4"
+                    v-for="item,index in 10"
                     :key="index"
                     class="list-item"
                     :title="gonglue.title"
@@ -23,7 +23,7 @@
             return {
                 gonglue: {
                     title: '1二手房卫生间改造，二手房卫生间攻略',
-                    content: '2规格是设计是自己规定的啊啊啊规格是设计是自己规定的啊啊啊规格是设计是自己规定的啊啊啊规格是设计是自己规定的啊啊啊规格是设计是自己规定的啊啊啊规格是设计是自己规定的啊啊啊规格是设计是自己规定的啊啊啊规格是设计是自己规定的啊啊啊'
+                    content: '2规格是设计是自己规定的啊啊啊规格是设计是自己规定的啊啊啊规格是设计是自己规定的啊啊啊规格是设计是自己规定的啊啊啊规格是设计是自己规定的啊啊啊规格是设计是自己规定的啊啊啊规格是设计是自己规定的啊啊啊规格是设计是自己规定的啊啊啊',
                 }
             }
         },
@@ -46,6 +46,12 @@
         .list-item{
             margin-bottom: px2rem(10);
         }
+    }
+    .scroll-view {
+        height: 100%;
+        overflow: scroll;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
     }
 
 </style>

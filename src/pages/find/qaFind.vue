@@ -1,27 +1,19 @@
 <!--suppress ALL -->
 <template>
-    <div>
+    <div class="scroll-view">
         <app-bar :title="title"></app-bar>
         <!--精品案例-->
         <div class="box" style="margin-top: 3px">
             <div class="title">
                 <h4 class="z-left">精品案例</h4>
-                <span class="z-right" @click="goPages('qaknowledge')">更多<img-wrapper :url="ico_arrow"
+                <span class="z-right" @click="goPages('qagoodcase')">更多<img-wrapper :url="ico_arrow"
                                                      classStyle="icon"></img-wrapper></span>
 
             </div>
             <ul class="jpal">
-                <li>
-                    <div class="jpal-img"><img src="" alt=""></div>
-                    <p>小破屋也能整成温馨的家</p>
-                </li>
-                <li>
-                    <div class="jpal-img"><img src="" alt=""></div>
-                    <p>小破屋也能整成温馨的家</p>
-                </li>
-                <li>
-                    <div class="jpal-img"><img src="" alt=""></div>
-                    <p>小破屋也能整成温馨的家</p>
+                <li v-for="item in classicData">
+                    <div class="jpal-img"><img :src="item.cover" alt=""></div>
+                    <p>{{item.alt}}</p>
                 </li>
             </ul>
         </div>
@@ -29,17 +21,19 @@
         <div class="box">
             <div class="title">
                 <h4 class="z-left">活跃管家</h4>
-                <span class="z-right">更多<img-wrapper :url="ico_arrow"
+                <span class="z-right" @click="goPages('qamanagerlist')">更多<img-wrapper :url="ico_arrow"
                                                      classStyle="icon"></img-wrapper></span>
             </div>
             <div class="box2">
-                <ul class="hygj">
-                    <li v-for="item in 6">
-                        <div class="jpal-img"><img src="" alt=""></div>
-                        <h4 class="name">文丑</h4>
-                        <p class="info">从业经验5年</p>
-                        <p class="info">服务客户887个</p>
-                        <a class="btn" href="tel:15621185521">联系</a>
+                <ul class="hygj" ref="hygj">
+                    <li v-for="item in keeperArr">
+                        <div @click="goManagerDetail(item.id)">
+                            <div class="jpal-img"><img :src="item.personalphoto" alt=""></div>
+                            <h4 class="name">{{item.gjname}}</h4>
+                            <p class="info">从业经验{{item.worktime}}年</p>
+                            <p class="info">服务客户{{item.completed_num}}个</p>
+                        </div>
+                        <a class="btn" @click="openAlertDialog(item.mobile,item.gjname)">联系</a>
                     </li>
 
                 </ul>
@@ -49,21 +43,28 @@
         <div class="box" style="margin-bottom: 40px">
             <div class="title">
                 <h4 class="z-left">装修攻略</h4>
-                <span class="z-right" @click="goPages('qastrategylist')">更多<img-wrapper :url="ico_arrow"
+                <span class="z-right" @click="goPages('qaknowledge')">更多<img-wrapper :url="ico_arrow"
                                                      classStyle="icon"></img-wrapper></span>
             </div>
 
             <div style="padding-top: 10px;font-size: 0">
                 <list-item
-                        @onClick="goDetailPage"
-                        v-for="item,index in 4"
+                        @onClick="goDetailPage(item.url)"
+                        v-for="item,index in kt_lists"
                         :key="index"
                         class="list-item"
-                        :title="gonglue.title"
-                        :content="gonglue.content"
+                        :title="item.title"
+                        :content="item.remark"
+                        :src="item.thumb"
                 ></list-item>
             </div>
         </div>
+
+        <mu-dialog :title="callMsg" width="400" max-width="70%" :esc-press-close="false" :overlay-close="false" :open.sync="openAlert">
+            电话：{{telNum}}
+            <a slot="actions" @click="closeAlertDialog" style="margin-right: 20px">关闭</a>
+            <a slot="actions" :href="tel">去联系</a>
+        </mu-dialog>
     </div>
 </template>
 
@@ -71,8 +72,9 @@
     import AppBar from "../../components/commons/AppBar.vue";
     import ImgWrapper from "../../components/commons/ImgWrapper.vue";
     import ListItem from "../../components/commons/ListItem";
-    import {Constants, EventBus, mixins} from '../../config/index';
+    import {Constants, EventBus, mixins,API} from '../../config/index';
     import axios from "axios"  // bang.uzhuang.com的api和zhuge的api约定不一样。后端不好同步，只能单独引入
+    import {px2rem} from "../../config/util";
     export default {
         name: "qaFind",
         data(){
@@ -87,7 +89,15 @@
                 gonglue:{
                     title:'1二手房卫生间改造，二手房卫生间攻略',
                     content:'2规格是设计是自己规定的啊啊啊规格是设计是自己规定的啊啊啊规格是设计是自己规定的啊啊啊规格是设计是自己规定的啊啊啊规格是设计是自己规定的啊啊啊规格是设计是自己规定的啊啊啊规格是设计是自己规定的啊啊啊规格是设计是自己规定的啊啊啊'
-                }
+                },
+                openAlert: false,
+                kt_lists:[],
+                keeperArr:[],
+                classicData:[],
+
+                tel:'',
+                telNum:'',
+                callMsg:'联系管家'
             }
         },
         components:{
@@ -99,23 +109,66 @@
             //http://bang.uzhuang.com/index.php?m=bangV2&f=ketang&v=commend
             // let url = 'http://bang.uzhuang.com/index.php?m=bangV2&f=ketang&v=commend'
             // this.getList(url)
+            this.getKeTangList()
+            this.getKeeperActiveList()
+            this.getClassicList()
         },
         methods:{
+            getClassicList(){
+                let data = {
+                    house: 0,
+                    space: 0,
+                    style: 0,
+                    cityid: 3360,
+                    page: 1,
+                }
+                API.post(Constants.Method.getClassicList, data)
+                    .then(result => {
+                        this.classicData = result.data.splice(0,3)
+                    })
 
-            goDetailPage(){
-                console.log('')
             },
-            getList(url){
+            getKeTangList(){
+                let url = Constants.Method.ketang_commend
                 axios.get(url, null)
                     .then((result) => {
-                        this.kt_lists = result.data.data
+                        let data = result.data.data
+                        this.kt_lists = data.splice(0,4)
                     })
+            },
+            getKeeperActiveList(){
+                let data = {}
+                API.get(Constants.Method.keeperActive,data)
+                    .then(result=>{
+                        let data = result.data
+                        if(data.length>0){
+                            this.$refs.hygj.style.width = px2rem(data.length * 100 + 13) + 'rem'
+                            this.keeperArr = data
+                        }
+
+                    })
+            },
+            goDetailPage(url){
+                window.location.href = url;
             },
             goPages(name){
                 console.log(name);
                 this.$router.push({
                     name
                 })
+            },
+            goManagerDetail(id){
+                this.$router.push({name:'qamanagerdetail',query:{id}})
+            },
+            // ---
+            openAlertDialog (tel,name) {
+                this.callMsg = '联系管家 ' + name
+                this.tel = 'tel:'+ tel
+                this.telNum = tel
+                this.openAlert = true;
+            },
+            closeAlertDialog () {
+                this.openAlert = false;
             }
 
         }
@@ -128,6 +181,16 @@
         margin: 0;
         padding: 0;
     }
+    img{
+        width: 100%;
+        height:100%
+    }
+    .scroll-view {
+        overflow: scroll;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+    }
+
     .box{
         background: #fff;
         margin-bottom: px2rem(11);
@@ -173,6 +236,7 @@
         .jpal-img{
             width: 100%;
             height: px2rem(97);
+            overflow: hidden;
         }
         p{
             font-size: px2rem(8);
@@ -189,11 +253,11 @@
         padding-top: px2rem(15);
     }
     .hygj {
-        /* todo动态改变 */
-        width: px2rem(1000);
+        /* todo动态改变 一个li 100 */
+        min-width:100%;
         li{
             display: inline-block;
-            width: px2rem(102);
+            width: px2rem(100);
             margin-right: px2rem(1);
             text-align: center;
         }
@@ -204,7 +268,7 @@
             height: px2rem(60);
             margin: 0 auto;
             border-radius: px2rem(30);
-
+            overflow: hidden;
         }
         /*管家名称*/
         .name{
@@ -221,7 +285,7 @@
             display: inline-block;
             border: 1px solid #999;
             border-radius: px2rem(2);
-            margin: 0 auto;
+            margin: px2rem(8) auto 0;
             font-size: px2rem(10);
             color: #333;
             width: px2rem(50);
@@ -230,6 +294,10 @@
     }
     .list-item{
         margin-bottom: px2rem(18);
+    }
+
+    .mu-dialog-actions{
+        /*display: none !important;*/
     }
 
 </style>
