@@ -11,6 +11,7 @@ function px2rem(px, designWidth) {
 
     return parseInt(px, 10) * 320 / designWidth / 20;
 }
+
 // 深拷贝
 function deepCopy(source) {
     var result = {};
@@ -28,34 +29,38 @@ function deepCopy(source) {
      * @return  array  返回排序后的json数组
     */
 function jsonSort(array, field, reverse) {
-  //数组长度小于2 或 没有指定排序字段 或 不是json格式数据
-  if(array.length < 2 || !field ||typeof array[0] !=="object") return array;
-  //数字类型排序
-  if(typeof array[0][field] === "number") {
-    array.sort(function(x, y) {return x[field] - y[field]});
-  }
-  //字符串类型排序
-  if(typeof array[0][field] === "string") {
-    array.sort(function(x, y) {return x[field].localeCompare(y[field])});
-  }
-  //倒序
-  if(reverse) {
-    array.reverse();
-  }
-  return array;
+    //数组长度小于2 或 没有指定排序字段 或 不是json格式数据
+    if (array.length < 2 || !field || typeof array[0] !== "object") return array;
+    //数字类型排序
+    if (typeof array[0][field] === "number") {
+        array.sort(function (x, y) {
+            return x[field] - y[field]
+        });
+    }
+    //字符串类型排序
+    if (typeof array[0][field] === "string") {
+        array.sort(function (x, y) {
+            return x[field].localeCompare(y[field])
+        });
+    }
+    //倒序
+    if (reverse) {
+        array.reverse();
+    }
+    return array;
 }
 
 function getArrIndex(arr, obj) {
-  let index = null;
-  let key = Object.keys(obj)[0];
-  arr.every(function(value, i) {
-    if (value[key] === obj[key]) {
-      index = i;
-      return false;
-    }
-    return true;
-  });
-  return index;
+    let index = null;
+    let key = Object.keys(obj)[0];
+    arr.every(function (value, i) {
+        if (value[key] === obj[key]) {
+            index = i;
+            return false;
+        }
+        return true;
+    });
+    return index;
 }
 
 /**
@@ -63,14 +68,14 @@ function getArrIndex(arr, obj) {
  *@date 2018/05/04 10:58:34
  *@desc  获取数组中的对象中某属性对应值的数量
  */
-function getObejctValueNum(arr,key,value) {
-  var count = 0;
-  arr.forEach(function (item,index) {
-    if(item[key] && item[key] == value){
-      count ++
-    }
-  })
-  return count
+function getObejctValueNum(arr, key, value) {
+    var count = 0;
+    arr.forEach(function (item, index) {
+        if (item[key] && item[key] == value) {
+            count++
+        }
+    })
+    return count
 }
 
 /**
@@ -78,12 +83,12 @@ function getObejctValueNum(arr,key,value) {
  *@date 2018/05/04 11:16:01
  *@desc 判断数组中的对象某个属性是否等于某值
  */
-function ifHaveVale(arr,key,value) {
-  let ifExist =  arr.some(function (item,index) {
-      return item[key] == value
-  })
-  let index = arr.indexOf()
-  return ifExist
+function ifHaveVale(arr, key, value) {
+    let ifExist = arr.some(function (item, index) {
+        return item[key] == value
+    })
+    let index = arr.indexOf()
+    return ifExist
 }
 
 /**
@@ -91,38 +96,42 @@ function ifHaveVale(arr,key,value) {
  *@date 2018/05/04 11:48:47
  *@desc 返回数组中对象第一个满足某条件的index
  */
-function getSuccIndex(arr,key,value) {
-  var index1 = -1
-  arr.forEach(function (item,index) {
-    if(item[key] === value){
-      index1 = index
-    }else{
-      index1 = index1
-    }
-  })
-  return index1
-}
-//
-function GetRequest() {
-  var url = location.hash; //获取url中"?"符后的字串
-  var theRequest = new Object();
-  if (url.indexOf("?") != -1) {
-    var str = url.substr(3);
-    var strs = str.split("&");
-    for(var i = 0; i < strs.length; i ++) {
-      theRequest[strs[i].split("=")[0]]=unescape(strs[i].split("=")[1]);
-    }
-  }
-  return theRequest;
+function getSuccIndex(arr, key, value) {
+    var index1 = -1
+    arr.forEach(function (item, index) {
+        if (item[key] === value) {
+            index1 = index
+        } else {
+            index1 = index1
+        }
+    })
+    return index1
 }
 
+//
+function GetRequest() {
+    var url = location.hash; //获取url中"?"符后的字串
+    var theRequest = new Object();
+    if (url.indexOf("?") != -1) {
+        var str = url.substr(3);
+        var strs = str.split("&");
+        for (var i = 0; i < strs.length; i++) {
+            theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+        }
+    }
+    return theRequest;
+}
+
+const ls = window.localStorage
+
 export {
-  px2rem,
-  deepCopy,
-  jsonSort,
-  getArrIndex,
-  getObejctValueNum,
-  ifHaveVale,
-  getSuccIndex,
-  GetRequest
+    px2rem,
+    deepCopy,
+    jsonSort,
+    getArrIndex,
+    getObejctValueNum,
+    ifHaveVale,
+    getSuccIndex,
+    GetRequest,
+    ls
 };

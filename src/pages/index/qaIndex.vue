@@ -163,7 +163,6 @@
                 localValue: this.$ls.get(Constants.LocalStorage.test, '-1'),
                 swiper_i: 0,
                 isTab: false,
-                current_uid: null,
                 words: [],
                 searchwords: [],
                 search: '',
@@ -179,7 +178,6 @@
             }
         },
         created() {
-            this.current_uid = window.localStorage.getItem('uid')
             // console.log('index created')
             this.init()
             this.initWX(() => {
@@ -299,7 +297,6 @@
                     name: Constants.PageName.qaDetail,
                     query: {
                         id: item.id,
-                        uid: this.current_uid
                     }
                 });
             },

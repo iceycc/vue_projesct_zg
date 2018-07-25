@@ -10,7 +10,7 @@
             <!--用户头像 名称 赏金-->
             <div class="view1" v-if="!if_my_question">
                 <img-wrapper :url="question.asker_avatar" classStyle="avatar"
-                             @onClick="ifGoDetail(question.asker_id,null,null)"></img-wrapper>
+                             @onClick="goManagerDetail(question.asker_id,null,null)"></img-wrapper>
                 <div class="username">{{question.asker_name}}</div>
                 <span class="reward shadow"
                       v-if="parseFloat(question.reward) > 0">¥{{question.reward | chu100}}</span>
@@ -83,12 +83,10 @@
                         <!--评论内容-->
                         <div class="context">{{my_answer.content}}</div>
                         <!--获取评论下的评论 -->
+                        <!--my_answer.hot_commnet.commenter_role == 1 && role == 1 && current_uid != my_answer.hot_commnet.commenter_id-->
                         <div v-if="my_answer.hot_commnet && my_answer.hot_commnet.commenter_id" class="hotcomment">
-                            <div class="title">{{my_answer.hot_commnet.commenter_role == 1 && role == 1 && current_uid
-                                !=
-                                my_answer.hot_commnet.commenter_id ? '匿名用户' : my_answer.hot_commnet.commenter_name}}
-                                <template
-                                        v-if="!(my_answer.hot_commnet.commenter_role == 1 && role == 1 && current_uid != my_answer.hot_commnet.commenter_id)">
+                            <div class="title">{{ my_answer.hot_commnet.commenter_name}}
+                                <template>
                                     <uz-lable v-if="question.q_reward > 0"
                                               :role="my_answer.hot_commnet.commenter_id === question.asker_id ? '赏金发起人' : my_answer.hot_commnet.commenter_rank"></uz-lable>
                                     <uz-lable v-else
@@ -147,20 +145,18 @@
                         <div class="view1 horizontal-view">
                             <!--如果是匿名用户 显示小鲸鱼  主要评论详情页也是-->
                             <img-wrapper
-                                    :url="item.answerer_role == 1 && role == 1 && current_uid != item.answerer_id ? 'http://image1.uzhuang.com/icon_slider.png' : item.answerer_avatar "
+                                    :url="item.answerer_avatar "
                                     classStyle="avatar"
-                                    @onClick="ifGoDetail(item.answerer_id,item.answerer_role,item.answerer_name)"
                             ></img-wrapper>
 
                             <div class="vertical-view">
                                 <div class="name"
-                                     @click.stop="ifGoDetail(item.answerer_id,item.answerer_role,item.answerer_name)">
+                                     @click.stop="goManagerDetail(item.answerer_id,item.answerer_role)">
                  <span class="user-name">
-                    {{item.answerer_role == 1 && role == 1 && current_uid != item.answerer_id? '匿名用户': item.answerer_name}}
+                    {{item.answerer_name}}
                  </span>
                                     <!--显示颜色从组件内根据角色名匹配的-->
-                                    <template
-                                            v-if="!(item.answerer_role == 1 && role == 1 && current_uid != item.answerer_id)">
+                                    <template>
                                         <uz-lable v-if="question.q_reward > 0"
                                                   :role="item.answerer_id === question.asker_id ? '赏金发起人' : item.answerer_rank"></uz-lable>
                                         <uz-lable v-else
@@ -185,10 +181,8 @@
                         <div class="context">{{item.content}}</div>
                         <!--获取评论下的评论 -->
                         <div v-if="item.hot_commnet.commenter_id" class="hotcomment">
-                            <div class="title">{{item.hot_commnet.commenter_role == 1 && role == 1 && current_uid !=
-                                item.hot_commnet.commenter_id ? '匿名用户' : item.hot_commnet.commenter_name}}
-                                <template
-                                        v-if="!(item.hot_commnet.commenter_role == 1 && role == 1 && current_uid != item.hot_commnet.commenter_id)">
+                            <div class="title">{{item.hot_commnet.commenter_name}}
+                                <template>
                                     <uz-lable v-if="question.q_reward > 0"
                                               :role="item.hot_commnet.commenter_id === question.asker_id ? '赏金发起人' : item.hot_commnet.commenter_rank"></uz-lable>
                                     <uz-lable v-else
@@ -379,25 +373,25 @@
             }
         },
         created() {
-
-
             this.initWX(() => {
                 // console.log('wx success');
             });
-            this.current_uid = window.localStorage.getItem(Constants.LocalStorage.uid)
+            // 登陆后会有uid进行判断是否是自己回答或者自己评论的 可以进行控制是否可以删除或者编辑
+            this.current_uid = window.localStorage.getItem(Constants.LocalStorage.uid) || null
+            // 角色的权限控制
             this.role = window.localStorage.getItem(Constants.LocalStorage.role)
-
-            // todo 分享链接有问题
             // this.ifNeedReLogin()
-
             this.getData();
+            // 判断是否是从我的问题列表过来的
             if (this.$route.query.if_my_question) {
                 this.if_my_question = true
             }
+            // 判断是否是从我的回答列表过来的
             if (this.$route.query.my_answer == 1) {
                 this.is_more_answer = false
                 this.if_my_answer = 1
             }
+            // 微信支付成功后跳转首页 （原因是没有返回首页的入口，如果点击返回按钮会跳去支付页面）
             this.ifGoHome = this.$route.query.go_home || false
             /**
              * 如果是微信内,则不显示appBar
@@ -406,10 +400,11 @@
             this.showAppBar = !/MicroMessenger/.test(navigator.userAgent);
         },
         activated() {
+
             this.role = window.localStorage.getItem(Constants.LocalStorage.role)
         },
         methods: {
-            // todo 是否需要重新登陆
+            // 已经去除登陆拦截功能 起初是要获取当前用户角色进行权限控制的
             ifNeedReLogin() {
                 this.current_uid = window.localStorage.getItem(Constants.LocalStorage.uid)
                 var Request = new Object();
@@ -417,11 +412,6 @@
                 let urlUid = Request['uid'] || this.current_uid
                 let id = Request['id'] || this.$route.query.id
                 let redirect = this.$route.name
-                // console.log('002');
-                // console.log(urlUid != this.current_uid);
-                // console.log(this.current_uid == true);
-                // console.log(this.current_uid);
-                // console.log(null);
                 if (urlUid && this.current_uid && urlUid != this.current_uid) {
                     EventBus.$emit(Constants.EventBus.showToast, {
                         message: "需要重新登陆"
@@ -450,21 +440,14 @@
                 })
 
             },
-            ifGoDetail(uid, role) {
-                // 这里通过判断返回的role是否时管是家 自己是管家的话点不开其他管家的详情 匿名用户不能打开 管家看管家也是显示匿名用户
-                if (role == this.role && uid != this.current_uid) {
+            goManagerDetail(uid, role) {
+                if (role != 1) {
                     return
                 } else {
-                    this.goGujian(uid, role)
+                    this.$router.push({name:'qamanagerdetail',query:{id:uid}})
                 }
             },
-            goGujian(uid, role) {
-                if (role == 1) {
-                    window.location.href = `http://m.uzhuang.com/mobile-m_butler_details.html?id=M%E7%AB%99-%E5%B7%A5%E5%9C%B0%E7%9B%B4%E6%92%AD&butlerid=${uid}`
-                } else {
-                    return
-                }
-            },
+
             openAdoption(index) {
                 this.dialog = true
                 this.q_adoption_index = index

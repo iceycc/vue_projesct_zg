@@ -30,39 +30,9 @@
                 <img-wrapper :url="tab2[1]" class="askicon"></img-wrapper>
             </div>
         </mu-bottom-nav>
-        <div class="mask" v-if="showAsk">
-            <div class="btn-view">
-                <keep-alive>
-                    <div class="icon-view">
-                        <div style="visibility: hidden" class="msg-infos">
-                            <div>更快更多更优质回答</div>
-                            <div>查看更多<a href="">专属权利</a></div>
-                        </div>
-                        <div @click="gotoAsk(0)">
-                            <img-wrapper :url="icon1" classStyle="icon"></img-wrapper>
-                            <div class="name">免费提问</div>
-                        </div>
-                    </div>
-                </keep-alive>
-                <keep-alive>
-                    <div class="icon-view">
-                        <div style="visibility: hidden" class="msg-infos">
-                            <div>更快更多更优质回答</div>
-                            <div>查看更多<a href="javascript:;" @click.stop="webpage"
-                                        style="text-decoration: underline;color:#328afb">专属权利</a>
-                            </div>
-                        </div>
-                        <div @click="gotoAsk(1)">
-                            <img-wrapper :url="icon2" classStyle="icon"></img-wrapper>
-                            <div class="name">悬赏提问</div>
-                        </div>
-                    </div>
-                </keep-alive>
-            </div>
-            <div class="ask-close">
-                <img-wrapper classStyle="close" @onClick="toggleAsk" :url="icon_ask_close"></img-wrapper>
-            </div>
-        </div>
+        <show-ask
+                :showAsk="showAsk"
+        ></show-ask>
 
     </div>
 </template>
@@ -70,10 +40,12 @@
 <script>
     import {Constants, EventBus, mixins, API, util} from '../config/index';
     import ImgWrapper from "../components/commons/ImgWrapper.vue";
+    import ShowAsk from "../components/commons/ShowAsk"
 
     export default {
         components: {
-            ImgWrapper
+            ImgWrapper,
+            ShowAsk
         },
         mixins: [mixins.base, mixins.wx],
 
@@ -104,7 +76,10 @@
             };
         },
         created() {
+            EventBus.$on('showAsk',(val)=>{
+                this.showAsk = val
 
+            })
             // 保证刷新时 下面的tab和路由对应
             var str = window.location.hash
             var href // 获取当前路由的path值
@@ -131,7 +106,7 @@
             }
             // 获取角色role
             this.getUserInfos(() => {
-                this.role = window.localStorage.getItem(Constants.LocalStorage.role)
+                this.role = util.ls.getItem(Constants.LocalStorage.role)
             })
             // 监听通知消息的数量 >0 ,设置小红点
             EventBus.$on(Constants.EventBus.inform_num, (val) => {
@@ -140,7 +115,7 @@
                 }
             })
 
-            // 当初有个弹窗提示登陆成功，还能看用户协议 文档
+            // 当初有个弹窗提示登陆成功，还能看用户协议文档
             this.to_doc = {name: Constants.PageName.qaDoc, params: {type: 2}}
 
             this.checkWX()
@@ -236,14 +211,13 @@
                     .then((result) => {
                         success && success(result)
                         let userInfos = result.data
-                        this.$ls.set(Constants.LocalStorage.role, userInfos.role);
+                        util.ls.setItem(Constants.LocalStorage.role, userInfos.role);
                         this.role = userInfos.role;
-                        this.$ls.set(Constants.LocalStorage.question_num, userInfos.question_num)
-                        this.$ls.set(Constants.LocalStorage.inform_num, userInfos.inform_num)
-                        this.$ls.set(Constants.LocalStorage.collect_num, userInfos.collect_num)
-                        this.$ls.set(Constants.LocalStorage.uid, userInfos.uid)
+                        util.ls.setItem(Constants.LocalStorage.question_num, userInfos.question_num)
+                        util.ls.setItem(Constants.LocalStorage.inform_num, userInfos.inform_num)
+                        util.ls.setItem(Constants.LocalStorage.collect_num, userInfos.collect_num)
+                        util.ls.setItem(Constants.LocalStorage.uid, userInfos.uid)
                         this.isreadShow = userInfos.inform_num > 0
-
                     })
                     .catch((err) => {
                         // console.log(err);
@@ -277,7 +251,8 @@
             }
             ,
             toggleAsk() {
-                this.showAsk = !this.showAsk;
+                this.showAsk = true;
+
             }
             ,
             gotoAsk(type) {
@@ -376,77 +351,7 @@
         }
     }
 
-    .mask {
-        width: 100%;
-        height: 100%;
-        background-color: rgba(255, 255, 255, 0.98);
-        position: absolute;
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-        z-index: 100;
-        .btn-view {
-            display: flex;
-            flex-direction: row;
-            .icon-view {
-                // 注意 qaDetail也有相同的样式
-                padding-top: px2rem(60);
-                position: relative;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                .msg-infos {
-                    position: absolute;
-                    top: px2rem(-8);
-                    left: px2rem(20);
-                    width: px2rem(140);
-                    height: px2rem(80);
-                    font-size: px2rem(13);
-                    box-sizing: border-box;
-                    padding-top: px2rem(10);
-                    padding-left: px2rem(9);
-                    background: url("../assets/img/bg_text_box.png") no-repeat 0 0;
-                    background-size: px2rem(140) px2rem(80);
-                    background-origin: border-box;
-                }
-            }
 
-            .icon-view:nth-child(1) {
-                margin-right: px2rem(30);
-            }
-
-            .icon {
-                width: px2rem(60);
-                height: px2rem(60);
-                margin: px2rem(20);
-            }
-            .name {
-                font-size: px2rem(16);
-                text-align: center;
-            }
-        }
-        .ask-close {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: px2rem(55);
-            border-top: 1px solid #ccc;
-            text-align: center;
-            font-size: 0;
-            &:after {
-                display: inline-block;
-                vertical-align: middle;
-                content: '';
-                height: 100%;
-            }
-        }
-        .close {
-            vertical-align: middle;
-            width: px2rem(20);
-            height: px2rem(20);
-        }
-    }
 
     .isread-num {
         position: absolute;

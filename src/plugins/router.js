@@ -15,7 +15,7 @@ function addRouter(name, meta) {
     meta: Object.assign(
       {
         keepAlive: true,
-        needLogin: true
+        needLogin: false
       }
       , meta)
   });
@@ -38,7 +38,7 @@ let routes = [
         path: Constants.PageName.qaIndex,
         name: Constants.PageName.qaIndex,
         component: Pages[Constants.PageName.qaIndex],
-        meta: {keepAlive: true, title: '主页', needLogin: true},
+        meta: {keepAlive: true, title: '主页', needLogin: false},
       },
       {
         path: Constants.PageName.qaUser,
@@ -56,7 +56,7 @@ let routes = [
         path: Constants.PageName.qaFind,
         name: Constants.PageName.qaFind,
         component: Pages[Constants.PageName.qaFind],
-        meta: {keepAlive: true, title: '发现', needLogin: true }
+        meta: {keepAlive: true, title: '发现', needLogin: false }
       },
       // {
       //   path: Constants.PageName.qaDetail,
@@ -81,25 +81,24 @@ let routes = [
   }
 ];
 
-addRouter(Constants.PageName.template, {title: '测试页面'});
 addRouter(Constants.PageName.qaDetail, {keepAlive: false, title: '问答详情'});
 addRouter(Constants.PageName.qaAsk, {title: '提问',keepAlive: true});
-addRouter(Constants.PageName.qaResponse, {title: '回复'});
-addRouter(Constants.PageName.qaComment, {title: '评论'});
+addRouter(Constants.PageName.qaResponse, {title: '回复',needLogin: true});
+addRouter(Constants.PageName.qaComment, {title: '评论',needLogin: true});
 addRouter(Constants.PageName.qaSearch, {title: '搜索'});
 addRouter(Constants.PageName.qaList, {keepAlive: false, title: '列表'});
-addRouter(Constants.PageName.qaWalletDetail, {keepAlive: false, title: '钱包明细'});
-addRouter(Constants.PageName.qaLogin, {keepAlive: false, title: '登录', needLogin: false});
-addRouter(Constants.PageName.qaWallet, {keepAlive: false, title: '钱包'});
-addRouter(Constants.PageName.qaWithdraw, {keepAlive: false, title: '提现'});
-addRouter(Constants.PageName.qaKetangDetail, {keepAlive: false, title: '课堂', needLogin: false});
-addRouter(Constants.PageName.qaDoc, {keepAlive: false, title: '', needLogin: false});
-addRouter(Constants.PageName.qaBindAccount, {keepAlive: false, title: '账号绑定'});
+addRouter(Constants.PageName.qaWalletDetail, {keepAlive: false, title: '钱包明细',needLogin: true});
+addRouter(Constants.PageName.qaLogin, {keepAlive: false, title: '登录'});
+addRouter(Constants.PageName.qaWallet, {keepAlive: false, title: '钱包',needLogin: true});
+addRouter(Constants.PageName.qaWithdraw, {keepAlive: false, title: '提现',needLogin: true});
+addRouter(Constants.PageName.qaKetangDetail, {keepAlive: false, title: '课堂'});
+addRouter(Constants.PageName.qaDoc, {keepAlive: false, title: ''});
+addRouter(Constants.PageName.qaBindAccount, {keepAlive: false, title: '账号绑定',needLogin: true});
 addRouter(Constants.PageName.qaManagerDetail, {keepAlive: false, title: '管家详情'});
 addRouter(Constants.PageName.qaStrategyList, {keepAlive: false, title: '装修攻略'});
 addRouter(Constants.PageName.qaManagerList, {keepAlive: false, title: '管家列表'});
-addRouter(Constants.PageName.qaknowledge, {keepAlive: false, title: '课堂',needLogin: false});
-addRouter(Constants.PageName.qaGoodCase, {keepAlive: false, title: '精品案例',needLogin: false});
+addRouter(Constants.PageName.qaknowledge, {keepAlive: false, title: '课堂'});
+addRouter(Constants.PageName.qaGoodCase, {keepAlive: false, title: '精品案例'});
 
 let router = new Router({
 
@@ -110,6 +109,7 @@ router.beforeEach((to, from, next) => {
   if (to.meta && to.meta.title) {
     document.title = to.meta.title;
   }
+
   // 判断是否需要进行登陆 校验
   if (to.meta.needLogin) {
     let sign = localStorage.getItem(Constants.LocalStorage.sign)
@@ -135,23 +135,6 @@ router.beforeEach((to, from, next) => {
   next()
 });
 
-
-var sess = window.sessionStorage
-
-const reloadIntercepetor = (to, from) => {
-  if (to.name == 'qauser') {
-    let isRefresh = sess.getItem('isRefresh')
-    // console.log('isRefresh:' + isRefresh)
-    if (isRefresh == '0') {
-      sess.setItem('isRefresh', null)
-      window.location.href = window.location.host + '/#/qauser'
-      // console.log(window.location)
-
-    } else {
-      sess.setItem('isRefresh', 0)
-    }
-  }
-}
 
 
 router.afterEach((to, from) => {
