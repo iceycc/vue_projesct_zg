@@ -120,19 +120,6 @@ router.beforeEach((to, from, next) => {
       // console.log('分享链接  回到当前页')
       window.localStorage.setItem('is_redirect',1)
     }
-    // 1 刷新
-    // 2 从m.uzhuang.com返回
-    // 3 点击分享链接
-    // qaIndex  qaDetail
-    // if(from.)
-    // 点击链接
-      // todo 分享链接跳转的问题：
-            //  1  qadetail  qacomment  i  跳转当前页  需要 问题id  当前用户的sign
-            //  2  课堂 直接去 next()
-            //  3  index 个人页面  跳转当前页 等待    跳转到index  需要当前用户的sign
-      // todo 分享样式
-
-      // todo 石墨文档
     if(!sign){
       EventBus.$emit(Constants.EventBus.showToast, {
         message: "需要在微信浏览器登陆打开"
@@ -144,28 +131,6 @@ router.beforeEach((to, from, next) => {
       })
     }
     else {next()}
-    // if (!from.name && to.name !== 'main') {
-    //   // console.log('分享链接  回到当前页')
-    //   EventBus.$emit(Constants.EventBus.showToast, {
-    //     message: "分享链接需要在微信浏览器登陆打开"
-    //   })
-    //   if(to.name == 'qadetail' && to.name == 'qacomment'){
-    //     next({
-    //       name: Constants.PageName.qaLogin,
-    //       query: {redirect: to.name, data: to.query},
-    //     })
-    //   }else{
-    //     window.location.href = `http://wx.uzhuang.com/index.php?r=wx/oauth2&redirect`
-    //   }
-    //   // window.location.href = `http://wx.uzhuang.com/index.php?r=wx/oauth2&redirect=${to.name}&id=${to.query}`
-    //   // next()
-    // }
-    // else{
-    //   if(sign){
-    //     next()
-    //   }
-    //
-    // }
   }
   next()
 });

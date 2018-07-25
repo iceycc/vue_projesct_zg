@@ -459,6 +459,7 @@
             font-size: px2rem(13);
             border-radius: px2rem(3);
             color:#333;
+            overflow: hidden;
             &:nth-child(4n) {
                 margin-right: 0;
             }

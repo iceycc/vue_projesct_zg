@@ -140,7 +140,7 @@
                 }
             })
 
-            // 这个我也忘了是撒了
+            // 当初有个弹窗提示登陆成功，还能看用户协议 文档
             this.to_doc = {name: Constants.PageName.qaDoc, params: {type: 2}}
 
             this.checkWX()
