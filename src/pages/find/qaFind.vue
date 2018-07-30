@@ -11,7 +11,7 @@
 
             </div>
             <ul class="jpal">
-                <li v-for="item in classicData">
+                <li v-for="item in classicData" @click="goPages('qaGoodcaseetail',item.id)">
                     <div class="jpal-img"><img :src="item.cover" alt=""></div>
                     <p>{{item.alt}}</p>
                 </li>
@@ -151,11 +151,21 @@
             goDetailPage(url){
                 window.location.href = url;
             },
-            goPages(name){
+            goPages(name,id){
                 console.log(name);
-                this.$router.push({
-                    name
-                })
+                if(id){
+                    this.$router.push({
+                        name,
+                        query:{
+                            id
+                        }
+                    })
+                }else {
+                    this.$router.push({
+                        name,
+                    })
+                }
+
             },
             goManagerDetail(id){
                 this.$router.push({name:'qamanagerdetail',query:{id}})

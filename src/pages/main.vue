@@ -5,7 +5,6 @@
                 <router-view v-if="$route.meta.keepAlive"></router-view>
             </keep-alive>
             <router-view v-if="!$route.meta.keepAlive"></router-view>
-
         </div>
         <mu-bottom-nav :value="watch_bottomNav" @change="handleChange" ref="bottom" v-if="!$route.meta.isShowTab">
             <mu-bottom-nav-item value="0" title="问答">
@@ -73,6 +72,8 @@
                 isreadShow: false,
                 to_doc: {},
                 role: 0,
+                ifWX:false,
+                hasSign:null
             };
         },
         created() {
@@ -104,31 +105,41 @@
                 default:
                     break;
             }
-            // 获取角色role
-            this.getUserInfos(() => {
-                this.role = util.ls.getItem(Constants.LocalStorage.role)
-            })
+
             // 监听通知消息的数量 >0 ,设置小红点
             EventBus.$on(Constants.EventBus.inform_num, (val) => {
                 if (val) {
                     this.isreadShow = val > 0
                 }
             })
-
             // 当初有个弹窗提示登陆成功，还能看用户协议文档
             this.to_doc = {name: Constants.PageName.qaDoc, params: {type: 2}}
+            // 判断是否是微信端
+            this.ifWX =this.checkWX()
+            // 先判断是否登陆
+            this.hasSign = util.ls.getItem(Constants.LocalStorage.sign)
 
-            this.checkWX()
-
-            // 微信打开的操作
-            this.doWXLoginHandle(href)
-
+            // 微信打开🐧的操作
+            if(this.ifWX && !this.hasSign){
+                this.doWXLoginHandle(href)
+            }
+            if(!this.ifWX){
+                setTimeout(() => {
+                    this.$router.push({
+                        name: Constants.PageName.qaIndex,
+                    })
+                }, 100)
+            }
+            // 获取角色role
+            if(this.hasSign){
+                this.getUserInfos(() => {
+                    this.role = util.ls.getItem(Constants.LocalStorage.role)
+                })
+            }
 
             if (this.$route.params.isLogin) {
                 EventBus.$emit(Constants.EventBus.login);
             }
-
-
         },
         watch: {
             // 坑 监视路由
@@ -158,12 +169,12 @@
                 var Request = new Object();
                 Request = util.GetRequest();
                 let sign = Request['sign']
-                sign = sign || window.localStorage.getItem(Constants.LocalStorage.sign)
+                sign = sign || util.ls.getItem(Constants.LocalStorage.sign)
                 // redirect和from_id是通过登陆页url传参，后台再返回的。。微信的登陆授权问题。。
                 let redirect = Request['redirect'] || this.$route.query.redirect
                 let from_id = Request['id']
                 // ====test====
-                sign = '215b54bc24847bdaa7344b2504514881'
+                // sign = '215b54bc24847bdaa7344b2504514881'
                 // sign = 'a39c64680e64ee62b6a932a0a6c3942f'
                 // ====test====
                 // 设置sign
@@ -182,7 +193,7 @@
                         name: redirect,
                         query: {
                             id: from_id,
-                            uid: window.localStorage.getItem(Constants.LocalStorage.uid)
+                            uid: util.ls.getItem(Constants.LocalStorage.uid)
                         }
                     })
                 }
@@ -205,6 +216,7 @@
                         message: "建议在微信浏览器打开"
                     })
                 }
+                return flag
             },
             getUserInfos(success) {
                 API.post(Constants.Method.profile, {})
@@ -229,11 +241,13 @@
             }
             ,
             getUserData(to, from) {
+                console.log(!this.hasSign)
+                if(!this.hasSign) return
                 switch (to.name) {
                     case Constants.PageName.qaIndex:
                         this.bottomNav = 0;
                         break;
-                    case Constants.PageName.qaknowledge:
+                    case Constants.PageName.qaFind:
                         this.bottomNav = 1;
                         break;
                     case Constants.PageName.qaNotice:

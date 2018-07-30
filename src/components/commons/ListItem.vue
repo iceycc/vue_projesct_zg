@@ -27,7 +27,7 @@
 
         </section>
         <!--精品案例部分-->
-        <section class="list-item3" v-if="type == 'list3'">
+        <section class="list-item3" v-if="type == 'list3'" @click="goDetail">
             <img :src="classicData.cover" alt="">
             <section class="infos">
                 <h2>{{classicData.name}}</h2>

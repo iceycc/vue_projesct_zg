@@ -15,111 +15,116 @@ const Method_Class = {
 
 //用于管理项目请求地址
 export const Method = {
-        //热词列表
-        get_hot_words: Method_Class.hotWord + "list",
-        //首页问题列表
-        get_homepage: Method_Class.hotWord + "question-list",
-        //banner
-        get_banner_list: Method_Class.banner + "list",
-        //获取问题详情
-        get_question_info: Method_Class.question + "info",
-        //获取问题下的回答列表
-        get_answer_list: Method_Class.question + "answer-list",
-        //发布问题 1 问题提交接口
-        ask_question: Method_Class.member + "ask",
-        //回答问题 1 问题回答接口
-        answer: Method_Class.member + "answer",
-        //获取回答详情
-        get_answer: Method_Class.answer + "info",
-        //获取评论列表
-        get_comment_list: Method_Class.answer + "comment-list",
-        // 新增获取通知列表 type: 1 回答 2采纳 3点赞回答 4点赞评论 5评论回答 6评论评论
-        get_notice_list: Method_Class.member + "inform-list",
-        //采纳回答 1 采纳接口
-        adoption: Method_Class.question + "adoption",
+    //热词列表
+    get_hot_words: Method_Class.hotWord + "list",
+    //首页问题列表
+    get_homepage: Method_Class.hotWord + "question-list",
+    //banner
+    get_banner_list: Method_Class.banner + "list",
+    //获取问题详情
+    get_question_info: Method_Class.question + "info",
+    //获取问题下的回答列表
+    get_answer_list: Method_Class.question + "answer-list",
+    //发布问题 1 问题提交接口
+    ask_question: Method_Class.member + "ask",
+    //回答问题 1 问题回答接口
+    answer: Method_Class.member + "answer",
+    //获取回答详情
+    get_answer: Method_Class.answer + "info",
+    //获取评论列表
+    get_comment_list: Method_Class.answer + "comment-list",
+    // 新增获取通知列表 type: 1 回答 2采纳 3点赞回答 4点赞评论 5评论回答 6评论评论
+    get_notice_list: Method_Class.member + "inform-list",
+    //采纳回答 1 采纳接口
+    adoption: Method_Class.question + "adoption",
 
-        //点赞回答  1 点赞接口
-        like: Method_Class.member + "like-answer",
-        un_like: Method_Class.member + "unlike-answer",
+    //点赞回答  1 点赞接口
+    like: Method_Class.member + "like-answer",
+    un_like: Method_Class.member + "unlike-answer",
 
-        //评论回答 1 回答评论接口
-        reply_answer: Method_Class.member + "reply-answer",
-        reply_comment: Method_Class.member + "reply-comment",
+    //评论回答 1 回答评论接口
+    reply_answer: Method_Class.member + "reply-answer",
+    reply_comment: Method_Class.member + "reply-comment",
 
-        //收藏问题
-        // favourites: Method_Class+ "f=question_list&v=favourites",
-        favourites: Method_Class.member + "collect",
-        un_favourites: Method_Class.member + "uncollect",
+    //收藏问题
+    // favourites: Method_Class+ "f=question_list&v=favourites",
+    favourites: Method_Class.member + "collect",
+    un_favourites: Method_Class.member + "uncollect",
 
-        // 获取个人信息 个人资料  管家详细信息也是这个
-        profile: Method_Class.member + "info",
-        //热门搜索
-        hot_search: Method_Class.hotWord + "get-hotsearch",
-        //
-        do_search: Method_Class.question + "search",
-        //我的收藏
-        get_collect: Method_Class.member + "collect-list",
-        //我的钱包
-        wallet: Method_Class.wallet + "info",
-        //钱包明细
-        wallet_detail: Method_Class.member + "wallet-detail",
+    // 获取个人信息 个人资料  管家详细信息也是这个
+    profile: Method_Class.member + "info",
+    //热门搜索
+    hot_search: Method_Class.hotWord + "get-hotsearch",
+    //
+    do_search: Method_Class.question + "search",
+    //我的收藏
+    get_collect: Method_Class.member + "collect-list",
+    //我的钱包
+    wallet: Method_Class.wallet + "info",
+    //钱包明细
+    wallet_detail: Method_Class.member + "wallet-detail",
 
-        // 删除操作的接口
-        // 删除评论 del_comment uid cid
-        del_comment: Method_Class.member + "del-comment",
-        // 删除回答 del_answer uid aid
-        del_answer: Method_Class.member + "del-answer",
-        // 删除问题 del_question uid qid
-        del_question: Method_Class.member + "del-question",
+    // 删除操作的接口
+    // 删除评论 del_comment uid cid
+    del_comment: Method_Class.member + "del-comment",
+    // 删除回答 del_answer uid aid
+    del_answer: Method_Class.member + "del-answer",
+    // 删除问题 del_question uid qid
+    del_question: Method_Class.member + "del-question",
 
-        // 管家我得问题列表
-        // 未回答 get_question_unanswered   uid page
-        get_question_unanswered: Method_Class.member + "unanswered-list",
-        // 回答  get_question_answered   uid page
-        get_question_answered: Method_Class.member + "member-answered-list",
-        // 个人
-        // 回答
-        get_my_answer: Method_Class.member + "member-answered-list",
-        // 问题
-        get_my_question: Method_Class.member + "member-question-list",
-        // 左 个人提问  管家未回答
-        get_my_left_num: Method_Class.member + "member-question-num",
-        // 右 个人/管家 回答
-        get_my_right_num: Method_Class.member + "member-answered-num",
-        //
-        // 账户绑定
-        bind_account: Method_Class.member + "bind-account",
-        // 获取编辑 内容
-        get_answer_edit: Method_Class.answer + "content",
-        // 提交编辑
-        put_answer_edit: Method_Class.answer + "edit",
+    // 管家我得问题列表
+    // 未回答 get_question_unanswered   uid page
+    get_question_unanswered: Method_Class.member + "unanswered-list",
+    // 回答  get_question_answered   uid page
+    get_question_answered: Method_Class.member + "member-answered-list",
+    // 个人
+    // 回答
+    get_my_answer: Method_Class.member + "member-answered-list",
+    // 问题
+    get_my_question: Method_Class.member + "member-question-list",
+    // 左 个人提问  管家未回答
+    get_my_left_num: Method_Class.member + "member-question-num",
+    // 右 个人/管家 回答
+    get_my_right_num: Method_Class.member + "member-answered-num",
+    //
+    // 账户绑定
+    bind_account: Method_Class.member + "bind-account",
+    // 获取编辑 内容
+    get_answer_edit: Method_Class.answer + "content",
+    // 提交编辑
+    put_answer_edit: Method_Class.answer + "edit",
 
 
-        //课堂
-        //推荐
-        ketang_commend: 'http://bang.uzhuang.com/index.php?m=bangV2&f=ketang&v=commend',
-        // 装修前 中 后
-        ketang_commend_qzh: 'http://bang.uzhuang.com/index.php?m=bangV2&f=ketang&v=nodeListThumb',
-        // 装修前中后展示详情
-        ketang_nodeList: 'http://bang.uzhuang.com/index.php?m=bangV2&f=ketang&v=nodeList',
+    //课堂
+    //推荐
+    ketang_commend: 'http://bang.uzhuang.com/index.php?m=bangV2&f=ketang&v=commend',
+    // 装修前 中 后
+    ketang_commend_qzh: 'http://bang.uzhuang.com/index.php?m=bangV2&f=ketang&v=nodeListThumb',
+    // 装修前中后展示详情
+    ketang_nodeList: 'http://bang.uzhuang.com/index.php?m=bangV2&f=ketang&v=nodeList',
 
-        // 微信配置 微信支付等接口
-        // wxpay: 'http://m.uzhuang.com/wxpay/pay/Weixin/H5/wxpay.php',
-        // wxpay: 'http://m.uzhuang.com/wxpay/sendWallet/payuser.php',
-        wxpay: Method_Class.member + 'pay',
-        //wxpay: 'http://m.uzhuang.com/wxpay/pay/Weixin/h5_wx/example/jsapi.php',
-        // 微信提现接口
-        wxtx: Method_Class.member + 'withdraw-deposit',
-        //wx_jssdk 配置信息
-        get_wx_config_info: Method_Class.wx + 'get-jsconfig',
-        // 2.0迭代新加
-        // r=member/keeper-active
-        keeperActive: Method_Class.member + 'keeper-active', // 获取管家列表
-        keeperDetails: Method_Class.member + 'keeper-details', // 获取管家详情
-        getScreen: BASE_URL + '?r=find-mod/screen', // 筛选条件
-        getClassicList: BASE_URL + '?r=find-mod/classic-list', // 筛选条件
-    }
-;
+    // 微信配置 微信支付等接口
+    // wxpay: 'http://m.uzhuang.com/wxpay/pay/Weixin/H5/wxpay.php',
+    // wxpay: 'http://m.uzhuang.com/wxpay/sendWallet/payuser.php',
+    wxpay: Method_Class.member + 'pay',
+    //wxpay: 'http://m.uzhuang.com/wxpay/pay/Weixin/h5_wx/example/jsapi.php',
+    // 微信提现接口
+    wxtx: Method_Class.member + 'withdraw-deposit',
+    //wx_jssdk 配置信息
+    get_wx_config_info: Method_Class.wx + 'get-jsconfig',
+    // 1.2.0迭代新加
+    // r=member/keeper-active
+    keeperActive: Method_Class.member + 'keeper-active', // 获取管家列表
+    keeperDetails: Method_Class.member + 'keeper-details', // 获取管家详情
+    getScreen: BASE_URL + '?r=find-mod/screen', // 筛选条件
+    getClassicList: BASE_URL + '?r=find-mod/classic-list', // 筛选条件
+
+    // 1.2.1迭代新加 外部登陆
+    sendSms: BASE_URL + '?r=login/sendsms', // 发送短信验证码
+    telLogin:BASE_URL + '?r=login/login', // 手机号登陆
+    showPicture:BASE_URL + '?r=login/show-picture' // 获取图片验证码
+
+};
 
 //用于管理router中页面名称
 export const PageName = {
@@ -150,6 +155,7 @@ export const PageName = {
     qaStrategyList: 'qastrategylist',
     qaManagerList: 'qamanagerlist',
     qaGoodCase: 'qagoodcase',
+    qaGoodCaseDetail: 'qaGoodcasedetail',
 };
 //
 export const LocalStorage = {
@@ -177,6 +183,7 @@ export const EventBus = {
     update_main_tab_index: 'update_main_tab_index',
     inform_num: 'inform_num', // 当前收藏数
     sign: 'sign', //
+    toTelLogin: 'stoTelLoginign', //
 };
 
 

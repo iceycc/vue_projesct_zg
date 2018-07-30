@@ -124,6 +124,10 @@ function GetRequest() {
 
 const ls = window.localStorage
 
+function ifWX() {
+    return /MicroMessenger/.test(navigator.userAgent)
+}
+
 export {
     px2rem,
     deepCopy,
@@ -133,5 +137,6 @@ export {
     ifHaveVale,
     getSuccIndex,
     GetRequest,
-    ls
+    ls,
+    ifWX
 };

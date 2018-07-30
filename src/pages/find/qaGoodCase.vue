@@ -20,6 +20,7 @@
                     v-for="item,index in classicData"
                     :key="index"
                     :classicData="item"
+                    @onClick="goDetail(item.id)"
             ></list-item>
         </section>
 
@@ -130,6 +131,15 @@
                         this.msgShow = false
                         this.classicData = data
                     })
+            },
+            goDetail(id){
+                this.$router.push({
+                    name:Constants.PageName.qaGoodCaseDetail,
+                    query:{
+                        id
+                    }
+                })
+
             },
             selectHandle(index) {
                 // 0:推荐  1：风格  2：户型  3：造价

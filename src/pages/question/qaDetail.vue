@@ -236,7 +236,7 @@
                 <img-wrapper :url="icon1" classStyle="icon"></img-wrapper>
                 去回答
             </div>
-            <div @click="gotoAsk1" v-if="watch_role == 0 ">
+            <div @click="gotoAsk1" v-if="watch_role != 1 ">
                 <img-wrapper :url="icon2" classStyle="icon"></img-wrapper>
                 去提问
             </div>
@@ -690,9 +690,16 @@
                     if (this.role == 0) {
                         this.toggleAsk();
                     }
-                    if (this.role == 1) {
+                    else if (this.role == 1) {
                         EventBus.$emit(Constants.EventBus.showToast, {
                             message: '管家没有提问权限'
+                        });
+                    }
+                    else{
+
+                        // todo 外部登陆 或者 返回微信授权登陆
+                        EventBus.$emit(Constants.EventBus.showToast, {
+                            message: '你还没有登陆'
                         });
                     }
                 } else {

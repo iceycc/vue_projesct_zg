@@ -36,9 +36,13 @@ _axios.interceptors.request.use((config) => {
 _axios.interceptors.response.use((response) => {
     // 对响应数据做点什么
     // sign过期或者不正确时提醒重新登陆，移除当前的 sign
-
-    if (response.data.code == 1 && response.data.message == '登录失败') {
-        // window.location.href = location.host + '/#/qalogin'
+    if (response.data.code == 20) {
+        EventBus.$emit(Constants.EventBus.showToast, {
+            message: "登陆已经过期，请重新登陆"
+        })
+        return
+    }
+    else if (response.data.code == 1 && response.data.message == '登录失败') {
         EventBus.$emit(Constants.EventBus.showToast, {
             message: "登陆已经过期，请重新登陆"
         })
@@ -46,7 +50,8 @@ _axios.interceptors.response.use((response) => {
         // window.location.href = `http://wx.uzhuang.com/index.php?r=wx/oauth2&redirect=${redirect}&id=${id}`
         window.localStorage.clear()
         return
-    } else if (response.data.code == 20 && response.data.message == '登录失败') {
+    }
+    else if (response.data.code == 20 && response.data.message == '登录失败') {
         // window.location.href = location.host + '/#/qalogin'
         EventBus.$emit(Constants.EventBus.showToast, {
             message: "请登陆"
@@ -59,6 +64,9 @@ _axios.interceptors.response.use((response) => {
     }
 }, (error) => {
     // 对响应错误做点什么
+    EventBus.$emit(Constants.EventBus.showToast, {
+        message: '网络异常'
+    })
     return Promise.reject(error);
     // return Promise.reject(error);
 });

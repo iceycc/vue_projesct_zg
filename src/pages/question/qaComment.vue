@@ -3,12 +3,12 @@
     <app-bar :title="title"></app-bar>
     <div class="card shadow" v-if="answer">
       <div class="view1 horizontal-view">
-        <img-wrapper :url="answer.answerer_role == 1 && role == 1 && answer.answerer_id != current_uid ? 'http://image1.uzhuang.com/icon_slider.png': answer.answerer_avatar" classStyle="avatar"
-                     @onClick="ifGoDetail(answer.answerer_id,answer.answerer_role,answer.answerer_name)"></img-wrapper>
+        <img-wrapper :url="answer.answerer_avatar" classStyle="avatar"
+                     @onClick="goManagerDetail(answer.answerer_id,answer.answerer_role)"></img-wrapper>
         <div class="vertical-view">
-          <div class="name" @click="ifGoDetail(answer.uid,answer.answerer_role,answer.answerer_name)">
-            {{answer.answerer_role == 1 && role == 1 && answer.answerer_id != current_uid ? '匿名用户': answer.answerer_name }}
-            <template v-if="!(answer.answerer_role == 1 && role == 1)">
+          <div class="name" @click="goManagerDetail(answer.answerer_id,answer.answerer_role)">
+            {{answer.answerer_name }}
+            <template>
               <uz-lable v-if="answer.answerer_rank" :role="answer.answerer_rank"></uz-lable>
             </template>
           </div>
@@ -41,11 +41,11 @@
                 <div class="vertical-view">
                   <div class="name huifu-name">
                     <!--如果是管家用户名 进入管家详情 但是管家不能访问管家-->
-                    <span @click="ifGoDetail(item.from_user_id,item.role)">
-                      {{item.from_user_role ==1 && role ==1 &&item.from_user_id != current_uid ? '匿名用户':item.from_user_name}}
+                    <span @click="goManagerDetail(item.from_user_id,item.from_user_role)">
+                      {{item.from_user_name}}
                     </span>
                     <span class="huifu-text"> 回复 </span>
-                    <span>{{item.to_user_role ==1 && role ==1 && item.to_user_id != current_uid ? '匿名用户':item.to_user_name}} ：</span>
+                    <span @click="goManagerDetail(item.to_user_id,item.to_user_role)">{{item.to_user_name}} ：</span>
                   </div>
                 </div>
               </div>
@@ -160,21 +160,12 @@
           })
         }
       },
-      // uid
-      ifGoDetail(uid, role) {
-        // 这里通过判断返回的role是否时管是家 自己是管家的话点不开其他管家的详情 匿名用户不能打开 管家看管家也是显示匿名用户
-        if (role == this.role && uid != this.current_uid) {
+      goManagerDetail(uid, role) {
+          console.log(uid,role)
+        if (role!=1) {
           return
         } else {
-          this.goGujian(uid, role)
-        }
-      },
-      goGujian(uid, role) {
-        // 管家可以跳
-        if (role == 1) {
-          window.location.href = `http://m.uzhuang.com/mobile-m_butler_details.html?id=M%E7%AB%99-%E5%B7%A5%E5%9C%B0%E7%9B%B4%E6%92%AD&butlerid=${uid}`
-        } else {
-          return
+            this.$router.push({name:'qamanagerdetail',query:{id:uid}})
         }
       },
       getData() {

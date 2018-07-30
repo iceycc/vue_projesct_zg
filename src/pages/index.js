@@ -26,5 +26,6 @@ page[Constants.PageName.qaManagerDetail] = resolve => require(['./find/qaManager
 page[Constants.PageName.qaStrategyList] = resolve => require(['./find/qaStrategyList.vue'], resolve);//qaStrategyList
 page[Constants.PageName.qaManagerList] = resolve => require(['./find/qaManagerList.vue'], resolve);//qaManagerList
 page[Constants.PageName.qaGoodCase] = resolve => require(['./find/qaGoodCase.vue'], resolve);//qaGoodCase
+page[Constants.PageName.qaGoodCaseDetail] = resolve => require(['./find/qaGoodCaseDetail.vue'], resolve);//qaGoodCaseDetail
 
 export default page;
