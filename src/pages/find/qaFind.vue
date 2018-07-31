@@ -138,7 +138,7 @@
             },
             getKeeperActiveList(){
                 let data = {}
-                API.get(Constants.Method.keeperActive,data)
+                API.post(Constants.Method.keeperActive,data)
                     .then(result=>{
                         let data = result.data
                         if(data.length>0){

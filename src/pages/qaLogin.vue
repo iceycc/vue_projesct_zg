@@ -22,6 +22,7 @@
     import {Constants, EventBus, mixins, API} from '../config/index'
     import ComponentTemplate from "../components/template"
     import AutoListView from "../components/commons/AutoListView"
+    import {ifWX} from "../config/util";
 
     export default {
 

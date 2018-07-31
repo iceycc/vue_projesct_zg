@@ -257,52 +257,55 @@
                 </div>
             </div>
         </div>
-        <!--todo 抽离组件-->
-        <div class="mask" v-if="showAsk">
-            <div class="btn-view">
-                <keep-alive>
-                    <div class="icon-view">
-                        <div style="visibility: hidden" class="msg-infos">
-                            <div>更快更多更优质回答</div>
-                            <div>查看更多<a href="">专属权利</a></div>
-                        </div>
-                        <div @click="gotoAsk(0)">
-                            <img-wrapper :url="icon_a" classStyle="icon"></img-wrapper>
-                            <div class="name">免费提问</div>
-                        </div>
-                    </div>
-                </keep-alive>
-                <keep-alive>
-                    <div class="icon-view">
-                        <div style="visibility: hidden" class="msg-infos">
-                            <div>更快更多更优质回答</div>
-                            <div>查看更多<a href="javascript:;" @click.stop="webpage"
-                                        style="text-decoration: underline;color:#328afb">专属权利</a>
-                            </div>
-                        </div>
-                        <div @click="gotoAsk(1)">
-                            <img-wrapper :url="icon_b" classStyle="icon"></img-wrapper>
-                            <div class="name">悬赏提问</div>
-                        </div>
+        <show-ask
+                :showAsk="showAsk"
+        ></show-ask>
 
-                    </div>
-                </keep-alive>
-            </div>
-            <div class="ask-close">
-                <img-wrapper classStyle="close" @onClick="toggleAsk" :url="icon_ask_close"></img-wrapper>
-            </div>
-        </div>
+        <!--&lt;!&ndash;todo 抽离组件&ndash;&gt;-->
+        <!--<div class="mask" v-if="showAsk">-->
+            <!--<div class="btn-view">-->
+                <!--<keep-alive>-->
+                    <!--<div class="icon-view">-->
+                        <!--<div style="visibility: hidden" class="msg-infos">-->
+                            <!--<div>更快更多更优质回答</div>-->
+                            <!--<div>查看更多<a href="">专属权利</a></div>-->
+                        <!--</div>-->
+                        <!--<div @click="gotoAsk(0)">-->
+                            <!--<img-wrapper :url="icon_a" classStyle="icon"></img-wrapper>-->
+                            <!--<div class="name">免费提问</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</keep-alive>-->
+                <!--<keep-alive>-->
+                    <!--<div class="icon-view">-->
+                        <!--<div style="visibility: hidden" class="msg-infos">-->
+                            <!--<div>更快更多更优质回答</div>-->
+                            <!--<div>查看更多<a href="javascript:;" @click.stop="webpage"-->
+                                        <!--style="text-decoration: underline;color:#328afb">专属权利</a>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div @click="gotoAsk(1)">-->
+                            <!--<img-wrapper :url="icon_b" classStyle="icon"></img-wrapper>-->
+                            <!--<div class="name">悬赏提问</div>-->
+                        <!--</div>-->
+
+                    <!--</div>-->
+                <!--</keep-alive>-->
+            <!--</div>-->
+            <!--<div class="ask-close">-->
+                <!--<img-wrapper classStyle="close" @onClick="toggleAsk" :url="icon_ask_close"></img-wrapper>-->
+            <!--</div>-->
+        <!--</div>-->
     </div>
 
 </template>
 
 <script>
     // import {Constants, mixins, util} from '../assets/js/index';
-    import {EventBus, API, Constants, mixins, util} from '../../config/index'
+    import ShowAsk from "../../components/commons/ShowAsk"
 
-    import ComponentTemplate from "../../components/template";
+    import {EventBus, API, Constants, mixins, util} from '../../config/index'
     import AutoListView from "../../components/commons/AutoListView";
-    import MuAppbar from "../../../node_modules/muse-ui/src/appBar/appBar.vue";
     import AppBar from "../../components/commons/AppBar.vue";
     import ImgWrapper from "../../components/commons/ImgWrapper.vue";
     import UzLable from "../../components/commons/uzLable.vue";
@@ -312,7 +315,8 @@
             UzLable,
             ImgWrapper,
             AppBar,
-            AutoListView
+            AutoListView,
+            ShowAsk
         },
         mixins: [mixins.base, mixins.wx, util],
         name: Constants.PageName.qaDetail,
@@ -373,6 +377,10 @@
             }
         },
         created() {
+            EventBus.$on('showAsk',(val)=>{
+                this.showAsk = val
+
+            })
             this.initWX(() => {
                 // console.log('wx success');
             });
@@ -402,6 +410,9 @@
         activated() {
 
             this.role = window.localStorage.getItem(Constants.LocalStorage.role)
+        },
+        destroyed(){
+            EventBus.$off('showAsk')
         },
         methods: {
             // 已经去除登陆拦截功能 起初是要获取当前用户角色进行权限控制的

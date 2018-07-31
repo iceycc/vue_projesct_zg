@@ -22,7 +22,7 @@
             <section class="login">
                 <label for="">
                     <span>+86 </span>
-                    <input type="text" placeholder="112" v-model="tel">
+                    <input type="text" placeholder="请输入手机号" v-model="tel">
                     <!--<span class="stay"></span>-->
                 </label>
                 <label for="">
@@ -217,6 +217,10 @@
                     .then(result =>{
                         this.openAlert = false
                         if(result.code ==0 && result.data){
+
+                            this.getUserInfos()
+
+                            this.codepic = ''
                             util.ls.setItem(Constants.LocalStorage.sign,result.data)
                             this.$router.push({name:this.targerPage})
                         }else {
@@ -229,6 +233,23 @@
             //
             closeAlertDialog() {
                 this.openAlert = false
+            },
+            getUserInfos(success) {
+                API.post(Constants.Method.profile, {})
+                    .then((result) => {
+                        success && success(result)
+                        let userInfos = result.data
+                        util.ls.setItem(Constants.LocalStorage.role, userInfos.role);
+                        this.role = userInfos.role;
+                        util.ls.setItem(Constants.LocalStorage.question_num, userInfos.question_num)
+                        util.ls.setItem(Constants.LocalStorage.inform_num, userInfos.inform_num)
+                        util.ls.setItem(Constants.LocalStorage.collect_num, userInfos.collect_num)
+                        util.ls.setItem(Constants.LocalStorage.uid, userInfos.uid)
+                        this.isreadShow = userInfos.inform_num > 0
+                    })
+                    .catch((err) => {
+                        // console.log(err);
+                    });
             },
             showMessage(value) {
                 this.toast.show = true;

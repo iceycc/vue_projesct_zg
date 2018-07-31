@@ -37,6 +37,8 @@
 <script>
     import ImgWrapper from "../../components/commons/ImgWrapper.vue";
     import {Constants, mixins,EventBus} from '../../config/index';
+    import {ifWX} from "../../config/util";
+
     export default {
         name: "ShowAsk",
         props:['showAsk'],
@@ -74,7 +76,14 @@
                 EventBus.$emit('showAsk',false)
 
             },
+
             gotoAsk(type) {
+                if(!ifWX() && type==1) {
+                    EventBus.$emit(Constants.EventBus.showToast,{
+                        message:'请关注优装美家公众号！'
+                    })
+                    return
+                }
                 // console.log(type)
                 this.pushPage({
                     name: Constants.PageName.qaAsk,

@@ -32,7 +32,7 @@ export default {
     return Qs.stringify(params, {arrayFormat: 'brackets'});
   },
   // `timeout`指定请求超时之前的毫秒数。
-  timeout: 10000,
+  timeout: 100000,
   // `withCredentials`指示是否跨站点访问控制请求
   withCredentials: false,
   // “responseType”表示服务器将响应的数据类型

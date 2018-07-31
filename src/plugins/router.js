@@ -111,6 +111,7 @@ router.beforeEach((to, from, next) => {
         document.title = to.meta.title;
     }
 
+
     // 判断是否需要进行登陆 校验
     if (to.meta.needLogin) {
         let sign = localStorage.getItem(Constants.LocalStorage.sign)
@@ -129,6 +130,19 @@ router.beforeEach((to, from, next) => {
                   query: {redirect: to.name,id:to.query.id},
                 })
             }else {
+                let bottomNav = 0
+                switch (from.name) { //
+                    case Constants.PageName.qaIndex:
+                        bottomNav = 0;
+                        break;
+                    case Constants.PageName.qaFind:
+                        bottomNav = 1;
+                        break;
+                    default:
+                        break;
+                }
+                EventBus.$emit('watch_bottomNav_num', bottomNav)
+
                 EventBus.$emit(Constants.EventBus.toTelLogin,to.name)
                 next(false)
             }

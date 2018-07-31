@@ -40,15 +40,7 @@ _axios.interceptors.response.use((response) => {
         EventBus.$emit(Constants.EventBus.showToast, {
             message: "登陆已经过期，请重新登陆"
         })
-        return
-    }
-    else if (response.data.code == 1 && response.data.message == '登录失败') {
-        EventBus.$emit(Constants.EventBus.showToast, {
-            message: "登陆已经过期，请重新登陆"
-        })
-        // 为啥这里无法跳转
-        // window.location.href = `http://wx.uzhuang.com/index.php?r=wx/oauth2&redirect=${redirect}&id=${id}`
-        window.localStorage.clear()
+        window.localStorage.removeItem(Constants.LocalStorage.sign)
         return
     }
     else if (response.data.code == 20 && response.data.message == '登录失败') {

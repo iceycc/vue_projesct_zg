@@ -40,6 +40,7 @@
     import {Constants, EventBus, mixins, API, util} from '../config/index';
     import ImgWrapper from "../components/commons/ImgWrapper.vue";
     import ShowAsk from "../components/commons/ShowAsk"
+    import {ifWX} from "../config/util";
 
     export default {
         components: {
@@ -89,22 +90,22 @@
             } else {
                 href = str.slice(2, str.indexOf('?') + 1)
             }
-            switch (href) {
-                case Constants.PageName.qaIndex:
-                    this.bottomNav = 0;
-                    break;
-                case Constants.PageName.qaFind:
-                    this.bottomNav = 1;
-                    break;
-                case Constants.PageName.qaNotice:
-                    this.bottomNav = 3;
-                    break;
-                case Constants.PageName.qaUser:
-                    this.bottomNav = 4;
-                    break;
-                default:
-                    break;
-            }
+            // switch (href) {
+            //     case Constants.PageName.qaIndex:
+            //         this.bottomNav = 0;
+            //         break;
+            //     case Constants.PageName.qaFind:
+            //         this.bottomNav = 1;
+            //         break;
+            //     case Constants.PageName.qaNotice:
+            //         this.bottomNav = 3;
+            //         break;
+            //     case Constants.PageName.qaUser:
+            //         this.bottomNav = 4;
+            //         break;
+            //     default:
+            //         break;
+            // }
 
             // 监听通知消息的数量 >0 ,设置小红点
             EventBus.$on(Constants.EventBus.inform_num, (val) => {
@@ -112,16 +113,30 @@
                     this.isreadShow = val > 0
                 }
             })
+            EventBus.$on('watch_bottomNav_num', (val) => {
+                this.bottomNav = val
+            })
             // 当初有个弹窗提示登陆成功，还能看用户协议文档
             this.to_doc = {name: Constants.PageName.qaDoc, params: {type: 2}}
             // 判断是否是微信端
-            this.ifWX =this.checkWX()
+            // this.ifWX =this.checkWX()
             // 先判断是否登陆
             this.hasSign = util.ls.getItem(Constants.LocalStorage.sign)
 
             // 微信打开🐧的操作
-            if(this.ifWX && !this.hasSign){
-                this.doWXLoginHandle(href)
+            if(ifWX()){
+                if(!this.hasSign){ // 没登陆先登陆
+                    this.doWXLoginHandle(href)
+                }else {
+                    this.$router.push({
+                        name: Constants.PageName.qaIndex,
+                    })
+                }
+            }
+            if(!ifWX()){
+                EventBus.$emit(Constants.EventBus.showToast, {
+                    message: "建议在微信浏览器打开"
+                })
             }
             if(!this.ifWX){
                 setTimeout(() => {
@@ -158,6 +173,11 @@
             };
         }
         ,
+        destroyed(){
+            EventBus.$off('watch_bottomNav_num')
+            EventBus.$off(Constants.EventBus.inform_num)
+            EventBus.$off('showAsk')
+        },
         methods: {
             // 微信登陆时的各种操作
             doWXLoginHandle(href) {
@@ -174,7 +194,7 @@
                 let redirect = Request['redirect'] || this.$route.query.redirect
                 let from_id = Request['id']
                 // ====test====
-                // sign = '215b54bc24847bdaa7344b2504514881'
+                sign = '215b54bc24847bdaa7344b2504514881'
                 // sign = 'a39c64680e64ee62b6a932a0a6c3942f'
                 // ====test====
                 // 设置sign
@@ -241,7 +261,6 @@
             }
             ,
             getUserData(to, from) {
-                console.log(!this.hasSign)
                 if(!this.hasSign) return
                 switch (to.name) {
                     case Constants.PageName.qaIndex:
