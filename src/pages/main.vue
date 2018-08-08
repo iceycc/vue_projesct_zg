@@ -29,9 +29,6 @@
                 <img-wrapper :url="tab2[1]" class="askicon"></img-wrapper>
             </div>
         </mu-bottom-nav>
-        <show-ask
-                :showAsk="showAsk"
-        ></show-ask>
 
     </div>
 </template>
@@ -39,13 +36,11 @@
 <script>
     import {Constants, EventBus, mixins, API, util} from '../config/index';
     import ImgWrapper from "../components/commons/ImgWrapper.vue";
-    import ShowAsk from "../components/commons/ShowAsk"
     import {ifWX} from "../config/util";
 
     export default {
         components: {
             ImgWrapper,
-            ShowAsk
         },
         mixins: [mixins.base, mixins.wx],
 
@@ -67,7 +62,6 @@
                 tab3: [require('../assets/img/icon_tab_notifi.svg'), require('../assets/img/icon_tab_notifi_ed.svg')],
                 tab4: [require('../assets/img/icon_tab_user.svg'), require('../assets/img/icon_tab_user_ed.svg')],
                 icon_ask_close: require('../assets/img/icon_ask_close.svg'),
-                showAsk: false,
                 style: {},
                 notice_isread_num: 0,
                 isreadShow: false,
@@ -78,10 +72,9 @@
             };
         },
         created() {
-            EventBus.$on('showAsk',(val)=>{
-                this.showAsk = val
-
-            })
+            // EventBus.$on('showAsk',(val)=>{
+            //     this.showAsk = val
+            // })
             // 保证刷新时 下面的tab和路由对应
             var str = window.location.hash
             var href // 获取当前路由的path值
@@ -194,7 +187,7 @@
                 let redirect = Request['redirect'] || this.$route.query.redirect
                 let from_id = Request['id']
                 // ====test====
-                sign = '215b54bc24847bdaa7344b2504514881'
+                // sign = '215b54bc24847bdaa7344b2504514881'
                 // sign = 'a39c64680e64ee62b6a932a0a6c3942f'
                 // ====test====
                 // 设置sign
@@ -280,12 +273,18 @@
                 }
                 if (to.name === Constants.PageName.qaUser || to.name === Constants.PageName.qaDetail) return
                 this.getUserInfos()
-                this.showAsk = false
+                // this.showAsk = false
             }
             ,
             toggleAsk() {
-                this.showAsk = true;
+                let sign = util.ls.getItem(Constants.LocalStorage.sign)
+                if(!sign){
+                    EventBus.$emit(Constants.EventBus.toTelLogin,'showAsk')
 
+                    return
+                }
+                // this.showAsk = true;
+                EventBus.$emit('showAskBox')
             }
             ,
             gotoAsk(type) {

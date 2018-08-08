@@ -257,9 +257,7 @@
                 </div>
             </div>
         </div>
-        <show-ask
-                :showAsk="showAsk"
-        ></show-ask>
+
 
         <!--&lt;!&ndash;todo 抽离组件&ndash;&gt;-->
         <!--<div class="mask" v-if="showAsk">-->
@@ -302,7 +300,6 @@
 
 <script>
     // import {Constants, mixins, util} from '../assets/js/index';
-    import ShowAsk from "../../components/commons/ShowAsk"
 
     import {EventBus, API, Constants, mixins, util} from '../../config/index'
     import AutoListView from "../../components/commons/AutoListView";
@@ -316,7 +313,6 @@
             ImgWrapper,
             AppBar,
             AutoListView,
-            ShowAsk
         },
         mixins: [mixins.base, mixins.wx, util],
         name: Constants.PageName.qaDetail,
@@ -327,7 +323,6 @@
                 del_answer_id: null,
                 q_adoption_index: null,
                 current_question_id: 0,
-                showAsk: false,
                 dialog2: false,
                 dialog: false,
                 ifGoHome: false,
@@ -377,10 +372,7 @@
             }
         },
         created() {
-            EventBus.$on('showAsk',(val)=>{
-                this.showAsk = val
 
-            })
             this.initWX(() => {
                 // console.log('wx success');
             });
@@ -412,7 +404,7 @@
             this.role = window.localStorage.getItem(Constants.LocalStorage.role)
         },
         destroyed(){
-            EventBus.$off('showAsk')
+
         },
         methods: {
             // 已经去除登陆拦截功能 起初是要获取当前用户角色进行权限控制的
@@ -823,7 +815,7 @@
                 }
             },
             toggleAsk() {
-                this.showAsk = !this.showAsk;
+                EventBus.$emit('showAskBox')
             },
             collect() {
                 if (timer) {

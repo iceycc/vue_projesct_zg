@@ -25,7 +25,7 @@
             <ul class="main">
                 <li class="content-li" v-for="item,index in data2" :key="index">
                     <a class="link-bimg"><img class="" :src="item.photo"></a>
-                    <div>
+                    <div class="font">
                         <p class="num">
                             {{index + 1}}
                         </p>
@@ -117,6 +117,38 @@
         vertical-align: middle;
         border-radius: px2rem(1.5);
         margin: 0 px2rem(6);
+    }
+    .detail-info{
+        color:#666;
+        margin: px2rem(10) 0 px2rem(30);
+    }
+    .content-li{
+        .link-bimg{
+            display: inline-block;
+            width: 100%;
+            height: px2rem(250);
+        }
+        image{
+            width: 100%;
+            height: 100%;
+        }
+        .num{
+            width: px2rem(30);
+            text-align: center;
+        }
+        .info{
+
+            padding-left: px2rem(10);
+
+        }
+
+        .font{
+            display: flex;
+            font-style: italic;
+            font-weight: bold;
+            margin-bottom: px2rem(30);
+
+        }
     }
 
 

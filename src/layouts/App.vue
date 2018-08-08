@@ -1,6 +1,13 @@
 <template>
     <div id="app">
         <!--<transition :name="transitionName" >-->
+        <div class="111" v-if="showAsk1"></div>
+        <show-ask
+                :showAsk="showAsk1"
+        ></show-ask>
+        <!--<show-ask-->
+                <!--:showAsk="showAsk1"-->
+        <!--&gt;</show-ask>-->
         <keep-alive>
             <router-view v-if="$route.meta.keepAlive"></router-view>
         </keep-alive>
@@ -35,10 +42,16 @@
             <a slot="actions" herf="javascript:;" @click="goLogin" style="margin-right: 30px">登陆</a>
         </mu-dialog>
 
+        <!--<show-ask-->
+                <!--:showAsk="showAsk1"-->
+        <!--&gt;</show-ask>-->
+
     </div>
 </template>
 
 <script>
+    import ShowAsk from "../components/commons/ShowAsk"
+
     import {EventBus, Constants, mixins, API,util} from '../config/index';
     const codeImgUrl = 'http://merchant.uzhuang.com/v1/login/get-imgcode'
 
@@ -46,6 +59,9 @@
     export default {
         name: 'app',
         mixins: [mixins.base, mixins.wx],
+        components:{
+            ShowAsk
+        },
         data() {
             return {
                 disabled:false,
@@ -64,12 +80,12 @@
                 send_text: '获取验证码',
                 time: sendTime,
                 codepic:null,
-                targerPage:''
+                targerPage:'',
+                showAsk1: false,
 
             };
         },
         updated() {
-
         },
         // watch: {
         //   '$route' (to, from){
@@ -120,6 +136,16 @@
         },
 
         created() {
+            EventBus.$on('showAsk',(val)=>{
+                this.showAsk1 = val
+
+            })
+
+            EventBus.$on('showAskBox',()=>{
+                console.log('showAskBox')
+                this.showAsk1 = true
+            })
+
             EventBus.$on(Constants.EventBus.showToast, value => {
                 this.showMessage(value);
             });
@@ -132,9 +158,18 @@
             });
             EventBus.$on(Constants.EventBus.toTelLogin, (target) => {
                 this.openAlert = true
-                this.targerPage = target
+                    this.targerPage = target // 登陆成功后的跳转的页面  注意showAsk
+
             });
 
+        },
+        destroyed(){
+            EventBus.$off('showAsk') // 问答弹出层
+            EventBus.$off('showAskBox')
+
+            EventBus.$off(Constants.EventBus.showToast);
+            EventBus.$off(Constants.EventBus.login);
+            EventBus.$off(Constants.EventBus.toTelLogin);
         },
         beforeRouteUpdate(from, to, next) {
             // console.log('beforeRouteUpdate')
@@ -217,11 +252,13 @@
                     .then(result =>{
                         this.openAlert = false
                         if(result.code ==0 && result.data){
-
                             this.getUserInfos()
-
                             this.codepic = ''
                             util.ls.setItem(Constants.LocalStorage.sign,result.data)
+                            if(this.targerPage ==='showAsk'){
+                                EventBus.$emit('showAskBox')
+                                return
+                            }
                             this.$router.push({name:this.targerPage})
                         }else {
                             EventBus.$emit(Constants.EventBus.showToast,{

@@ -1,8 +1,8 @@
 /**
  * Created by zhangweiwei on 16/9/7.
  */
-
 const BASE_URL = process.env.API_HOST;//'http://zhuge.uzhuang.com/index.php'
+
 const Method_Class = {
     hotWord: BASE_URL + '?r=hot-word/',
     banner: BASE_URL + '?r=banner/',

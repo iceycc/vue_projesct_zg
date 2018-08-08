@@ -1,22 +1,25 @@
 <template>
-    <div class="scroll-view">
-        <AppBar title="管家列表"></AppBar>
-        <p v-text="msg"
-           v-if="msgShow"
-           style="text-align: center;background: #fff"></p>
-        <div class="list">
-            <ListItem
-                    v-for="item,index in keeperArr"
-                    :key="index"
-                    type="list2"
-                    :name="item.gjname"
-                    :year="item.worktime"
-                    :num="item.completed_num"
-                    :rate="item.good_percent"
-                    :telphone="item.mobile"
-                    :avatar="item.personalphoto"
-                    class="list-item"
-            ></ListItem>
+    <div>
+
+        <AppBar title="管家列表" style="position: fixed"></AppBar>
+        <div class="main" ref="mainBox" id="mainBox">
+            <p v-text="msg"
+               v-if="msgShow"
+               style="text-align: center;background: #fff"></p>
+            <div class="list scroll-view">
+                <ListItem
+                        v-for="item,index in keeperArr"
+                        :key="index"
+                        type="list2"
+                        :name="item.gjname"
+                        :year="item.worktime"
+                        :num="item.completed_num"
+                        :rate="item.good_percent"
+                        :telphone="item.mobile"
+                        :avatar="item.personalphoto"
+                        class="list-item"
+                ></ListItem>
+            </div>
         </div>
     </div>
 </template>
@@ -25,6 +28,8 @@
     import ListItem from "../../components/commons/ListItem";
     import AppBar from "../../components/commons/AppBar.vue";
     import {API, Constants} from '../../config/index'
+    import {ifWX} from "../../config/util";
+    import {px2rem} from "../../config/util";
 
     export default {
         name: "qaNanagerList",
@@ -50,6 +55,13 @@
 
         created() {
             this.getKeeperActiveList()
+
+        },
+        mounted(){
+            if(!ifWX()){
+                console.log(px2rem(60));
+                this.$refs.mainBox.style.paddingTop = px2rem(60)
+            }
         },
         methods: {
             getKeeperActiveList() {

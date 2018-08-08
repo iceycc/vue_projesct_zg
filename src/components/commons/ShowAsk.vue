@@ -55,7 +55,7 @@
             }
         },
         created(){
-            this.show = this.ShowAsk
+            // this.show = this.ShowAsk
         },
         // computed:{
         //     show(){
@@ -64,6 +64,7 @@
         // },
         watch:{
             showAsk(newVal){
+                console.log(newVal);
                 this.show = newVal
             }
         },
@@ -76,7 +77,6 @@
                 EventBus.$emit('showAsk',false)
 
             },
-
             gotoAsk(type) {
                 if(!ifWX() && type==1) {
                     EventBus.$emit(Constants.EventBus.showToast,{

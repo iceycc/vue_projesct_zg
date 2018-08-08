@@ -142,7 +142,6 @@ router.beforeEach((to, from, next) => {
                         break;
                 }
                 EventBus.$emit('watch_bottomNav_num', bottomNav)
-
                 EventBus.$emit(Constants.EventBus.toTelLogin,to.name)
                 next(false)
             }
