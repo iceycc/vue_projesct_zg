@@ -11,7 +11,7 @@
 
             </div>
             <ul class="jpal">
-                <li v-for="item in classicData" @click="goPages('qaGoodcaseetail',item.id)">
+                <li v-for="item in classicData" @click="goPages('qaGoodcasedetail',item.id)">
                     <div class="jpal-img"><img :src="item.cover" alt=""></div>
                     <p>{{item.alt}}</p>
                 </li>
@@ -155,7 +155,7 @@
                 console.log(name);
                 if(id){
                     this.$router.push({
-                        name,
+                        name:name,
                         query:{
                             id
                         }
@@ -187,11 +187,13 @@
 
 <style lang="scss" scoped>
     @import "../../assets/scss/px2rem";
+    @import "./common";
     h4,p{
         margin: 0;
         padding: 0;
     }
     img{
+        display: inline-block;
         width: 100%;
         height:100%
     }
@@ -247,6 +249,7 @@
             width: 100%;
             height: px2rem(97);
             overflow: hidden;
+
         }
         p{
             font-size: px2rem(8);
@@ -273,12 +276,13 @@
         }
         /*管家头像*/
         .jpal-img{
-            background: #ccc;
+            /*background: #ccc;*/
             width: px2rem(60);
             height: px2rem(60);
             margin: 0 auto;
             border-radius: px2rem(30);
             overflow: hidden;
+            @extend .avatar-img;
         }
         /*管家名称*/
         .name{
@@ -300,6 +304,7 @@
             color: #333;
             width: px2rem(50);
             height: px2rem(21);
+            line-height: px2rem(21);
         }
     }
     .list-item{

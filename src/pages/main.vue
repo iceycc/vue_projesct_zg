@@ -26,7 +26,9 @@
                 <img-wrapper :url="watch_bottomNav == 4 ? tab4[1] : tab4[0]" class="tabicon"></img-wrapper>
             </mu-bottom-nav-item>
             <div class="btn_ask" @click="handleChange(2)" v-if="!$route.meta.isShowTab">
-                <img-wrapper :url="tab2[1]" class="askicon"></img-wrapper>
+                <div class="top">
+                    <img-wrapper :url="tab2[1]" class="askicon"></img-wrapper>
+                </div>
             </div>
         </mu-bottom-nav>
 
@@ -114,7 +116,7 @@
             // 判断是否是微信端
             // this.ifWX =this.checkWX()
             // 先判断是否登陆
-            this.hasSign = util.ls.getItem(Constants.LocalStorage.sign)
+            this.hasSign = util.ls.getItem(Constants.LocalStorage.sign) || false
 
             // 微信打开🐧的操作
             if(ifWX()){
@@ -178,10 +180,14 @@
                 this.initWX(() => {
                     // console.log('wx success');
                 });
+                let sign = util.ls.getItem(Constants.LocalStorage.sign)
+                if(!sign){
+                    return
+                }
                 // 获取url上承载的sign
                 var Request = new Object();
                 Request = util.GetRequest();
-                let sign = Request['sign']
+                sign = Request['sign']
                 sign = sign || util.ls.getItem(Constants.LocalStorage.sign)
                 // redirect和from_id是通过登陆页url传参，后台再返回的。。微信的登陆授权问题。。
                 let redirect = Request['redirect'] || this.$route.query.redirect
@@ -221,16 +227,6 @@
 
             },
 
-            // 判断微信登陆与否
-            checkWX(){
-                let flag = /MicroMessenger/.test(navigator.userAgent);
-                if(!flag){
-                    EventBus.$emit(Constants.EventBus.showToast, {
-                        message: "建议在微信浏览器打开"
-                    })
-                }
-                return flag
-            },
             getUserInfos(success) {
                 API.post(Constants.Method.profile, {})
                     .then((result) => {
@@ -254,7 +250,8 @@
             }
             ,
             getUserData(to, from) {
-                if(!this.hasSign) return
+                let hasSign = util.ls.getItem(Constants.LocalStorage.sign)
+                if(!hasSign) return
                 switch (to.name) {
                     case Constants.PageName.qaIndex:
                         this.bottomNav = 0;
@@ -280,7 +277,6 @@
                 let sign = util.ls.getItem(Constants.LocalStorage.sign)
                 if(!sign){
                     EventBus.$emit(Constants.EventBus.toTelLogin,'showAsk')
-
                     return
                 }
                 // this.showAsk = true;
@@ -298,7 +294,9 @@
             }
             ,
             handleChange(value) {
-                // console.log(value);
+                console.log('value');
+                console.log(value);
+                console.log(this.role);
                 let name = '';
                 switch (parseInt(value)) {
                     case 0:
@@ -308,6 +306,7 @@
                         name = Constants.PageName.qaFind;
                         break;
                     case 2:
+                        this.bottomNav = 2
                         if (this.role == 0) {
                             this.toggleAsk();
                         }
@@ -368,15 +367,21 @@
     $ask_with: 55px;
     .btn_ask {
         position: absolute;
+        background: rgba(1,1,1,0);
         width: $ask_with;
-        height: $ask_with;
-        bottom: 20px;
+        height: 75px;
+        bottom: 0px;
         left: 50%;
         margin-left: -$ask_with/2;
-        padding-top: ($ask_with - 40px)/2;
-        background: #fff;
         border-radius: $ask_with/2;
         border-top: 1px solid #ccc;
+        overflow: hidden;
+        .top{
+            width: 100%;
+            height: $ask_with;
+            background: #fff;
+            padding-top: ($ask_with - 40px)/2;
+        }
         .askicon {
             width: 40px;
             height: 40px;

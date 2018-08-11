@@ -75,7 +75,6 @@
             toggleAsk() {
                 this.show = false;
                 EventBus.$emit('showAsk',false)
-
             },
             gotoAsk(type) {
                 if(!ifWX() && type==1) {
@@ -84,6 +83,7 @@
                     })
                     return
                 }
+                EventBus.$emit('showAsk',false)
                 // console.log(type)
                 this.pushPage({
                     name: Constants.PageName.qaAsk,

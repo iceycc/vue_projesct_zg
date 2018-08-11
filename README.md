@@ -152,102 +152,49 @@ npm run dev
 │   │   │   ├── qaGoodCaseDetail.vue           // 精品案例列详情页
 │   │   │   ├── qaManagerDetail.vue            // 活跃管家详情页
 │   │   │   ├── qaManagerList.vue              // 活跃管家列表页
-│   │   │   └── qaStrategyList.vue             // 装修攻略列表页（没用，也就是课堂页）
-│   │   ├── benefit
-│   │   │   ├── benefit.vue                     // 红包页
-│   │   │   └── children
-│   │   │       ├── commend.vue                 // 推荐有奖
-│   │   │       ├── coupon.vue                  // 代金券说明
-│   │   │       ├── exchange.vue                // 兑换红包
-│   │   │       ├── hbDescription.vue           // 红包说明
-│   │   │       └── hbHistory.vue               // 历史红包
-│   │   ├── city                 
-│   │   │   └── city.vue                        // 当前城市页
-│   │   ├── confirmOrder
-│   │   │   ├── children
-│   │   │   │   ├── children
-│   │   │   │   │   ├── addAddress.vue          // 添加地址页
-│   │   │   │   │   └── children
-│   │   │   │   │       └── searchAddress.vue   // 搜索地址页
-│   │   │   │   ├── chooseAddress.vue           // 选择地址页
-│   │   │   │   ├── invoice.vue                 // 选择发票页
-│   │   │   │   ├── payment.vue                 // 付款页
-│   │   │   │   ├── remark.vue                  // 订单备注页 
-│   │   │   │   └── userValidation.vue          // 用户验证页
-│   │   │   └── confirmOrder.vue                // 确认订单页
-│   │   ├── download
-│   │   │   └── download.vue                    // 下载App
-│   │   ├── find
-│   │   │   └── find.vue                        // 发现页
-│   │   ├── food
-│   │   │   └── food.vue                        // 食品筛选排序页
-│   │   ├── forget
-│   │   │   └── forget.vue                      // 忘记密码，修改密码页
-│   │   ├── home
-│   │   │   └── home.vue                        // 首页
-│   │   ├── login
-│   │   │   └── login.vue                       // 登录注册页
-│   │   ├── msite
-│   │   │   └── msite.vue                       // 商铺列表页
-│   │   ├── order
-│   │   │   ├── children
-│   │   │   │   └── orderDetail.vue             // 订单详情页
-│   │   │   └── order.vue                       // 订单列表页
-│   │   ├── points
-│   │   │   ├── children
-│   │   │   │   └── detail.vue                  // 积分说明
-│   │   │   └── points.vue                      // 积分页
-│   │   ├── profile
-│   │   │   ├── children
-│   │   │   │   ├── children
-│   │   │   │   │   ├── address.vue             // 地址
-│   │   │   │   │   └── children
-│   │   │   │   │       ├── add.vue             // 新增地址
-│   │   │   │   │       └── children
-│   │   │   │   │           └── addDetail.vue   // 搜索地址
-│   │   │   │   ├── info.vue                    // 帐户信息
-│   │   │   │   └── setusername.vue             // 重置用户名
-│   │   │   └── profile.vue                     // 个人中心
-│   │   ├── search
-│   │   │   └── search.vue                      // 搜索页
-│   │   ├── service
-│   │   │   ├── children
-│   │   │   │   └── questionDetail.vue          // 问题详情
-│   │   │   └── service.vue                     // 服务中心
-│   │   ├── shop
-│   │   │   ├── children
-│   │   │   │   ├── children
-│   │   │   │   │   └── shopSafe.vue            // 商铺认证信息页
-│   │   │   │   ├── foodDetail.vue              // 商铺信息页
-│   │   │   │   └── shopDetail.vue              // 单个商铺信息页
-│   │   │   └── shop.vue                        // 商铺筛选页
-│   │   └── vipcard
-│   │       ├── children
-│   │       │   ├── invoiceRecord.vue           // 购买记录
-│   │       │   ├── useCart.vue                 // 使用卡号购买
-│   │       │   └── vipDescription.vue          // 会员说明
-│   │       └── vipcard.vue                     // 会员卡办理页
+│   │   │   └── qaStrategyList.vue             // 装修攻略列表页（没用，迭代后，用原课堂页knowledge取代）
+│   │   ├── index
+│   │   │   ├── qaIndex.vue                     // 首页 问答展示页 
+│   │   │   └── qaSearch                        // 搜索页（2.0迭代去除）
+│   │   ├── knowledge                           // 课堂 (2.0迭代后改为装修攻略)
+│   │   │   ├── qaKetangDetail.vue              // 课堂详情页 (2.0迭代后改为装修攻略)
+│   │   │   └── qaKnowledge.vue                 // 课堂详列表页 (2.0迭代后改为装修攻略)
+│   │   ├── notice
+│   │   │   └── qaNotice.vue                    // 确认订单页
+│   │   ├── question
+│   │   │   ├── qaAsk.vue                       // 提问页面 免费提问和付费提问
+│   │   │   ├── qaComment.vue                   // 评论叶脉你
+│   │   │   ├── qaDetail.vue                    // 问答详情页
+│   │   │   └── qaResponse.vue                  // 回答页面
+│   │   ├── user
+│   │   │   ├── account
+│   │   │   │   └── qaBingAccount.vue           // 绑定微信
+│   │   │   ├── collection
+│   │   │   │   └── qaList.vue                  // 收藏详情页  搜索跳转页也可以
+│   │   │   ├── question
+│   │   │   │   └── qaQuestion.vue              // 我的问题页 主要通过组件AutoListView2.vue区分
+│   │   │   ├── wallet
+│   │   │   │   ├── qaWallet.vue                // 钱包页
+│   │   │   │   ├── qaWalletDetail.vue          // 钱包明细
+│   │   │   │   └── qaWithdraw.vue              // 提现页面
+│   │   │   └── qaUser.vue                      // 用户页面
+│   │   ├── `index.js`                          // 统一管理页面导出，每次新建一个page页面，记得再次登记，然后去Constants登记页面常量
+│   │   ├── main.vue                            // 主页面
+│   │   ├── qaDoc.vue                           // 一些用户协议的文档
+│   │   ├── qaLogin.vue                         // 微信端的登陆页面
+│   │   └── template.vue                        // 测试模版
 │   ├── plugins                                 // 引用的插件
-│   ├── router
+│   │   ├── filter.js                           // 过滤器函数
+│   │   ├── localComponent.js                   // 本地组件管理
+│   │   ├── localstorage.js                     // 本地存储 （微微留下的，我不是很习惯基本没用）
 │   │   └── router.js                           // 路由配置
-│   ├── service                                 // 数据交互统一调配
-│   │   ├── getData.js                          // 获取数据的统一调配文件，对接口进行统一管理
-│   │   └── tempdata                            // 开发阶段的临时数据
-│   ├── store                                   // vuex的状态管理
-│   │   ├── action.js                           // 配置actions
-│   │   ├── getters.js                          // 配置getters
-│   │   ├── index.js                            // 引用vuex，创建store
-│   │   ├── modules                             // store模块
-│   │   ├── mutation-types.js                   // 定义常量muations名
-│   │   └── mutations.js                        // 配置mutations
-│   └── style
-│       ├── common.scss                         // 公共样式文件
-│       ├── mixin.scss                          // 样式配置文件
-│       └── swiper.min.css
-│   ├── App.vue                                 // 页面入口文件
-│   ├── main.js                                 // 程序入口文件，加载各种公共组件
-├── favicon.ico                                 // 图标
+│   ├── request                                 // 
+│   │   ├── index.js                            // request封装
+│   │   ├── requestInstance.js                  // request拦截配置
+│   │   └── requestOption.js                    // request配置
+│   └── main.js                                 // 程序入口文件，加载各种模块组件
 ├── index.html                                  // 入口html文件
+├── README.md                                   // 说明文档
 .
 
 56 directories, 203 files

@@ -243,7 +243,7 @@
 
           })
           .catch((err) => {
-            // console.log(err);
+            console.log(err);
           })
       },
       goQuestionDetail(item,list_style) {

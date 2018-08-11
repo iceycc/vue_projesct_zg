@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div style="height: 100%">
         <ul class="tab">
             <li :class="{active:activeIndex==index}" @click="selectHandle(index)" v-for="item,index in tabs"
                 :key="index">
@@ -11,18 +11,22 @@
                 :datas="wordsData"
                 :show="show"
         ></down-tabs-box>
-        <p v-text="msg"
-           v-if="msgShow"
-           style="text-align: center;background: #fff"></p>
-        <section>
-            <list-item
-                    type="list3"
-                    v-for="item,index in classicData"
-                    :key="index"
-                    :classicData="item"
-                    @onClick="goDetail(item.id)"
-            ></list-item>
-        </section>
+        <auto-list-view
+                :url="url"
+                :flag="flag"
+                type='managerlist'
+                @onItemClick="goDetail"
+                :isNeedDivider="false"
+                :class="classStyle"
+                :ex_params="ex_params"
+        >
+            <template slot="item" slot-scope="props">
+                <list-item
+                        type="list3"
+                        :classicData="props.item"
+                ></list-item>
+            </template>
+        </auto-list-view>
 
     </div>
 </template>
@@ -30,6 +34,8 @@
 <script>
     import ListItem from "../../components/commons/ListItem";
     import DownTabsBox from "../../components/commons/DownTabsBox";
+    import AutoListView from "../../components/commons/AutoListView";
+
     import {Constants, EventBus, mixins, API} from '../../config/index';
 
 
@@ -37,12 +43,11 @@
         name: "qaGoodCase",
         components: {
             DownTabsBox,
-            ListItem
+            ListItem,
+            AutoListView
         },
         data() {
             return {
-                msg:'加载中。。。',
-                msgShow:true,
                 activeIndex: 0,
                 tabs: ['推荐', '风格', '户型', '造价'],
                 show: {
@@ -60,6 +65,13 @@
                 style: 0,
                 cityid: 3360,
                 page: 1,
+                url: '',
+
+                flag:true,
+
+                ex_params: {},
+
+                classStyle:''
             }
         },
         created() {
@@ -97,46 +109,44 @@
                     default:
                         break
                 }
-                this.getClassicListHandle()
+                console.log(key);
+                this.getClassicListHandle(true)
             })
             this.getScreenHandle()
             this.getClassicListHandle()
+        },
+        destroyed() {
+            EventBus.$off('onChange')
         },
         methods: {
             getScreenHandle() {
                 API.get(Constants.Method.getScreen, null)
                     .then(result => {
                         let data = result.data
-                        this.wordArr[1] = data.house
-                        this.wordArr[2] = data.space
-                        this.wordArr[3] = data.style
+                        this.wordArr[1] = data.style
+                        this.wordArr[2] = data.house
+                        this.wordArr[3] = data.space
                     })
             },
-            getClassicListHandle() {
-                let data = {
+            getClassicListHandle(isTab) {
+                console.log('tab')
+                this.url = Constants.Method.getClassicList
+                this.ex_params = { // 用于传递额外的参数
                     house: this.house,
                     space: this.space,
                     style: this.style,
                     cityid: this.cityid,
-                    page: 1,
                 }
-                API.post(Constants.Method.getClassicList, data)
-                    .then(result => {
-                        let data =result.data
-                        if(data.length ==0){
-                            this.msg = '暂无数据'
-                            return
-                        }
-                        this.msg = ''
-                        this.msgShow = false
-                        this.classicData = data
-                    })
+                this.isTab = isTab || false; //是否是切换
+                if(isTab){
+                    this.flag = Math.random();
+                }
             },
-            goDetail(id){
+            goDetail(item) {
                 this.$router.push({
-                    name:Constants.PageName.qaGoodCaseDetail,
-                    query:{
-                        id
+                    name: Constants.PageName.qaGoodCaseDetail,
+                    query: {
+                        id: item.id
                     }
                 })
 

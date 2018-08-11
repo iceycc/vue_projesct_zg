@@ -84,7 +84,7 @@ let routes = [
 addRouter(Constants.PageName.qaDetail, {keepAlive: false, title: '问答详情'});
 addRouter(Constants.PageName.qaAsk, {title: '提问', keepAlive: true});
 addRouter(Constants.PageName.qaResponse, {title: '回复', needLogin: true});
-addRouter(Constants.PageName.qaComment, {title: '评论', needLogin: true});
+addRouter(Constants.PageName.qaComment, {title: '评论', needLogin: false,keepAlive: false});
 addRouter(Constants.PageName.qaSearch, {title: '搜索'});
 addRouter(Constants.PageName.qaList, {keepAlive: false, title: '列表'});
 addRouter(Constants.PageName.qaWalletDetail, {keepAlive: false, title: '钱包明细', needLogin: true});
@@ -97,12 +97,12 @@ addRouter(Constants.PageName.qaBindAccount, {keepAlive: false, title: '账号绑
 addRouter(Constants.PageName.qaManagerDetail, {keepAlive: false, title: '管家详情'});
 addRouter(Constants.PageName.qaStrategyList, {keepAlive: false, title: '装修攻略'});
 addRouter(Constants.PageName.qaManagerList, {keepAlive: false, title: '管家列表'});
-addRouter(Constants.PageName.qaknowledge, {keepAlive: false, title: '课堂'});
+addRouter(Constants.PageName.qaknowledge, {keepAlive: false, title: '装修攻略'});
 addRouter(Constants.PageName.qaGoodCase, {keepAlive: false, title: '精品案例'});
 addRouter(Constants.PageName.qaGoodCaseDetail, {keepAlive: false, title: '精品案例'});
+addRouter(Constants.PageName.qaManagerAskList, {keepAlive: false, title: '专业解答'});
 
 let router = new Router({
-
     routes
 });
 
@@ -120,11 +120,26 @@ router.beforeEach((to, from, next) => {
             // console.log('分享链接  回到当前页')
             window.localStorage.setItem('is_redirect', 1)
         }
+
         if (!sign) {
             if(ifWx){
-                EventBus.$emit(Constants.EventBus.showToast,{
-                    message:'请登录'
-                })
+                // 微信
+                var r = confirm("您还未登陆，是否去登陆")
+                if(!r) {
+                    let bottomNav = 0
+                    switch (from.name) { //
+                        case Constants.PageName.qaIndex:
+                            bottomNav = 0;
+                            break;
+                        case Constants.PageName.qaFind:
+                            bottomNav = 1;
+                            break;
+                        default:
+                            break;
+                    }
+                    EventBus.$emit('watch_bottomNav_num', bottomNav)
+                    return
+                }
                 next({
                   name: Constants.PageName.qaLogin,
                   query: {redirect: to.name,id:to.query.id},

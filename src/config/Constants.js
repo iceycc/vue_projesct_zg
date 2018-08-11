@@ -155,7 +155,8 @@ export const PageName = {
     qaStrategyList: 'qastrategylist',
     qaManagerList: 'qamanagerlist',
     qaGoodCase: 'qagoodcase',
-    qaGoodCaseDetail: 'qaGoodcasedetail',
+    qaGoodCaseDetail: 'qagoodcasedetail',
+    qaManagerAskList: 'qamanageraskList',
 };
 //
 export const LocalStorage = {

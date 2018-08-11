@@ -1,6 +1,6 @@
 <template>
     <div>
-        <AppBar :title="title"></AppBar>
+        <AppBar :title="title" style="text-align: center;text-indent: -30px"></AppBar>
         <!---->
         <section class="modle-1">
             <div class="pic-infos">
@@ -51,21 +51,28 @@
                         <p class="one-line">{{item.question.title}}</p>
                     </section>
                     <section class="answer">
-                        <p><span class="one-line answer-word">{{item.content}}</span> <span class="more">查看全文</span></p>
+                        <p><span class="one-line answer-word">{{item.content}}</span> <span class="more"
+                                                                                            @click="goDetail(item.qid)">查看全文</span>
+                        </p>
                         <div class="avatar">
                             <img :src="item.gjp" alt="">
                         </div>
                     </section>
                     <section class="footer">
                         <span class="time">{{item.question.Time || crtTime}}</span>
-                        <button class="like">
-                            <img-wrapper :url="icon3 "
+                        <!--点赞-->
+                        <button class="like" v-bind:class="item.is_like == 1 ? 'liked' : ''"
+                                @click.stop="like(item.id,item.is_like)"
+                                :disabled="disabled"
+                        >
+                            <img-wrapper :url="item.is_like == 1 ? icon4 : icon3 "
                                          classStyle="icon"></img-wrapper>
                             {{item.laud}}
                         </button>
                     </section>
                 </li>
             </ul>
+            <p class="clickMore" @click="goMore()">点击查看更多</p>
         </section>
         <section class="qa-footer">
             <img src="../../assets/img/index_bottom_phone.png" alt="">
@@ -86,6 +93,8 @@
                 icon3: require('../../assets/img/icon_detail_like.svg'),
                 icon4: require('../../assets/img/icon_detail_liked.svg'),
                 answerArr: [],
+                disabled: false,
+                id: '',
                 profile: {
                     role: '',
                     name: '',
@@ -104,29 +113,100 @@
             ImgWrapper
         },
         created() {
-            let id = this.$route.query.id
-            this.getManagerQaData(id)
-            this.getManagerDetailData(id)
+            this.id = this.$route.query.id
+
+            this.getManagerQaData()
+            this.getManagerDetailData()
         },
         methods: {
-            // 管家问答列表
-            getManagerQaData(id) {
+            like(id, liked, type) {
+                // console.log(type)
+                // console.log(liked)
+                let sign = util.ls.getItem(Constants.LocalStorage.sign)
+                if (!sign) {
+                    EventBus.$emit(Constants.EventBus.toTelLogin)
+                    return
+                }
+                if (timer) {
+                    clearTimeout(timer)
+                }
+                this.disabled = true
+                let timer;
                 let data = {
-                    uid: id
+                    id: id,
+                };
+                switch (liked) {
+                    case '1':
+                        API.post(Constants.Method.un_like, data)
+                            .then((result) => {
+                                this.getManagerQaData()
+                                timer = setTimeout(() => {
+                                    this.disabled = false
+                                }, 1000)
+                            })
+                            .catch((err) => {
+                                // console.log(err);
+                            })
+                        break;
+                    case '0':
+                        API.post(Constants.Method.like, data)
+                            .then((result) => {
+                                this.getManagerQaData()
+                                timer = setTimeout(() => {
+                                    this.disabled = false
+                                }, 1000)
+                            })
+                            .catch((err) => {
+                                // console.log(err);
+                            })
+                        break;
+                    default:
+                        API.post(Constants.Method.un_like, data)
+                            .then((result) => {
+
+                                this.getManagerQaData()
+                                timer = setTimeout(() => {
+                                    this.disabled = false
+                                }, 1000)
+                            })
+                            .catch((err) => {
+                                // console.log(err);
+                            })
+                }
+            },
+            goMore() {
+                this.$router.push({
+                    name: Constants.PageName.qaManagerAskList,
+                    query: {
+                        id: this.id
+                    }
+                })
+            },
+            // 点击更多去问答详情
+            goDetail(id) {
+                this.$router.push({
+                    name: Constants.PageName.qaDetail,
+                    query: {
+                        id
+                    }
+                })
+            },
+            // 管家问答列表
+            getManagerQaData() {
+                let data = {
+                    uid: this.id
                 }
                 API.get(Constants.Method.keeperDetails, {params: data})
                     .then(result => {
                         console.log(result);
-                        this.answerArr = result.data
+                        this.answerArr = result.data.slice(0, 2)
                     })
             },
             // 获取个管家个人信息
-            getManagerDetailData(id) {
-                API.post(Constants.Method.profile, {uid: id})
+            getManagerDetailData() {
+                API.post(Constants.Method.profile, {uid: this.id})
                     .then(result => {
-                        console.log(result.data);
                         let data = result.data
-
                         this.profile = {
                             role: data.levelname,
                             name: data.name,
@@ -165,6 +245,10 @@
         border: px2rem(12) solid #fff;
     }
 
+    button {
+        outline: none;
+    }
+
     .undergo_title {
         width: 100%;
         height: px2rem(28);
@@ -185,7 +269,7 @@
             font: px2rem(14)/px2rem(27) "Microsoft Yahei";
         }
         .zyjd {
-            padding: px2rem(20);
+            padding: px2rem(20) px2rem(20) 0;
             .question, .answer {
                 display: flex;
                 height: px2rem(45);
@@ -278,6 +362,9 @@
                     vertical-align: middle;
                     width: px2rem(14);
                 }
+                .liked {
+                    color: $fontcolor_red;
+                }
 
             }
         }
@@ -366,6 +453,15 @@
         img {
             width: px2rem(154);
         }
+    }
+
+    .clickMore {
+        padding: 0 0 px2rem(20);
+        margin: 0;
+        text-align: center;
+        font-size: px2rem(18);
+        color: #666;
+
     }
 
 

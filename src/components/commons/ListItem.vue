@@ -17,17 +17,19 @@
                 <img :src="avatar" alt="">
             </div>
             <div class="info">
-                <p>{{name}}</p>
-                <p>从业经验{{year}}年/服务客户{{num}}个</p>
-                <p>用户好评率{{rate}}</p>
+                <p>{{name}} &nbsp
+                    <uz-lable :role="level"></uz-lable>
+                </p>
+                <p>从业经验<b>{{year}}</b>年 / 服务客户<b>{{num}}</b>个</p>
+                <p>用户好评率<b>{{rate}}</b></p>
             </div>
             <div class="btn">
-                <a color="primary" href="javascript:;" @click="openAlertHandle(telphone)">联系</a>
+                <a href="javascript:;" @click.stop="openAlertHandle(telphone)">联系</a>
             </div>
 
         </section>
         <!--精品案例部分-->
-        <section class="list-item3" v-if="type == 'list3'" @click="goDetail">
+        <section class="list-item3" v-if="type == 'list3'">
             <img :src="classicData.cover" alt="">
             <section class="infos">
                 <h2>{{classicData.name}}</h2>
@@ -47,9 +49,14 @@
 
 <script>
     import EventBus from "../../config/EventBus";
+    import UzLable from "../../components/commons/uzLable.vue";
+
 
     export default {
         name: "ListItem",
+        components:{
+          UzLable
+        },
         created() {
 
         },
@@ -75,6 +82,11 @@
                 type: null,
                 default: ''
             },
+            level:{
+                type: null,
+                default: '金牌管家'
+            },
+
             year: {
                 type: null,
                 default: ''
@@ -104,7 +116,9 @@
 
                     }
                 }
-            }
+            },
+
+
         },
         data() {
             return {
@@ -182,7 +196,6 @@
         display: flex;
         height: px2rem(100);
         background: #fff;
-
         .left-img {
             width: px2rem(89);
             height: 100%;
@@ -191,7 +204,8 @@
                 display: inline-block;
                 width: px2rem(58);
                 height: px2rem(58);
-                background: #ccc;
+                background: url("../../assets/img/icon_slider.png") no-repeat;
+                background-size: cover;
                 border-radius: px2rem(29);
                 vertical-align: middle;
             }
@@ -208,7 +222,12 @@
             padding-top: px2rem(20);
             font-size: px2rem(13);
             flex: 1;
+            color: #666;
+            b{
+                color: #333;
+            }
             p:first-child{
+                color: #333;
                 font-size: px2rem(14);
                 font-weight: bold;
 
@@ -222,13 +241,14 @@
             a {
                 display: inline-block;
                 font-size: px2rem(12);
-                background: #11cdcd;
-                color: #fff;
+                background: #fff;
+                color: #333;
                 width: px2rem(60);
                 height: px2rem(25);
                 line-height: px2rem(25);
                 border-radius: px2rem(3);
                 vertical-align: middle;
+                border: 1px solid #aeaeae;
             }
             &:after {
                 vertical-align: middle;

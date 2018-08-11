@@ -299,7 +299,6 @@
 </template>
 
 <script>
-    // import {Constants, mixins, util} from '../assets/js/index';
 
     import {EventBus, API, Constants, mixins, util} from '../../config/index'
     import AutoListView from "../../components/commons/AutoListView";
@@ -665,6 +664,13 @@
 
             },
             gotoResponse() {
+                // 判断是否登陆
+                let sign = localStorage.getItem(Constants.LocalStorage.sign)
+                if(!sign) {
+                    console.log(1);
+                    EventBus.$emit(Constants.EventBus.toTelLogin)
+                    return
+                }
                 if (this.ifSelfAnswer) {
                     EventBus.$emit(Constants.EventBus.showToast, {
                         message: '你已经回答过该问题，不能继续回答，可以编辑'
@@ -685,6 +691,11 @@
                 // this.answerDomHandle() // 弹出层交互事件
             },
             gotoAsk1() {
+                let sign = util.ls.getItem(Constants.LocalStorage.sign)
+                if(!sign){
+                    EventBus.$emit(Constants.EventBus.toTelLogin,'showAsk')
+                    return
+                }
                 this.handleChange(2)
 
             },
@@ -699,11 +710,14 @@
                         });
                     }
                     else{
-
-                        // todo 外部登陆 或者 返回微信授权登陆
-                        EventBus.$emit(Constants.EventBus.showToast, {
-                            message: '你还没有登陆'
-                        });
+                        // // 外部登陆 或者 返回微信授权登陆
+                        if(util.ifWX()){
+                            EventBus.$emit(Constants.EventBus.showToast, {
+                                message: '请先关注优装美家，登陆后可以提问'
+                            });
+                        }else {
+                            EventBus.$emit(Constants.EventBus.toTelLogin,'showAsk')
+                        }
                     }
                 } else {
                     let name = '';
@@ -756,6 +770,11 @@
             like(id, liked, type) {
                 // console.log(type)
                 // console.log(liked)
+                let sign = util.ls.getItem(Constants.LocalStorage.sign)
+                if(!sign){
+                    EventBus.$emit(Constants.EventBus.toTelLogin)
+                    return
+                }
                 if (timer) {
                     clearTimeout(timer)
                 }
@@ -818,6 +837,11 @@
                 EventBus.$emit('showAskBox')
             },
             collect() {
+                let sign = util.ls.getItem(Constants.LocalStorage.sign)
+                if(!sign){
+                    EventBus.$emit(Constants.EventBus.toTelLogin)
+                    return
+                }
                 if (timer) {
                     clearTimeout(timer)
                 }
@@ -1175,6 +1199,7 @@
             border: 1px solid #dedede;
             padding-left: px2rem(10);
             background: #fff;
+            outline: none;
         }
         .right-box {
             display: flex;

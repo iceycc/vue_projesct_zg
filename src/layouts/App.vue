@@ -1,17 +1,12 @@
 <template>
     <div id="app">
-        <!--<transition :name="transitionName" >-->
-        <div class="111" v-if="showAsk1"></div>
         <show-ask
                 :showAsk="showAsk1"
         ></show-ask>
-        <!--<show-ask-->
-                <!--:showAsk="showAsk1"-->
-        <!--&gt;</show-ask>-->
+
         <keep-alive>
             <router-view v-if="$route.meta.keepAlive"></router-view>
         </keep-alive>
-        <!--</transition>-->
 
         <router-view v-if="!$route.meta.keepAlive"></router-view>
         <mu-toast v-if="toast.show" :message="toast.message"></mu-toast>
@@ -22,19 +17,17 @@
             </div>
             <!--<mu-flat-button label="确定" slot="actions" primary @click="login = false"/>-->
         </mu-dialog>
-
-
         <mu-dialog title="手机号登录" width="600" max-width="80%" :esc-press-close="false" :overlay-close="false"
                    :open.sync="openAlert">
             <section class="login">
                 <label for="">
                     <span>+86 </span>
-                    <input type="text" placeholder="请输入手机号" v-model="tel">
+                    <input type="number" placeholder="请输入手机号" v-model="tel">
                     <!--<span class="stay"></span>-->
                 </label>
                 <label for="">
                     <span> </span>
-                    <input type="text" placeholder="" v-model="codepic">
+                    <input type="number" placeholder="" v-model="codepic">
                     <button :disabled="disabled" class="btn stay" @click="senSmshandle">{{send_text}}</button>
                 </label>
             </section>
@@ -43,7 +36,7 @@
         </mu-dialog>
 
         <!--<show-ask-->
-                <!--:showAsk="showAsk1"-->
+        <!--:showAsk="showAsk1"-->
         <!--&gt;</show-ask>-->
 
     </div>
@@ -52,19 +45,21 @@
 <script>
     import ShowAsk from "../components/commons/ShowAsk"
 
-    import {EventBus, Constants, mixins, API,util} from '../config/index';
+    import {EventBus, Constants, mixins, API, util} from '../config/index';
+    import {ifWX} from "../config/util";
+
     const codeImgUrl = 'http://merchant.uzhuang.com/v1/login/get-imgcode'
 
-    const sendTime = 6
+    const sendTime = 60
     export default {
         name: 'app',
         mixins: [mixins.base, mixins.wx],
-        components:{
+        components: {
             ShowAsk
         },
         data() {
             return {
-                disabled:false,
+                disabled: false,
                 // transitionName:'',
                 openAlert: false,
                 open: false,
@@ -79,13 +74,14 @@
                 tel: '',
                 send_text: '获取验证码',
                 time: sendTime,
-                codepic:null,
-                targerPage:'',
+                codepic: null,
+                targerPage: '',
                 showAsk1: false,
 
             };
         },
         updated() {
+
         },
         // watch: {
         //   '$route' (to, from){
@@ -95,53 +91,16 @@
         //   }
         // },
         mounted() {
-            // let {} = this.EventUtil
-            // console.log('mounted')
-            var muDialogWrapper = document.querySelector('.mu-dialog-wrapper') || document
-            var _tar = document.querySelector('.mu-dialog')//获取你的目标元素
-            if (muDialogWrapper && _tar) {
-                this.EventUtil().addHandler(muDialogWrapper, 'click', (e) => {
-                    var e = e || window.event;
-                    var target = e.target || e.srcElement;
-                    //1. 点击事件的对象不是目标区域本身
-                    //2. 事件对象同时也不是目标区域的子元素
-                    if (!(target == _tar) && !_tar.contains(target)) {
-                        //你的功能
-                        this.login = false;
-                        // console.log('click')
-                        // this.EventUtil().removeHandler(muDialogWrapper,'click')
-
-                    } else {
-                        //你的功能
-                        // console.log('_tar')
-                    }
-                })
-                this.EventUtil().addHandler(muDialogWrapper, 'touch', (e) => {
-                    var e = e || window.event;
-                    var target = e.target || e.srcElement;
-                    //1. 点击事件的对象不是目标区域本身
-                    //2. 事件对象同时也不是目标区域的子元素
-                    if (!(target == _tar) && !_tar.contains(target)) {
-                        // 你的功能
-                        this.login = false;
-                        // console.log('touch')
-                        // this.EventUtil().removeHandler(muDialogWrapper,'touch')
-                    } else {
-                        // 你的功能
-                        // console.log('_tar')
-                    }
-                })
-            }
-
+            // this.clickOut()
         },
 
         created() {
-            EventBus.$on('showAsk',(val)=>{
+            EventBus.$on('showAsk', (val) => {
                 this.showAsk1 = val
 
             })
 
-            EventBus.$on('showAskBox',()=>{
+            EventBus.$on('showAskBox', () => {
                 console.log('showAskBox')
                 this.showAsk1 = true
             })
@@ -157,13 +116,25 @@
                 }, 2500)
             });
             EventBus.$on(Constants.EventBus.toTelLogin, (target) => {
-                this.openAlert = true
+                if(ifWX()){
+                    // 微信
+                    var r = confirm("您还未登陆，是否去登陆")
+                    if(!r) return
+                    this.$router.push({
+                        name:Constants.PageName.qaLogin
+                    })
+
+                }else {
+                    // 非微信
+                    this.openAlert = true
                     this.targerPage = target // 登陆成功后的跳转的页面  注意showAsk
+                }
+
 
             });
 
         },
-        destroyed(){
+        destroyed() {
             EventBus.$off('showAsk') // 问答弹出层
             EventBus.$off('showAskBox')
 
@@ -212,18 +183,25 @@
             // sendSms
             senSmshandle() {
                 console.log(this.tel);
-                if(this.tel == ''){
-                    EventBus.$emit(Constants.EventBus.showToast,{
-                        message:'电话不能为空'
+                if (this.tel == '') {
+                    EventBus.$emit(Constants.EventBus.showToast, {
+                        message: '电话不能为空'
+                    })
+                    return
+                }
+                if (this.tel.length !== 11) {
+                    EventBus.$emit(Constants.EventBus.showToast, {
+                        message: '请输入11位手机号'
                     })
                     return
                 }
 
-                this.send_text = sendTime
+                let timerNum = sendTime
                 this.disabled = true
                 var timer = setInterval(() => {
 
-                    this.send_text--
+                    timerNum--
+                    this.send_text = timerNum + 's'
                     if (this.send_text == -1) {
                         this.disabled = false
                         this.send_text = '点击重新发送'
@@ -242,28 +220,32 @@
                     })
             },
             // goLogin
-            goLogin(){
+            goLogin() {
 
                 let data = {
                     code: this.codepic,
                     mobile: this.tel
                 }
-                API.post(Constants.Method.telLogin,data)
-                    .then(result =>{
-                        this.openAlert = false
-                        if(result.code ==0 && result.data){
+                API.post(Constants.Method.telLogin, data)
+                    .then(result => {
+                        if (result.code == 0 && result.data) {
+                            this.openAlert = false
                             this.getUserInfos()
                             this.codepic = ''
-                            util.ls.setItem(Constants.LocalStorage.sign,result.data)
-                            if(this.targerPage ==='showAsk'){
+                            util.ls.setItem(Constants.LocalStorage.sign, result.data)
+                            if (!this.targerPage) { // 没有传目标直接关闭
+                                return
+                            }
+                            if (this.targerPage === 'showAsk') { // 提问时
                                 EventBus.$emit('showAskBox')
                                 return
                             }
-                            this.$router.push({name:this.targerPage})
-                        }else {
-                            EventBus.$emit(Constants.EventBus.showToast,{
-                                message:result.message
+                            this.$router.push({name: this.targerPage})
+                        } else {
+                            EventBus.$emit(Constants.EventBus.showToast, {
+                                message: result.message
                             })
+                            return
                         }
                     })
             },
@@ -295,8 +277,46 @@
                 if (this.toast.Timer) clearTimeout(this.toast.Timer);
                 this.toast.Timer = setTimeout(() => {
                     this.toast.show = false;
-                }, 2000);
+                }, 4000);
             },
+            // 弃用
+            clickOut(){
+                var muDialogWrapper = document.querySelector('.mu-dialog-wrapper') || document
+                var _tar = document.querySelector('.mu-dialog')//获取你的目标元素
+                if (muDialogWrapper && _tar) {
+                    this.EventUtil().addHandler(muDialogWrapper, 'click', (e) => {
+                        var e = e || window.event;
+                        var target = e.target || e.srcElement;
+                        //1. 点击事件的对象不是目标区域本身
+                        //2. 事件对象同时也不是目标区域的子元素
+                        if (!(target == _tar) && !_tar.contains(target)) {
+                            //你的功能
+                            this.login = false;
+                            // console.log('click')
+                            // this.EventUtil().removeHandler(muDialogWrapper,'click')
+
+                        } else {
+                            //你的功能
+                            // console.log('_tar')
+                        }
+                    })
+                    this.EventUtil().addHandler(muDialogWrapper, 'touch', (e) => {
+                        var e = e || window.event;
+                        var target = e.target || e.srcElement;
+                        //1. 点击事件的对象不是目标区域本身
+                        //2. 事件对象同时也不是目标区域的子元素
+                        if (!(target == _tar) && !_tar.contains(target)) {
+                            // 你的功能
+                            this.login = false;
+                            // console.log('touch')
+                            // this.EventUtil().removeHandler(muDialogWrapper,'touch')
+                        } else {
+                            // 你的功能
+                            // console.log('_tar')
+                        }
+                    })
+                }
+            }
         }
     };
 </script>
@@ -353,11 +373,12 @@
             background: #f2f2f2;
             padding-left: px2rem(6);
         }
-        .stay{
+        .stay {
             width: px2rem(70);
 
         }
         button {
+            outline: none;
             border: none;
             height: px2rem(30);
             text-align: center;

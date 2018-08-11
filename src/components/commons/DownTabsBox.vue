@@ -34,7 +34,7 @@
         },
         data(){
             return{
-                active_hot:0,
+                active_hot:-1,
             }
         },
         mounted(){
@@ -43,14 +43,17 @@
                     this.show.ifshow= false
                 })
             }
+
         },
         watch:{
             // active_hot(oldData,newData) {
             //     console.log(oldData,newData);
             // }
+            datas(oldData,newData){
+                this.active_hot = -1
+            }
         },
         beforeDestroy () {
-            EventBus.$off('onChange')
         },
         methods:{
             doSelect(index,key){
