@@ -9,7 +9,9 @@
         </keep-alive>
 
         <router-view v-if="!$route.meta.keepAlive"></router-view>
-        <mu-toast v-if="toast.show" :message="toast.message"></mu-toast>
+        <mu-snackbar v-if="toast.show"
+                     actionColor = "red"
+                     :message="toast.message" action="关闭" @actionClick="hideToast" @close="hideToast"/>
         <mu-dialog :open="login" title="登录成功" titleClass="text-center">
             <div class="info-text">
                 关注优装美家公众号<br>
@@ -44,10 +46,8 @@
 
 <script>
     import ShowAsk from "../components/commons/ShowAsk"
-
     import {EventBus, Constants, mixins, API, util} from '../config/index';
     import {ifWX} from "../config/util";
-
     const codeImgUrl = 'http://merchant.uzhuang.com/v1/login/get-imgcode'
 
     const sendTime = 60
@@ -55,7 +55,7 @@
         name: 'app',
         mixins: [mixins.base, mixins.wx],
         components: {
-            ShowAsk
+            ShowAsk,
         },
         data() {
             return {
@@ -221,7 +221,24 @@
             },
             // goLogin
             goLogin() {
-
+                if (this.tel == '') {
+                    EventBus.$emit(Constants.EventBus.showToast, {
+                        message: '电话不能为空'
+                    })
+                    return
+                }
+                if (this.tel.length !== 11) {
+                    EventBus.$emit(Constants.EventBus.showToast, {
+                        message: '请输入11位手机号'
+                    })
+                    return
+                }
+                if(this.codepic == '') {
+                    EventBus.$emit(Constants.EventBus.showToast, {
+                        message: '其输入短信验证码'
+                    })
+                    return
+                }
                 let data = {
                     code: this.codepic,
                     mobile: this.tel
@@ -270,10 +287,13 @@
                         // console.log(err);
                     });
             },
+            hideToast () {
+                this.toast.show = false
+                if (this.toast.Timer) clearTimeout(this.toast.Timer)
+            },
             showMessage(value) {
                 this.toast.show = true;
                 this.toast.message = value.message;
-
                 if (this.toast.Timer) clearTimeout(this.toast.Timer);
                 this.toast.Timer = setTimeout(() => {
                     this.toast.show = false;

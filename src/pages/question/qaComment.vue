@@ -124,10 +124,12 @@
             });
             this.role = window.localStorage.getItem(Constants.LocalStorage.role)
             this.ifNeedReLogin()
-        },
-        activated() {
+
             this.getData()
             this.getComment()
+        },
+        activated() {
+
         },
         methods: {
             ifNeedReLogin() {

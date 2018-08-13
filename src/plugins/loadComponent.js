@@ -4,7 +4,9 @@ import MuseUI from 'muse-ui';
 import 'muse-ui/dist/muse-ui.css';
 import 'muse-ui/dist/theme-light.css';
 import 'material-design-icons/iconfont/material-icons.css';
+
 Vue.use(MuseUI);
+
 /**
  *  通用组件引用,以免懒加载重复打包.
  */

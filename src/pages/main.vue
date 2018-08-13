@@ -69,8 +69,8 @@
                 isreadShow: false,
                 to_doc: {},
                 role: 0,
-                ifWX:false,
-                hasSign:null
+                ifWX: false,
+                hasSign: null
             };
         },
         created() {
@@ -119,21 +119,21 @@
             this.hasSign = util.ls.getItem(Constants.LocalStorage.sign) || false
 
             // 微信打开🐧的操作
-            if(ifWX()){
-                if(!this.hasSign){ // 没登陆先登陆
+            if (ifWX()) {
+                if (!this.hasSign) { // 没登陆先登陆
                     this.doWXLoginHandle(href)
-                }else {
+                } else {
                     this.$router.push({
                         name: Constants.PageName.qaIndex,
                     })
                 }
             }
-            if(!ifWX()){
+            if (!ifWX()) {
                 EventBus.$emit(Constants.EventBus.showToast, {
                     message: "建议在微信浏览器打开"
                 })
             }
-            if(!this.ifWX){
+            if (!this.ifWX) {
                 setTimeout(() => {
                     this.$router.push({
                         name: Constants.PageName.qaIndex,
@@ -141,7 +141,7 @@
                 }, 100)
             }
             // 获取角色role
-            if(this.hasSign){
+            if (this.hasSign) {
                 this.getUserInfos(() => {
                     this.role = util.ls.getItem(Constants.LocalStorage.role)
                 })
@@ -168,7 +168,7 @@
             };
         }
         ,
-        destroyed(){
+        destroyed() {
             EventBus.$off('watch_bottomNav_num')
             EventBus.$off(Constants.EventBus.inform_num)
             EventBus.$off('showAsk')
@@ -180,14 +180,10 @@
                 this.initWX(() => {
                     // console.log('wx success');
                 });
-                let sign = util.ls.getItem(Constants.LocalStorage.sign)
-                if(!sign){
-                    return
-                }
                 // 获取url上承载的sign
                 var Request = new Object();
                 Request = util.GetRequest();
-                sign = Request['sign']
+                let sign = Request['sign']
                 sign = sign || util.ls.getItem(Constants.LocalStorage.sign)
                 // redirect和from_id是通过登陆页url传参，后台再返回的。。微信的登陆授权问题。。
                 let redirect = Request['redirect'] || this.$route.query.redirect
@@ -198,6 +194,11 @@
                 // ====test====
                 // 设置sign
                 window.localStorage.setItem(Constants.LocalStorage.sign, sign)
+                let _this = this
+                setTimeout(()=>{
+                    _this.getUserInfos()
+                })
+
                 // 当前路由指向qaknowledge（发现），直接跳转 不用校验。。
                 if (href == 'qaknowledge') {
                     this.$router.replace({
@@ -242,16 +243,13 @@
                     })
                     .catch((err) => {
                         // console.log(err);
-                     });
-            }
-            ,
+                    });
+            },
             webpage() {
                 this.$router.push({name: Constants.PageName.qaDoc, params: {type: 2}})
-            }
-            ,
+            },
             getUserData(to, from) {
-                let hasSign = util.ls.getItem(Constants.LocalStorage.sign)
-                if(!hasSign) return
+
                 switch (to.name) {
                     case Constants.PageName.qaIndex:
                         this.bottomNav = 0;
@@ -269,20 +267,20 @@
                         break;
                 }
                 if (to.name === Constants.PageName.qaUser || to.name === Constants.PageName.qaDetail) return
+                let hasSign = util.ls.getItem(Constants.LocalStorage.sign)
+                if (!hasSign) return
                 this.getUserInfos()
                 // this.showAsk = false
-            }
-            ,
+            },
             toggleAsk() {
                 let sign = util.ls.getItem(Constants.LocalStorage.sign)
-                if(!sign){
-                    EventBus.$emit(Constants.EventBus.toTelLogin,'showAsk')
+                if (!sign) {
+                    EventBus.$emit(Constants.EventBus.toTelLogin, 'showAsk')
                     return
                 }
                 // this.showAsk = true;
                 EventBus.$emit('showAskBox')
-            }
-            ,
+            },
             gotoAsk(type) {
                 // console.log(type)
                 this.pushPage({
@@ -342,7 +340,9 @@
 <!-- Add "scoped" attribute to limit CSS to this component only 111-->
 <style lang="scss" scoped>
     @import "../assets/scss/px2rem";
-
+    input,select,option,textarea{
+        outline: none;
+    }
     .page {
         background: #f2f2f2;
         padding-bottom: px2rem(70);
@@ -367,7 +367,7 @@
     $ask_with: 55px;
     .btn_ask {
         position: absolute;
-        background: rgba(1,1,1,0);
+        background: rgba(1, 1, 1, 0);
         width: $ask_with;
         height: 75px;
         bottom: 0px;
@@ -376,7 +376,7 @@
         border-radius: $ask_with/2;
         border-top: 1px solid #ccc;
         overflow: hidden;
-        .top{
+        .top {
             width: 100%;
             height: $ask_with;
             background: #fff;
@@ -387,8 +387,6 @@
             height: 40px;
         }
     }
-
-
 
     .isread-num {
         position: absolute;

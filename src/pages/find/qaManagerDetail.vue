@@ -247,6 +247,8 @@
 
     button {
         outline: none;
+        border: none;
+        background: #f4f4f4;
     }
 
     .undergo_title {

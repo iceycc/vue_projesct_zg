@@ -62,8 +62,8 @@
                 url: '',
                 flag: true,
                 classStyle: 'classStyle',
-                ex_params: {}
-
+                ex_params: {},
+                disabled: false,
             }
         },
         mounted(){
@@ -85,13 +85,13 @@
                 })
             },
             getList() {
+                this.flag = Math.random()
                 this.url = Constants.Method.keeperDetails + '&uid=' + this.id
-
 
             },
             like(id, liked, type) {
                 // console.log(type)
-                // console.log(liked)
+                console.log(liked)
                 let sign = util.ls.getItem(Constants.LocalStorage.sign)
                 if (!sign) {
                     EventBus.$emit(Constants.EventBus.toTelLogin)
@@ -151,8 +151,10 @@
 <style lang="scss" scoped>
     @import "../../assets/scss/px2rem";
     @import "../../assets/scss/util";
+
     button{
         outline: none;
+        border: none;
         background: #f4f4f4;
     }
     .classStyle{
@@ -245,7 +247,6 @@
             .like {
                 flex: 1;
                 text-align: right;
-                background: #fff;
             }
             .icon {
                 vertical-align: middle;

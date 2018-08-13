@@ -11,7 +11,7 @@
 
             </div>
             <ul class="jpal">
-                <li v-for="item in classicData" @click="goPages('qaGoodcasedetail',item.id)">
+                <li v-for="item in classicData" @click="goPages('qagoodcasedetail',item.id)">
                     <div class="jpal-img"><img :src="item.cover" alt=""></div>
                     <p>{{item.alt}}</p>
                 </li>
@@ -297,14 +297,14 @@
         /*按钮*/
         .btn{
             display: inline-block;
-            border: 1px solid #999;
             border-radius: px2rem(2);
             margin: px2rem(8) auto 0;
             font-size: px2rem(10);
-            color: #333;
+            color: #fff;
             width: px2rem(50);
             height: px2rem(21);
             line-height: px2rem(21);
+            background: #69d6b1;
         }
     }
     .list-item{

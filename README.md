@@ -6,7 +6,8 @@
 
 vue2 + vue-router + webpack + ES6/7 + axios + sass + flex + svg
  
-### 3、项目运行
+### 3、项目运行 及 发布流程
+
 ````
 git clone ssh://git@10.1.200.103:2289/webcode/web.zhuge.git
 
@@ -14,10 +15,27 @@ git clone ssh://git@10.1.200.103:2289/webcode/web.zhuge.git
 
 npm install  或 yarn(推荐)
 
-npm run dev
+npm run dev 运行
+
+npm run build  打包dist
 ````
+
+
+* master分支为线上版本，不可修改。或者有自己的开发习惯
+* 1.2.1-outlogin 为2.0迭代那版本（上线后合并到master再删除该分支）  
+    - 外部登陆
+    - 发现模块
+    - 开发完毕可删除改分支
+* 基本流程 `该项目只是生成对应的dist文件，放到后台项目，后台构建并部署上线`
+    - 开发新需求 从master检出个人分支`dev(个人命名)`进行开发
+    - 开发完毕，提交121测试： `npm run build` 生成`dist`，将生成的dist放到 `zhuge.uzhuang.com`的个人分支的`web\home`下，将里面全部替换。按照后端的规则合并到`testing`分支i下
+    - 121测试完毕，提交176预生产： 创建`zhuge.uzhuang.com`的个人分支合并到`preproduction`预生产环境的合并请求，指派给开发主管 
+    - 最后后端部署上线
+
 ### 3、接口文档
-* 
+* zhuge.uzhuang.com
+* m.uzhuang.com
+* bang.uzhuang.com
 
 ### 4、主要功能
 

@@ -237,18 +237,16 @@
         .btn {
             text-align: center;
             width: px2rem(85);
-
             a {
                 display: inline-block;
                 font-size: px2rem(12);
-                background: #fff;
-                color: #333;
+                background: #66d3b8;
+                color: #fff;
                 width: px2rem(60);
                 height: px2rem(25);
                 line-height: px2rem(25);
                 border-radius: px2rem(3);
                 vertical-align: middle;
-                border: 1px solid #aeaeae;
             }
             &:after {
                 vertical-align: middle;
