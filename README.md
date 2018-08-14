@@ -1,19 +1,21 @@
-## 诸葛装修
+## 诸葛装修  by icey
 
 ### 1、项目介绍
 
 ### 2、技术栈
 
 vue2 + vue-router + webpack + ES6/7 + axios + sass + flex + svg
+
+muse-ui  部分用的2.0版本:`https://muse-ui.org/2.1.0/#/index`
  
-### 3、项目运行 及 发布流程
+### 3、项目运行 及 发布流程  2018-8-10
 
 ````
 git clone ssh://git@10.1.200.103:2289/webcode/web.zhuge.git
 
 进入项目目录
 
-npm install  或 yarn(推荐)
+npm install  
 
 npm run dev 运行
 
@@ -41,6 +43,7 @@ npm run build  打包dist
 
 - [x] 微信登陆
 - [x] 外部登陆功能
+- [x] 游客模式
 
 - [x] 问答页导航
 - [x] 问答页轮播图
@@ -113,7 +116,7 @@ npm run build  打包dist
 
 
 ### 5、数据接口
-* http://api.uzhuang.com/workspace/myWorkspace.do?projectId=4#39
+* http://api.uzhuang.com/
 
 * 主要api用：zhuge.uzhuang.com
 * 装修攻略（课堂）：bang.uzhuang.com
@@ -215,7 +218,7 @@ npm run build  打包dist
 ├── README.md                                   // 说明文档
 .
 
-56 directories, 203 files
+
 ```
 
 
