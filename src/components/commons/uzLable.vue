@@ -1,6 +1,6 @@
 <!--用户徽章吧-->
 <template>
-  <span class="role" v-if="role != '回答者' && role != '用户'" v-bind:class="getRoleClass(role)">{{role}}</span>
+  <span class="role" v-if="role != '回答者' && role != '用户' && role != '普通管家'" v-bind:class="getRoleClass(role)">{{role}}</span>
 </template>
 
 <script>

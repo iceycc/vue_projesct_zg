@@ -124,26 +124,28 @@ router.beforeEach((to, from, next) => {
         if (!sign) {
             if(ifWx){
                 // 微信
-                var r = confirm("您还未登陆，是否去登陆")
-                if(!r) {
-                    let bottomNav = 0
-                    switch (from.name) { //
-                        case Constants.PageName.qaIndex:
-                            bottomNav = 0;
-                            break;
-                        case Constants.PageName.qaFind:
-                            bottomNav = 1;
-                            break;
-                        default:
-                            break;
-                    }
-                    EventBus.$emit('watch_bottomNav_num', bottomNav)
-                    return
-                }
-                next({
-                  name: Constants.PageName.qaLogin,
-                  query: {redirect: to.name,id:to.query.id},
-                })
+                EventBus.$emit("showWxIfLogin",from.name)
+                return
+                // var r = confirm("您还未登陆，是否去登陆？")
+                // if(!r) {
+                //     let bottomNav = 0
+                //     switch (from.name) { //
+                //         case Constants.PageName.qaIndex:
+                //             bottomNav = 0;
+                //             break;
+                //         case Constants.PageName.qaFind:
+                //             bottomNav = 1;
+                //             break;
+                //         default:
+                //             break;
+                //     }
+                //     EventBus.$emit('watch_bottomNav_num', bottomNav)
+                //     return
+                // }
+                // next({
+                //   name: Constants.PageName.qaLogin,
+                //   query: {redirect: to.name,id:to.query.id},
+                // })
             }else {
                 let bottomNav = 0
                 switch (from.name) { //

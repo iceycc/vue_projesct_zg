@@ -59,7 +59,11 @@
                 let redirect = this.$route.query.redirect
                 let id = this.$route.query.id
                 // console.log(redirect);
-                window.localStorage.clear()
+                window.localStorage.removeItem(Constants.LocalStorage.sign)
+                window.localStorage.removeItem(Constants.LocalStorage.uid)
+                window.localStorage.removeItem(Constants.LocalStorage.role)
+                window.localStorage.removeItem(Constants.LocalStorage.question_num)
+                window.localStorage.removeItem(Constants.LocalStorage.inform_num)
                 // redirect 和 id 前后约定的 用于登陆拦截后能再跳转到问答详情和评论详情页
                 window.location.href = `http://wx.uzhuang.com/index.php?r=wx/oauth2&redirect=${redirect}&id=${id}`
             },

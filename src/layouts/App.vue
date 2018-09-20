@@ -37,6 +37,12 @@
             <a slot="actions" herf="javascript:;" @click="goLogin" style="margin-right: 30px">登陆</a>
         </mu-dialog>
 
+
+        <mu-dialog title="您还未登陆，是否去登陆?" width="600" max-width="80%" :esc-press-close="false" :overlay-close="false" :open.sync="openAlertWx">
+            <a slot="actions" @click="closeAlertDialogWx" style="margin-right: 20px">关闭</a>
+            <a slot="actions" @click="goWxLogin" style="margin-right: 20px">确定</a>
+        </mu-dialog>
+
         <!--<show-ask-->
         <!--:showAsk="showAsk1"-->
         <!--&gt;</show-ask>-->
@@ -62,6 +68,7 @@
                 disabled: false,
                 // transitionName:'',
                 openAlert: false,
+                openAlertWx:false,
                 open: false,
                 docked: false,
                 toast: {
@@ -115,14 +122,30 @@
                     this.login = false;
                 }, 2500)
             });
+            EventBus.$on("showWxIfLogin", (val) => {
+                this.openAlertWx = true
+                if(!val) return
+                let bottomNav = 0
+                switch (val) { //
+                    case Constants.PageName.qaIndex:
+                        bottomNav = 0;
+                        break;
+                    case Constants.PageName.qaFind:
+                        bottomNav = 1;
+                        break;
+                    default:
+                        break;
+                }
+                EventBus.$emit('watch_bottomNav_num', bottomNav)
+            });
+
+
             EventBus.$on(Constants.EventBus.toTelLogin, (target) => {
                 if(ifWX()){
                     // 微信
-                    var r = confirm("您还未登陆，是否去登陆")
-                    if(!r) return
-                    this.$router.push({
-                        name:Constants.PageName.qaLogin
-                    })
+                    // var r = confirm("您还未登陆，是否去登陆")
+                    this.openAlertWx = true
+
 
                 }else {
                     // 非微信
@@ -137,7 +160,7 @@
         destroyed() {
             EventBus.$off('showAsk') // 问答弹出层
             EventBus.$off('showAskBox')
-
+            EventBus.$off("showWxIfLogin");
             EventBus.$off(Constants.EventBus.showToast);
             EventBus.$off(Constants.EventBus.login);
             EventBus.$off(Constants.EventBus.toTelLogin);
@@ -150,6 +173,16 @@
             next()
         },
         methods: {
+            goWxLogin(){
+                let pathname = this.$route.name
+                let id = this.$route.query.id
+                util.ls.setItem('targetName',pathname)
+                util.ls.setItem('targetId',id)
+                this.$router.push({
+                    name:Constants.PageName.qaLogin
+                })
+                this.openAlertWx = false
+            },
             EventUtil() {
                 return {
                     /*检测绑定事件*/
@@ -202,7 +235,7 @@
 
                     timerNum--
                     this.send_text = timerNum + 's'
-                    if (this.send_text == -1) {
+                    if (this.send_text =='-1s') {
                         this.disabled = false
                         this.send_text = '点击重新发送'
                         clearTimeout(timer)
@@ -267,6 +300,9 @@
                     })
             },
             //
+            closeAlertDialogWx(){
+                this.openAlertWx = false
+            },
             closeAlertDialog() {
                 this.openAlert = false
             },
@@ -387,15 +423,14 @@
         input {
             flex: 1;
             border: none;
-            margin-right: px2rem(10);
+            margin-right: px2rem(3);
             width: px2rem(100);
             height: px2rem(30);
             background: #f2f2f2;
             padding-left: px2rem(6);
         }
         .stay {
-            width: px2rem(70);
-
+            width: px2rem(100);
         }
         button {
             outline: none;
@@ -404,7 +439,7 @@
             text-align: center;
             color: #fff;
             line-height: px2rem(30);
-            font-size: px2rem(12);
+            font-size: px2rem(13);
         }
         .btn {
             background: #0edda2;

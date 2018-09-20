@@ -10,6 +10,9 @@ export default {
             //  获取当前url的微信配置凭证
             API.post(Constants.Method.get_wx_config_info, null)
                 .then((result) => {
+                    console.log(result);
+                    result = JSON.parse(result)
+                    console.log(result);
                     wx.config(
                         result
                     );
@@ -24,6 +27,7 @@ export default {
                 })
                 .catch((err)=>{
                     // console.log(err);
+                    console.log(err);
                 });
         }
     }

@@ -33,7 +33,7 @@
         </div>
       </div>
       <div class="goaccount">
-        <a href="javascript:;" @click="clickThree">诸葛装修 V1.0</a>
+        <a href="javascript:;" @click="clickThree">诸葛装修 V1.2.0</a>
       </div>
 
     </div>
@@ -266,8 +266,11 @@
   }
 
   .goaccount {
+    position: fixed;
+    left: 50%;
+    transform: translate(-50%);
     text-align: center;
-    margin-top: px2rem(100);
+    bottom: px2rem(100);
     a {
       color: #999;
     }

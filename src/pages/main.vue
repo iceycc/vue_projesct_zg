@@ -117,12 +117,22 @@
             // this.ifWX =this.checkWX()
             // 先判断是否登陆
             this.hasSign = util.ls.getItem(Constants.LocalStorage.sign) || false
-
-            // 微信打开🐧的操作
+            let targetname = util.ls.getItem('targetName') || false
+            let targetId = util.ls.getItem('targetId') || false
+            // 微信👊🐔的操作
             if (ifWX()) {
                 if (!this.hasSign) { // 没登陆先登陆
                     this.doWXLoginHandle(href)
-                } else {
+                }
+                else if (targetname) {
+                    this.$router.push({
+                        name: targetname,
+                        query: {id: targetId}
+                    })
+                    util.ls.removeItem('targetName')
+                    util.ls.removeItem('targetId')
+                }
+                else {
                     this.$router.push({
                         name: Constants.PageName.qaIndex,
                     })
@@ -195,7 +205,7 @@
                 // 设置sign
                 window.localStorage.setItem(Constants.LocalStorage.sign, sign)
                 let _this = this
-                setTimeout(()=>{
+                setTimeout(() => {
                     _this.getUserInfos()
                 })
 
@@ -305,18 +315,14 @@
                         break;
                     case 2:
                         this.bottomNav = 2
-                        if (this.role == 0) {
-                            this.toggleAsk();
-                        }
-                        else if (this.role == 1) {
+
+                        if (this.role == 1) {
                             EventBus.$emit(Constants.EventBus.showToast, {
                                 message: '管家没有提问权限'
                             });
                         }
                         else {
-                            EventBus.$emit(Constants.EventBus.showToast, {
-                                message: '没有提问权限'
-                            });
+                            this.toggleAsk();
                         }
                         break;
                     case 3:
@@ -340,9 +346,11 @@
 <!-- Add "scoped" attribute to limit CSS to this component only 111-->
 <style lang="scss" scoped>
     @import "../assets/scss/px2rem";
-    input,select,option,textarea{
+
+    input, select, option, textarea {
         outline: none;
     }
+
     .page {
         background: #f2f2f2;
         padding-bottom: px2rem(70);

@@ -49,7 +49,7 @@
         data() {
             return {
                 activeIndex: 0,
-                tabs: ['推荐', '风格', '户型', '造价'],
+                tabs: ['推荐', '风格', '户型', '空间'],
                 show: {
                     ifshow: false
                 },

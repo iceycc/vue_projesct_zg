@@ -6,6 +6,9 @@ $fontcolor_gray_line: #ddd;
 $fontcolor_red: #fe4c4c;
 $fontcolor_blue: #0072ff;
 $fontcolor: #666666;
+input,textarea,button{
+  outline: none;
+}
 .line_one {
   overflow: hidden;
   text-overflow:ellipsis;

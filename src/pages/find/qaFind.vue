@@ -46,7 +46,6 @@
                 <span class="z-right" @click="goPages('qaknowledge')">更多<img-wrapper :url="ico_arrow"
                                                      classStyle="icon"></img-wrapper></span>
             </div>
-
             <div style="padding-top: 10px;font-size: 0">
                 <list-item
                         @onClick="goDetailPage(item.url)"
@@ -106,9 +105,6 @@
             ListItem
         },
         created(){
-            //http://bang.uzhuang.com/index.php?m=bangV2&f=ketang&v=commend
-            // let url = 'http://bang.uzhuang.com/index.php?m=bangV2&f=ketang&v=commend'
-            // this.getList(url)
             this.getKeTangList()
             this.getKeeperActiveList()
             this.getClassicList()
@@ -193,7 +189,7 @@
         padding: 0;
     }
     img{
-        display: inline-block;
+        /*display: inline-block;*/
         width: 100%;
         height:100%
     }
@@ -236,18 +232,21 @@
         }
     }
     .jpal{
+        font-size: 0;
         display: flex;
         padding-top:px2rem(20) ;
         li{
+            display: flex;
+            flex-direction: column;
             width: px2rem(116);
             height: px2rem(116);
-            background: #f5f5f5;
+            background: ﻿red;
             margin-right: px2rem(5);
-            border-radius: px2rem(5);
+            overflow: hidden;
         }
         .jpal-img{
             width: 100%;
-            height: px2rem(97);
+            flex: 1;
             overflow: hidden;
 
         }
@@ -259,6 +258,9 @@
             text-overflow: ellipsis;
             white-space: nowrap;
             width: 100%;
+            border: none;
+            line-height: px2rem(12);
+            height: px2rem(12);
         }
     }
     .box2{

@@ -84,6 +84,7 @@
                     return
                 }
                 EventBus.$emit('showAsk',false)
+                this.show = false;
                 // console.log(type)
                 this.pushPage({
                     name: Constants.PageName.qaAsk,

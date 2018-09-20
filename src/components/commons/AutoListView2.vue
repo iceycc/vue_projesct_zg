@@ -285,7 +285,7 @@
   }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   @import "../../assets/scss/px2rem";
   $title-color:#333;
   $content-color:#666;
